@@ -1,0 +1,179 @@
+Page base .reportconfirm-page {
+  min-height: 100vh;
+  background: #dfeaf7;
+  font-family: "Inter", "Noto Sans KR", system-ui, -apple-system, Segoe UI,
+    Roboto, Helvetica, Arial, sans-serif;
+  position: relative;
+}
+
+/* Header */
+.rc-header {
+  height: 76px;
+  background: #dfeaf7;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rc-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+}
+
+.rc-back {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: #000;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* (선택) 오른쪽 상단 홈 링크 */
+.rc-home-link {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font-size: 13px;
+  color: #000;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* Main */
+.rc-main {
+  padding: 0 24px;
+  text-align: center;
+  margin-top: 60px;
+}
+
+.rc-report-btn {
+  width: 210px;
+  height: 210px;
+  background: #ffdada;
+  border: 2px solid #ff0000;
+  border-radius: 12px;
+  margin: 0 auto 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s;
+}
+
+.rc-report-btn:hover {
+  background: #ffc8c8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 0, 0, 0.2);
+}
+
+.rc-report-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* Home indicator (mock) */
+.rc-home-indicator {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 139px;
+  height: 5px;
+  background: #000;
+  border-radius: 100px;
+}
+
+/* Alert (modal) */
+.rc-alert-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.69);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+.rc-alert {
+  background: rgba(179, 179, 179, 0.82);
+  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(25px);
+  border-radius: 14px;
+  width: 270px;
+  padding: 19px 16px 15px;
+  text-align: center;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.18);
+}
+
+.rc-alert-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #ff0606;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.rc-alert-desc {
+  font-size: 13px;
+  color: #000;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+/* actions */
+.rc-alert-actions {
+  display: flex;
+  border-top: 0.333px solid rgba(128, 128, 128, 0.3);
+}
+
+.rc-alert-btn {
+  flex: 1;
+  height: 44px;
+  background: none;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.rc-alert-btn:first-child {
+  border-right: 0.333px solid rgba(128, 128, 128, 0.3);
+}
+
+.rc-alert-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.rc-alert-btn.outline {
+  color: #007aff;
+  font-weight: 400;
+}
+
+.rc-alert-btn.primary {
+  color: #007aff;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 390px) {
+  .rc-report-btn {
+    width: 180px;
+    height: 180px;
+  }
+  .rc-alert {
+    width: 250px;
+  }
+}
