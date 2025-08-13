@@ -1,0 +1,46 @@
+:root {
+  --primary: #153e9f;
+  --accent: #1e5eff;
+  --line: #e5e7eb;
+  --bg: #f7f8fa;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+  background: #fff;
+}
+.mobile {
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+.h1 {
+  font-size: 26px;
+  line-height: 1.3;
+  margin: 8px 0 16px;
+}
+.card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+/* report-flow 내부의 모든 CTA 숨기기 */
+.report-flow .bottom-cta-wrap {
+  display: none !important;
+}
+
+/* 전역 CTA 래퍼 안의 것만 보이게 */
+.report-flow .global-cta-holder .bottom-cta-wrap {
+  display: block !important;
+}

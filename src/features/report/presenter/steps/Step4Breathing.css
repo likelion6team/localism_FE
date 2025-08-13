@@ -1,0 +1,187 @@
+/* Step4Breathing.css */
+
+/* Step4 전체 페이지 레이아웃 */
+.step4-page {
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  background: #fefefe;
+  padding-bottom: 200px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+}
+
+/* 헤더 영역 */
+.step4-page .header {
+  height: 76px;
+  padding: 0 22px;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.step4-page .back-btn {
+  width: 24px;
+  height: 24px;
+  color: #4b5563;
+  background: transparent;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.step4-page .title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* 홈으로 버튼 컨테이너 - 헤더 아래 오른쪽에 배치 */
+.home-link-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 22px;
+  margin-top: 8px;
+}
+
+/* 홈으로 버튼 스타일 */
+.home-btn {
+  background: none;
+  border: none;
+  color: #000000;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+}
+
+.home-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.home-btn:active {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+}
+
+/* 진행 바 */
+.step4-page .progress {
+  padding: 24px;
+  text-align: center;
+}
+
+.step4-page .progress-text {
+  font-size: 24px;
+  font-weight: 500;
+  color: #6dacf4;
+}
+
+/* 메인 콘텐츠 */
+.step4-page .content {
+  padding: 32px 24px;
+}
+
+.step4-page .text-center {
+  text-align: center;
+}
+
+.step4-page .main-title {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+
+.step4-page .blue-text {
+  color: #2459e0;
+}
+
+.step4-page .black-text {
+  color: #151515;
+}
+
+/* Step4 전용: 1열 세로 스택 배치 */
+.option-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  margin-bottom: 32px;
+}
+
+/* Step4 전용: 세로 배치 옵션 버튼 */
+.option-stack .option-button {
+  width: 100%;
+  height: 60px;
+  border-radius: 10px;
+  border: none;
+  background: #f3f3f3;
+  text-align: center;
+  padding: 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.option-stack .option-button:hover {
+  background: #e8e8e8;
+}
+
+.option-stack .option-button.selected {
+  background: #e3f2fd;
+  border: 2px solid #2459e0;
+}
+
+.option-stack .option-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #374957;
+  line-height: 1.4;
+}
+
+/* 다음 버튼 */
+.step4-page .next-button {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 118px;
+  width: 344px;
+  height: 52px;
+  border: 0;
+  border-radius: 10px;
+  background: #2459e0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.step4-page .next-button:hover {
+  background: #15378e;
+}
+
+.step4-page .next-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* 홈 인디케이터 */
+.step4-page .home-indicator {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 106px;
+  width: 127px;
+  height: 6px;
+  background: #4d4d4d;
+  border-radius: 999px;
+}
