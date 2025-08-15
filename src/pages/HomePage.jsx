@@ -5,9 +5,39 @@ import "./HomePage.css";
 export default function HomePage() {
   const nav = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [authPopupOpen, setAuthPopupOpen] = useState(false);
+  const [authType, setAuthType] = useState(""); // "emergency" or "hospital"
+  const [authNumber, setAuthNumber] = useState("");
 
   const goReport = () => nav("/report"); // 예 → 1단계(의식상태)로 이동
   const closeConfirm = () => setConfirmOpen(false);
+
+  const handleEmergencyClick = () => {
+    setAuthType("emergency");
+    setAuthPopupOpen(true);
+  };
+
+  const handleHospitalClick = () => {
+    setAuthType("hospital");
+    setAuthPopupOpen(true);
+  };
+
+  const closeAuthPopup = () => {
+    setAuthPopupOpen(false);
+    setAuthNumber("");
+    setAuthType("");
+  };
+
+  const handleAuthSubmit = () => {
+    if (authType === "emergency" && authNumber === "1111") {
+      nav("/report-list");
+    } else if (authType === "hospital" && authNumber === "0000") {
+      nav("/hospital-viewer");
+    } else {
+      alert("잘못된 번호입니다.");
+    }
+    closeAuthPopup();
+  };
 
   return (
     <div className="home-page">
@@ -39,19 +69,13 @@ export default function HomePage() {
           </button>
 
           {/* 구급대원 */}
-          <button
-            className="role-btn"
-            onClick={() => alert("구급대원 기능은 준비 중입니다.")}
-          >
+          <button className="role-btn" onClick={handleEmergencyClick}>
             <span className="role-ico">🚑</span>
             구급대원
           </button>
 
           {/* 병원 */}
-          <button
-            className="role-btn"
-            onClick={() => alert("병원 기능은 준비 중입니다.")}
-          >
+          <button className="role-btn" onClick={handleHospitalClick}>
             <span className="role-ico">🏥</span>
             병원
           </button>
@@ -75,6 +99,43 @@ export default function HomePage() {
               </button>
               <button className="alert-button yes" onClick={goReport}>
                 예
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🔐 인증 팝업 모달 */}
+      {authPopupOpen && (
+        <div className="alert-overlay" role="dialog" aria-modal="true">
+          <div className="alert-dialog">
+            <div className="alert-title" style={{ color: "#dc3545" }}>
+              {authType === "emergency"
+                ? "구급대원이십니까?"
+                : "병원 관계자이십니까?"}
+            </div>
+            <div className="alert-description">자신의 번호를 입력해주세요.</div>
+            <div className="auth-input-container">
+              <input
+                type="password"
+                className="auth-input"
+                placeholder="번호 입력"
+                value={authNumber}
+                onChange={(e) => setAuthNumber(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleAuthSubmit();
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <div className="alert-buttons">
+              <button className="alert-button no" onClick={closeAuthPopup}>
+                아니요
+              </button>
+              <button className="alert-button yes" onClick={handleAuthSubmit}>
+                완료
               </button>
             </div>
           </div>
