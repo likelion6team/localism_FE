@@ -205,3 +205,30 @@
   color: #007aff;
   font-weight: 600;
 }
+
+/* 인증 입력 필드 */
+.auth-input-container {
+  margin: 16px 0;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+}
+
+.auth-input::placeholder {
+  color: #999999;
+}
