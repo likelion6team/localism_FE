@@ -6,17 +6,18 @@ body {
   font-family: "Inter", "Noto Sans KR", sans-serif;
 }
 
-.app-container {
+.step3 .app-container {
   max-width: 390px;
+  width: 100vw;
   margin: 0 auto;
   background: #fefefe;
   min-height: 100vh;
   position: relative;
-  overflow-y: auto;
+  overflow: hidden;
   padding-bottom: 200px;
 }
 
-.header {
+.step3 .header {
   background: #fefefe;
   height: 76px;
   display: flex;
@@ -26,7 +27,7 @@ body {
   border-bottom: 1px solid #e5e5e5;
 }
 
-.back-btn {
+.step3 .back-btn {
   width: 24px;
   height: 24px;
   color: #4b5563;
@@ -40,7 +41,7 @@ body {
 }
 
 /* 홈으로 버튼 컨테이너 - 헤더 아래 오른쪽에 배치 */
-.home-link-container {
+.step3 .home-link-container {
   display: flex;
   justify-content: flex-end;
   padding: 0 22px;
@@ -48,7 +49,7 @@ body {
 }
 
 /* 홈으로 버튼 스타일 */
-.home-btn {
+.step3 .home-btn {
   background: none;
   border: none;
   color: #000000;
@@ -61,80 +62,143 @@ body {
   font-family: "Inter", "Noto Sans KR", sans-serif;
 }
 
-.home-btn:hover {
+.step3 .home-btn:hover {
   background-color: rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
 }
 
-.home-btn:active {
+.step3 .home-btn:active {
   background-color: rgba(0, 0, 0, 0.1);
   transform: translateY(0);
 }
 
-.progress {
+.step3 .progress {
   padding: 24px;
   text-align: center;
   background: #fefefe;
 }
 
-.content {
-  padding: 32px 24px;
+.step3 .content {
+  padding: 0;
   background: #fefefe;
+  position: relative;
 }
 
-.option-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 32px;
+.step3 .title-container {
+  position: absolute;
+  left: 42px;
+  top: 75px;
 }
 
-.option-button {
-  width: 100%;
-  height: 80px;
-  border-radius: 10px;
+.step3 .question-text {
+  position: absolute;
+  left: 41px;
+  top: 200px;
+  font-size: 18px;
+  color: #787777;
+  margin: 0;
+  text-align: left;
+}
+
+.step3 .question-subtext {
+  position: absolute;
+  left: 272.5px;
+  top: 282px;
+  transform: translateX(-50%);
+  font-size: 16px;
+  color: #514e4e;
+  margin: 0;
+  text-align: left;
+}
+
+.step3 .options-container {
+  position: relative;
+  height: 600px;
+}
+
+.step3 .option-button {
+  position: absolute;
+  width: 156px;
+  height: 61px;
+  border-radius: 15px;
   border: 2px solid #e5e5e5;
-  background: #ffffff;
+  background: #f9fafb;
   text-align: center;
   padding: 16px;
   transition: all 0.2s ease;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8px;
 }
 
-.option-button:hover {
+.step3 .option-button:hover {
   border-color: #2459e0;
   background: #f0f9ff;
 }
 
-.option-button.selected {
-  border-color: #2459e0;
-  background: #e3f2fd;
+.step3 .option-button.selected {
+  border-color: #006eeb;
+  background: #deedff;
 }
 
-.option-icon {
-  font-size: 24px;
-  margin-bottom: 8px;
+.step3 .option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.option-text {
-  font-size: 14px;
-  font-weight: bold;
+.step3 .option-icon img {
+  width: 20px;
+  height: 20px;
+}
+
+.step3 .option-text {
+  font-size: 18px;
+  font-weight: 500;
   color: #374957;
   line-height: 1.2;
 }
 
-.next-button {
+.step3 .main-title {
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 0;
+}
+
+.step3 .sub-title {
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 1.3;
+  margin: 0;
+  color: #151515;
+}
+
+.step3 .blue-text {
+  color: #2459e0;
+}
+
+.step3 .black-text {
+  color: #151515;
+}
+
+.step3 .progress-text {
+  font-size: 24px;
+  font-weight: 500;
+  color: #6dacf4;
+}
+
+.step3 .next-button {
   position: absolute;
-  bottom: 118px;
+  top: 850px;
   left: 50%;
   transform: translateX(-50%);
   width: 344px;
   height: 52px;
-  background: #2459e0;
+  background: #9ca3af;
   color: white;
   border: none;
   border-radius: 10px;
@@ -145,24 +209,55 @@ body {
   font-family: "Inter", "Noto Sans KR", sans-serif;
 }
 
-.next-button:hover {
-  background: #15378e;
+.step3 .next-button:hover {
+  background: #2459e0;
 }
 
-.next-button:disabled {
+.step3 .next-button:disabled {
   background: #9ca3af;
   cursor: not-allowed;
 }
 
-.home-indicator {
+.step3 .next-button:not(:disabled) {
+  background: #2459e0;
+}
+
+/* 홈 인디케이터 제거 */
+.step3 .home-indicator {
+  display: none;
+}
+
+/* 기타/모름 텍스트 입력창 */
+.step3 .other-input-container {
   position: absolute;
-  bottom: 106px;
   left: 50%;
+  top: 630px;
   transform: translateX(-50%);
-  width: 127px;
-  height: 6px;
-  background: #4d4d4d;
-  border-radius: 100px;
+  width: 335px;
+}
+
+.step3 .other-input {
+  width: 100%;
+  height: 60px;
+  border: 2px solid #cecece;
+  border-radius: 10px;
+  background: #f9fafb;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #374957;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  transition: all 0.2s ease;
+}
+
+.step3 .other-input:focus {
+  outline: none;
+  border-color: #2459e0;
+  background: #f0f9ff;
+}
+
+.step3 .other-input::placeholder {
+  color: #9ca3af;
 }
 
 .main-title {
@@ -170,12 +265,6 @@ body {
   font-weight: bold;
   line-height: 1.3;
   margin-bottom: 16px;
-}
-
-.sub-title {
-  font-size: 18px;
-  color: #6b7280;
-  margin-bottom: 32px;
 }
 
 .blue-text {
@@ -187,7 +276,7 @@ body {
 }
 
 .progress-text {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   color: #6dacf4;
 }

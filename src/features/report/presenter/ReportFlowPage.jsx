@@ -27,7 +27,8 @@ function Inner() {
 
   const onSubmit = async () => {
     await submit();
-
+    // 신고 완료 후 홈으로 이동 또는 완료 페이지로 이동
+    window.location.href = "/role-selection"; // 또는 적절한 경로
   };
 
   return (
