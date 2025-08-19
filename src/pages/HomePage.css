@@ -1,207 +1,83 @@
-/* src/pages/HomePage.css */
+/* HomePage.css */
+/* 홈페이지 스타일 - 역할 선택 화면의 디자인을 담당 */
 
-.home-page {
+/* 전체 홈페이지 컨테이너 */
+.homepage-container {
   min-height: 100vh;
-  background: #fefefe;
-  font-family: "Inter", "Noto Sans KR", system-ui, -apple-system, Segoe UI,
-    Roboto, Helvetica, Arial, sans-serif;
-  position: relative;
-  max-width: 420px;
-  margin: 0 auto;
-}
-
-/* 상단을 위로 딱 붙이고 가운데 정렬 */
-.home-page .hero {
-  padding: 20px 20px 24px;
-  text-align: center;
-  position: relative;
-}
-
-/* 우측 상단 관리자 배지 */
-.home-page .admin-badge {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  background: #151515;
-  color: #fff;
-  border: 0;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* 🚑 ResQ 한 줄 로고 */
-.home-page .logo-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-.home-page .logo-emoji {
-  font-size: 22px;
-  line-height: 1;
-}
-.home-page .logo-word {
-  font-size: 20px;
-  font-weight: 800;
-  color: #151515;
-  letter-spacing: 0.2px;
-}
-
-/* 슬로건 */
-.home-page .slogan {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #6b7280;
-  line-height: 1.35;
-}
-
-/* 본문 */
-.home-page .main {
-  padding: 0 24px 80px;
-}
-.home-page .title {
-  margin: 22px 0 28px;
-  font-size: 24px;
-  font-weight: 800;
-  color: #151515;
-  line-height: 1.3;
-}
-
-/* 역할 버튼들 */
-.home-page .role-list {
+  background: #ffffff;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin-bottom: 64px;
-}
-.home-page .role-btn {
-  width: 100%;
-  height: 80px;
-  background: #374151;
-  color: #fff;
-  border: 0;
-  border-radius: 18px;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-size: 18px;
-  font-weight: 700;
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background-color 0.15s;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-}
-.home-page .role-btn:hover {
-  background: #434b57;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
-}
-.home-page .role-btn:active {
-  transform: translateY(0);
-}
-.home-page .role-ico {
-  font-size: 22px;
 }
 
-/* 홈 인디케이터 */
-.home-page .home-indicator {
-  position: absolute;
-  bottom: 26px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 134px;
-  height: 5px;
-  background: #444;
-  border-radius: 3px;
-}
-
-/* 작은 화면 보정 */
-@media (max-width: 390px) {
-  .home-page .logo-word {
-    font-size: 19px;
-  }
-  .home-page .slogan {
-    font-size: 12.5px;
-  }
-  .home-page .title {
-    font-size: 22px;
-  }
-  .home-page .role-btn {
-    height: 72px;
-    font-size: 16.5px;
-  }
-  .home-page .role-ico {
-    font-size: 21px;
-  }
-}
-
-.alert-overlay {
-  position: fixed;
-  inset: 0; /* top/right/bottom/left:0 */
-  background: rgba(0, 0, 0, 0.68);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999; /* 다른 모든 것 위로 */
-}
-
-.alert-dialog {
-  background: rgba(179, 179, 179, 0.82);
-  backdrop-filter: blur(25px);
-  border-radius: 14px;
-  width: 270px;
-  padding: 19px 16px 15px;
+/* ResQ 로고 섹션 */
+.logo-section {
   text-align: center;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  margin-bottom: 60px; /* 로고와 역할 버튼 사이 간격 */
 }
 
-.alert-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: #ff0606;
-  margin-bottom: 8px;
-  line-height: 1.3;
-}
-
-.alert-description {
-  font-size: 13px;
-  color: #000;
-  line-height: 1.45;
+/* ResQ 로고 이미지 */
+.resq-logo {
+  width: 200px;
+  height: auto;
   margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.alert-buttons {
-  display: flex;
-  border-top: 0.333px solid rgba(128, 128, 128, 0.3);
-}
-
-.alert-button {
-  flex: 1;
-  height: 44px;
-  background: none;
-  border: none;
-  font-size: 17px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.alert-button:first-child {
-  border-right: 0.333px solid rgba(128, 128, 128, 0.3);
-}
-
-.alert-button:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.alert-button.no {
-  color: #007aff;
-  font-weight: 400;
-}
-.alert-button.yes {
-  color: #007aff;
+/* ResQ 슬로건 텍스트 */
+.slogan {
+  font-size: 20px; /* 슬로건 글씨 크기 증가 */
+  color: #2459e0;
   font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* 역할 선택 버튼들을 감싸는 컨테이너 */
+.role-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 버튼들 사이 간격 */
+  width: 100%;
+  max-width: 300px;
+}
+
+/* 개별 역할 선택 버튼 */
+.role-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 아이콘과 텍스트를 가운데 정렬 */
+  padding: 20px;
+  background: #f3f4f6; /* 초기 상태: 회색 */
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  gap: 15px; /* 아이콘과 텍스트 사이 간격 */
+}
+
+/* 역할 버튼에 마우스 올렸을 때 또는 활성화 상태 */
+.role-btn:hover,
+.role-btn:active {
+  background: #2459e0; /* 파란색으로 변경 */
+  color: white;
+  transform: translateY(-2px); /* 살짝 위로 올라가는 효과 */
+  box-shadow: 0 4px 12px rgba(36, 89, 224, 0.3); /* 그림자 효과 */
+}
+
+/* 역할 아이콘 이미지 */
+.role-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0; /* 아이콘 크기 고정 */
+}
+
+/* 역할 버튼 내 텍스트 */
+.role-btn span {
+  font-size: 18px;
+  font-weight: 600;
+  color: inherit; /* 부모 요소의 색상을 상속 */
 }
