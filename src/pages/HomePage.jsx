@@ -1,24 +1,34 @@
 // src/pages/HomePage.jsx
 // 앱의 메인 홈페이지 - 역할 선택 화면
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [selectedRole, setSelectedRole] = useState(null);
 
   // 신고자 버튼 클릭 시 리포트 작성 페이지로 이동
   const handleReporterClick = () => {
-    navigate("/report");
+    setSelectedRole("reporter");
+    // 약간의 지연 후 페이지 이동 (선택 효과를 보기 위해)
+    setTimeout(() => {
+      navigate("/report");
+    }, 200);
   };
 
   // 구급대원 버튼 클릭 시 알림 표시 (아직 구현되지 않음)
   const handleEMTClick = () => {
+    setSelectedRole("emt");
     alert("구급대원 기능은 아직 구현되지 않았습니다.");
+    setSelectedRole(null);
   };
 
   // 병원 버튼 클릭 시 알림 표시 (아직 구현되지 않음)
   const handleHospitalClick = () => {
+    setSelectedRole("hospital");
     alert("병원 기능은 아직 구현되지 않았습니다.");
+    setSelectedRole(null);
   };
 
   return (
@@ -40,7 +50,12 @@ export default function HomePage() {
       {/* 역할 선택 버튼들 */}
       <div className="role-buttons">
         {/* 신고자 버튼 - 리포트 작성으로 이동 */}
-        <button className="role-btn" onClick={handleReporterClick}>
+        <button
+          className={`role-btn ${
+            selectedRole === "reporter" ? "selected" : ""
+          }`}
+          onClick={handleReporterClick}
+        >
           <img
             src="/src/assets/icons/reporter-icon.svg"
             alt="신고자"
@@ -50,7 +65,10 @@ export default function HomePage() {
         </button>
 
         {/* 구급대원 버튼 - 아직 미구현 */}
-        <button className="role-btn" onClick={handleEMTClick}>
+        <button
+          className={`role-btn ${selectedRole === "emt" ? "selected" : ""}`}
+          onClick={handleEMTClick}
+        >
           <img
             src="/src/assets/icons/emt-icon.svg"
             alt="구급대원"
@@ -60,7 +78,12 @@ export default function HomePage() {
         </button>
 
         {/* 병원 버튼 - 아직 미구현 */}
-        <button className="role-btn" onClick={handleHospitalClick}>
+        <button
+          className={`role-btn ${
+            selectedRole === "hospital" ? "selected" : ""
+          }`}
+          onClick={handleHospitalClick}
+        >
           <img
             src="/src/assets/icons/hospital-icon.svg"
             alt="병원"
