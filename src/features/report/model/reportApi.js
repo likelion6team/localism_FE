@@ -13,19 +13,19 @@ export async function sendReport(payload) {
     const formData = new FormData();
 
     // 기본 데이터 추가
-    formData.append("consciousness", payload.consciousness);
-    formData.append("accidentTypes", JSON.stringify(payload.accidentTypes));
-    formData.append("symptoms", JSON.stringify(payload.symptoms));
-    formData.append("breathing", payload.breathing);
+    formData.append("consciousnessStatus", payload.consciousness);
+    formData.append("accidentType", JSON.stringify(payload.accidentTypes));
+    formData.append("mainSymptoms", JSON.stringify(payload.symptoms));
+    formData.append("breathingStatus", payload.breathing);
 
     // 위치 정보 추가
     if (payload.location) {
-      formData.append("latitude", payload.location.lat);
-      formData.append("longitude", payload.location.lng);
-      formData.append("address", payload.location.address);
+      formData.append("lat", payload.location.lat);
+      formData.append("lng", payload.location.lng);
+      formData.append("location", payload.location.address);
     }
 
-    // 사진 파일 추가 (있는 경우에만)
+    // 사진 파일 추가
     if (payload.photo) {
       formData.append("photo", payload.photo);
     }
