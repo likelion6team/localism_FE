@@ -67,7 +67,7 @@ export default function HomePage() {
       {/* ResQ 로고 섹션 */}
       <div className="logo-section">
         <img
-          src="/src/assets/icons/logo.svg"
+          src="/icons/logo.svg"
           alt="ResQ Logo"
           className="resq-logo"
         />
@@ -88,7 +88,7 @@ export default function HomePage() {
           onClick={handleReporterClick}
         >
           <img
-            src="/src/assets/icons/reporter-icon.svg"
+            src="/icons/reporter-icon.svg"
             alt="신고자"
             className="role-icon"
           />
@@ -101,7 +101,7 @@ export default function HomePage() {
           onClick={handleEMTClick}
         >
           <img
-            src="/src/assets/icons/emt-icon.svg"
+            src="/icons/emt-icon.svg"
             alt="구급대원"
             className="role-icon"
           />
@@ -116,7 +116,7 @@ export default function HomePage() {
           onClick={handleHospitalClick}
         >
           <img
-            src="/src/assets/icons/hospital-icon.svg"
+            src="/icons/hospital-icon.svg"
             alt="병원"
             className="role-icon"
           />
