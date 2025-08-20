@@ -7,32 +7,59 @@ import "./HomePage.css";
 export default function HomePage() {
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState(null);
+  const [authPopupOpen, setAuthPopupOpen] = useState(false);
+  const [authType, setAuthType] = useState(""); // "emergency" or "hospital"
+  const [authNumber, setAuthNumber] = useState("");
 
-  // 신고자 버튼 클릭 시 리포트 작성 페이지로 이동
+  // 신고자 버튼 클릭 시 인증 모달 표시
   const handleReporterClick = () => {
     setSelectedRole("reporter");
-    // 약간의 지연 후 페이지 이동 (선택 효과를 보기 위해)
-    setTimeout(() => {
-      navigate("/report");
-    }, 200);
+    setAuthType("reporter");
+    setAuthPopupOpen(true);
   };
 
-  // 구급대원 버튼 클릭 시 구급대원 페이지로 이동
+  // 구급대원 버튼 클릭 시 인증 모달 표시
   const handleEMTClick = () => {
     setSelectedRole("emt");
-    // 약간의 지연 후 페이지 이동 (선택 효과를 보기 위해)
-    setTimeout(() => {
-      navigate("/emergency-responder");
-    }, 200);
+    setAuthType("emergency");
+    setAuthPopupOpen(true);
   };
 
-  // 병원 버튼 클릭 시 병원 페이지로 이동
+  // 병원 버튼 클릭 시 인증 모달 표시
   const handleHospitalClick = () => {
     setSelectedRole("hospital");
-    // 약간의 지연 후 페이지 이동 (선택 효과를 보기 위해)
-    setTimeout(() => {
-      navigate("/hospital");
-    }, 200);
+    setAuthType("hospital");
+    setAuthPopupOpen(true);
+  };
+
+  // 인증 모달 닫기
+  const closeAuthPopup = () => {
+    setAuthPopupOpen(false);
+    setAuthNumber("");
+    setAuthType("");
+  };
+
+  // 인증 제출 처리
+  const handleAuthSubmit = () => {
+    if (authType === "reporter" && authNumber === "2222") {
+      // 신고자 인증 성공
+      setTimeout(() => {
+        navigate("/report");
+      }, 200);
+    } else if (authType === "emergency" && authNumber === "1111") {
+      // 구급대원 인증 성공
+      setTimeout(() => {
+        navigate("/emergency-responder");
+      }, 200);
+    } else if (authType === "hospital" && authNumber === "0000") {
+      // 병원 인증 성공
+      setTimeout(() => {
+        navigate("/hospital");
+      }, 200);
+    } else {
+      alert("잘못된 번호입니다.");
+    }
+    closeAuthPopup();
   };
 
   return (
@@ -68,7 +95,7 @@ export default function HomePage() {
           <span>신고자</span>
         </button>
 
-        {/* 구급대원 버튼 - 아직 미구현 */}
+        {/* 구급대원 버튼 - 인증 모달 표시 */}
         <button
           className={`role-btn ${selectedRole === "emt" ? "selected" : ""}`}
           onClick={handleEMTClick}
@@ -81,7 +108,7 @@ export default function HomePage() {
           <span>구급대원</span>
         </button>
 
-        {/* 병원 버튼 - 아직 미구현 */}
+        {/* 병원 버튼 - 인증 모달 표시 */}
         <button
           className={`role-btn ${
             selectedRole === "hospital" ? "selected" : ""
@@ -96,6 +123,45 @@ export default function HomePage() {
           <span>병원</span>
         </button>
       </div>
+
+      {/* 🔐 인증 팝업 모달 */}
+      {authPopupOpen && (
+        <div className="alert-overlay" role="dialog" aria-modal="true">
+          <div className="alert-dialog">
+            <div className="alert-title" style={{ color: "#dc3545" }}>
+              {authType === "reporter"
+                ? "신고자가 맞으신가요?"
+                : authType === "emergency"
+                ? "구급대원이십니까?"
+                : "병원 관계자이십니까?"}
+            </div>
+            <div className="alert-description">자신의 번호를 입력해주세요.</div>
+            <div className="auth-input-container">
+              <input
+                type="password"
+                className="auth-input"
+                placeholder="번호 입력"
+                value={authNumber}
+                onChange={(e) => setAuthNumber(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleAuthSubmit();
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <div className="alert-buttons">
+              <button className="alert-button no" onClick={closeAuthPopup}>
+                아니요
+              </button>
+              <button className="alert-button yes" onClick={handleAuthSubmit}>
+                완료
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

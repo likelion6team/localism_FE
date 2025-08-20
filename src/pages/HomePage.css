@@ -121,3 +121,72 @@
 .auth-input::placeholder {
   color: #999999;
 }
+
+/* 🔐 인증 모달 CSS */
+.alert-overlay {
+  position: fixed;
+  inset: 0; /* top/right/bottom/left:0 */
+  background: rgba(0, 0, 0, 0.68);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* 다른 모든 것 위로 */
+}
+
+.alert-dialog {
+  background: rgba(179, 179, 179, 0.82);
+  backdrop-filter: blur(25px);
+  border-radius: 14px;
+  width: 270px;
+  padding: 19px 16px 15px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.alert-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #ff0606;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.alert-description {
+  font-size: 13px;
+  color: #000;
+  line-height: 1.45;
+  margin-bottom: 20px;
+}
+
+.alert-buttons {
+  display: flex;
+  border-top: 0.333px solid rgba(128, 128, 128, 0.3);
+}
+
+.alert-button {
+  flex: 1;
+  height: 44px;
+  background: none;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.alert-button:first-child {
+  border-right: 0.333px solid rgba(128, 128, 128, 0.3);
+}
+
+.alert-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.alert-button.no {
+  color: #007aff;
+  font-weight: 400;
+}
+
+.alert-button.yes {
+  color: #007aff;
+  font-weight: 600;
+}
