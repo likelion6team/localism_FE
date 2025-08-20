@@ -70,7 +70,9 @@ export default function Step5Photo({ onSubmit, onBack }) {
         });
 
         if (permission.state === "denied") {
-          alert("카메라 권한이 거부되었습니다. 브라우저 설정에서 카메라 권한을 허용해주세요.");
+          alert(
+            "카메라 권한이 거부되었습니다. 브라우저 설정에서 카메라 권한을 허용해주세요."
+          );
           return;
         }
       }

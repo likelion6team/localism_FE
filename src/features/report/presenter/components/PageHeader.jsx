@@ -3,9 +3,7 @@ export default function PageHeader({ title, onBack }) {
     <div
       style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}
     >
-      <button onClick={onBack} style={ico} aria-label="back">
-        ←
-      </button>
+      <button onClick={onBack} style={ico} aria-label="back"></button>
       <div style={{ fontWeight: 700 }}>{title}</div>
     </div>
   );
