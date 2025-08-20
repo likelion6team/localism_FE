@@ -10,14 +10,6 @@ export default function Step1Consciousness({ onNext }) {
   // 선택된 의식 상태 옵션을 저장하는 상태
   const [selected, setSelected] = useState(null);
 
-  // 페이지 로드 시 이전에 선택한 옵션이 있다면 복원
-  useEffect(() => {
-    const saved = localStorage.getItem("consciousness");
-    if (saved) {
-      setSelected(saved);
-    }
-  }, []);
-
   // 의식 상태 옵션을 선택하거나 선택 해제하는 함수 (토글 기능)
   const selectOption = (option) => {
     if (selected === option) {
