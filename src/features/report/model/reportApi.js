@@ -62,16 +62,9 @@ export async function sendReport(payload) {
       console.log(`  ${key}:`, value);
     }
 
-    // CORS 우회를 위한 프록시 사용
-    const proxyUrl = `https://cors-anywhere.herokuapp.com/${API_BASE_URL}/api/reports`;
-    console.log("프록시 URL 사용:", proxyUrl);
-    
-    const response = await fetch(proxyUrl, {
+        const response = await fetch(`${API_BASE_URL}/api/reports`, {
       method: "POST",
       body: formData,
-      headers: {
-        'Origin': 'https://localismtest2.netlify.app'
-      }
     });
 
     console.log("API 응답 상태:", response.status);

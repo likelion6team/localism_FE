@@ -59,26 +59,8 @@ export default function Step5Photo({ onSubmit, onBack }) {
 
   // 모바일 카메라로 사진 찍기 (모바일 최적화)
   const takePhoto = async () => {
-    // 화면에 직접 디버깅 정보 표시
-    const debugInfo = `
-=== 카메라 접근 디버깅 정보 ===
-User Agent: ${navigator.userAgent}
-Protocol: ${window.location.protocol}
-Hostname: ${window.location.hostname}
-Port: ${window.location.port}
-navigator.mediaDevices: ${!!navigator.mediaDevices}
-navigator.mediaDevices.getUserMedia: ${!!navigator.mediaDevices?.getUserMedia}
-navigator.getUserMedia: ${!!navigator.getUserMedia}
-navigator.webkitGetUserMedia: ${!!navigator.webkitGetUserMedia}
-navigator.mozGetUserMedia: ${!!navigator.mozGetUserMedia}
-navigator.msGetUserMedia: ${!!navigator.msGetUserMedia}
-모바일 기기: ${/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    )}
-=======================
-    `;
-
-    alert(debugInfo);
+    // 카메라 접근 시도 중임을 한 번만 알림
+    alert("카메라에 접근 중입니다...");
 
     try {
       // 먼저 카메라 권한 확인
@@ -86,16 +68,11 @@ navigator.msGetUserMedia: ${!!navigator.msGetUserMedia}
         const permission = await navigator.permissions.query({
           name: "camera",
         });
-        alert(`카메라 권한 상태: ${permission.state}`);
 
         if (permission.state === "denied") {
-          alert(
-            "카메라 권한이 거부되었습니다.\n\n브라우저 설정에서 카메라 권한을 허용해주세요."
-          );
+          alert("카메라 권한이 거부되었습니다. 브라우저 설정에서 카메라 권한을 허용해주세요.");
           return;
         }
-      } else {
-        alert("권한 API 지원 안됨, 직접 카메라 접근 시도");
       }
 
       // HTTP 환경에서도 카메라 시도 (권한만 있으면 작동 가능)
@@ -109,9 +86,7 @@ navigator.msGetUserMedia: ${!!navigator.msGetUserMedia}
 
       // 최신 방식 (크롬에서 주로 사용)
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        alert("✅ 최신 방식 getUserMedia 사용");
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        alert("✅ 카메라 접근 성공!");
         const video = document.createElement("video");
         video.srcObject = stream;
         video.play();
@@ -119,7 +94,6 @@ navigator.msGetUserMedia: ${!!navigator.msGetUserMedia}
       }
       // 구형 방식 (구형 브라우저용)
       else {
-        alert("구형 방식으로 카메라 접근 시도...");
         const getUserMedia =
           navigator.getUserMedia ||
           navigator.webkitGetUserMedia ||
@@ -127,24 +101,21 @@ navigator.msGetUserMedia: ${!!navigator.msGetUserMedia}
           navigator.msGetUserMedia;
 
         if (getUserMedia) {
-          alert("✅ 구형 방식 getUserMedia 사용");
           getUserMedia.call(
             navigator,
             constraints,
             (stream) => {
-              alert("✅ 구형 방식 카메라 성공!");
               const video = document.createElement("video");
               video.srcObject = stream;
               video.play();
               showCameraPreview(video, stream);
             },
             (error) => {
-              alert(`❌ 구형 방식 카메라 오류: ${error.message}`);
               handleCameraError(error);
             }
           );
         } else {
-          alert("❌ 모든 카메라 API 지원 안됨");
+          alert("이 기기에서는 카메라를 사용할 수 없습니다.");
         }
       }
     } catch (error) {
