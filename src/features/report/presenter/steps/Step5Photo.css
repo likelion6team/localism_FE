@@ -1,374 +1,431 @@
 /* Step5Photo.css */
+/* Step5: 현장 사진 업로드 페이지의 스타일 - 사고 현장의 사진을 업로드하는 마지막 단계의 디자인을 담당 */
 
-/* Step5 전체 페이지 레이아웃 */
-.step5 .app-container {
-  max-width: 390px;
-  width: 100vw;
-  margin: 0 auto;
-  background: #fefefe;
-  min-height: 100vh;
-  position: relative;
-  overflow: hidden;
-  padding-bottom: 200px;
+/* ===== 전체 앱 컨테이너 ===== */
+.step5-app-container {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 375px !important; /* 모바일 앱 표준 너비 */
+  min-height: 100vh !important;
+  background: #fefefe !important; /* 배경색을 #fefefe로 변경 */
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important; /* 왼쪽 정렬로 변경 */
+  justify-content: flex-start !important;
+  margin: 0 auto !important; /* 가운데 정렬 */
+  padding: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
 }
 
-/* 헤더 영역 */
-.step5 .header {
-  background: #fefefe;
-  height: 76px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 22px;
-  border-bottom: 1px solid #e5e5e5;
+/* ===== 헤더 영역 ===== */
+.step5-header {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 375px !important; /* 모바일 앱 표준 너비 */
+  height: 60px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* 가운데 정렬로 변경 */
+  padding: 0 20px !important;
+  background: #fefefe !important; /* 헤더 배경도 #fefefe로 변경 */
+  z-index: 100 !important;
+  margin-bottom: 20px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.step5 .back-btn {
-  width: 24px;
-  height: 24px;
-  color: #4b5563;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+/* 뒤로가기 버튼 */
+.step5-back-btn {
+  position: absolute !important; /* 절대 위치로 변경 */
+  left: 20px !important; /* 왼쪽에 고정 */
+  width: 40px !important;
+  height: 40px !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #000000 !important;
 }
 
-/* 홈으로 버튼 컨테이너 - 헤더 아래 오른쪽에 배치 */
-.step5 .home-link-container {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 22px;
-  margin-top: 8px;
+/* 헤더 제목 */
+.step5-header h1 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #000000 !important;
+  margin: 0 !important;
+  text-align: center !important;
+  position: relative !important; /* relative로 변경 */
+  z-index: 1 !important; /* 뒤로가기 버튼 위에 표시 */
 }
 
-/* 홈으로 버튼 스타일 */
-.step5 .home-btn {
-  background: none;
-  border: none;
-  color: #000000;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  font-family: "Inter", "Noto Sans KR", sans-serif;
+/* ===== 홈으로 버튼 ===== */
+.step5-home-link-container {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 375px !important; /* 모바일 앱 표준 너비 */
+  display: flex !important;
+  justify-content: flex-end !important; /* 오른쪽 정렬로 변경 */
+  margin-bottom: 20px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0 20px !important; /* 좌우 패딩 추가 */
 }
 
-.step5 .home-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  transform: translateY(-1px);
+.step5-home-btn {
+  padding: 8px 16px !important;
+  background: transparent !important;
+  border: none !important;
+  color: #000000 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
 }
 
-.step5 .home-btn:active {
-  background-color: rgba(0, 0, 0, 0.1);
-  transform: translateY(0);
+/* ===== 진행 상황 표시 ===== */
+.step5-progress {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 375px !important; /* 모바일 앱 표준 너비 */
+  display: flex !important;
+  justify-content: flex-start !important; /* 왼쪽 정렬로 변경 */
+  margin-bottom: 20px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0 20px !important; /* 좌우 패딩 추가 */
 }
 
-/* 진행 바 */
-.step5 .progress {
-  position: absolute;
-  left: 53px;
-  top: 120px;
-  transform: translateX(-50%);
-  padding: 0;
-  text-align: center;
-  background: transparent;
-  z-index: 10;
+.step5-progress-text {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #2459e0 !important; /* 파란색 */
+  text-align: center !important;
 }
 
-.step5 .progress-text {
-  font-size: 24px;
-  font-weight: 500;
-  color: #6dacf4;
+/* ===== 제목 영역 ===== */
+.step5-title-container {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 375px !important; /* 모바일 앱 표준 너비 */
+  display: flex !important;
+  flex-direction: column !important; /* 세로 배치로 변경 */
+  justify-content: flex-start !important; /* 왼쪽 정렬로 변경 */
+  margin-bottom: 40px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0 20px !important; /* 좌우 패딩 추가 */
 }
 
-/* 메인 콘텐츠 */
-.step5 .content {
-  padding: 0;
-  background: #fefefe;
-  position: relative;
+/* 메인 제목 컨테이너 */
+.step5-main-title-container {
+  width: 100% !important; /* 전체 너비로 변경 */
+  text-align: left !important; /* 왼쪽 정렬로 변경 */
+  margin-bottom: 15px !important; /* 설명 텍스트와의 간격 */
 }
 
-.step5 .title-container {
-  position: absolute;
-  left: 42px;
-  top: 70px;
+/* 메인 제목 */
+.step5-main-title {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #2459e0 !important; /* 파란색 */
+  margin: 0 !important;
+  line-height: 1.2 !important;
+  text-align: left !important; /* 왼쪽 정렬로 변경 */
 }
 
-.step5 .main-title {
-  font-size: 36px;
-  font-weight: bold;
-  line-height: 1.3;
-  margin: 0;
-  margin-bottom: 0;
+/* 서브 제목 */
+.step5-sub-title {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #000000 !important;
+  margin: 0 !important;
+  margin-top: 5px !important;
+  line-height: 1.2 !important;
+  text-align: left !important; /* 왼쪽 정렬로 변경 */
 }
 
-.step5 .sub-title {
-  font-size: 36px;
-  font-weight: bold;
-  line-height: 1.3;
-  margin: 0;
-  color: #151515;
+/* 서브 제목 행 (보여주세요 + 선택) */
+.step5-subtitle-row {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 8px !important;
+  margin-top: 5px !important;
 }
 
-.step5 .blue-text {
-  color: #2459e0;
+/* 선택 사항 안내 텍스트 */
+.step5-optional-text {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: #000000 !important;
+  margin: 0 !important;
+  text-align: left !important; /* 왼쪽 정렬로 변경 */
+  white-space: nowrap !important; /* 줄바꿈 방지 */
 }
 
-.step5 .black-text {
-  color: #151515;
+/* ===== 옵션 버튼들 ===== */
+.step5-options-container {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 375px !important; /* 모바일 앱 표준 너비 */
+  display: flex !important;
+  flex-direction: column !important; /* 세로 배치 */
+  gap: 40px !important; /* 버튼들 사이 간격을 15px에서 40px로 늘림 */
+  margin-bottom: 40px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0 20px !important; /* 좌우 패딩 추가 */
 }
 
-.step5 .optional-text {
-  position: absolute;
-  left: 248px;
-  top: 132px;
-  transform: translateX(-50%);
-  font-size: 16px;
-  color: #514e4e;
-  text-align: center;
-  font-family: "Inter", "Noto Sans KR", sans-serif;
+/* 개별 옵션 버튼 */
+.step5-option-button {
+  width: 100% !important; /* 전체 너비 */
+  max-width: 335px !important; /* 패딩 고려한 너비 */
+  height: 60px !important; /* Step1과 동일한 높이 */
+  background: #f5f5f5 !important; /* Step1과 동일한 배경색 */
+  border: 1px solid #cecece !important; /* Step1과 동일한 테두리 */
+  border-radius: 10px !important; /* Step1과 동일한 둥근 모서리 */
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important; /* 세로 중앙 정렬 */
+  justify-content: center !important; /* 가운데 정렬 */
+  padding: 17px 20px 18px 20px !important; /* 좌우 패딩을 줄여서 텍스트 공간 확보 */
 }
 
-/* 옵션 버튼 영역 */
-.step5 .options-container {
-  position: relative;
-  height: 400px;
+/* 옵션 버튼 호버 효과 */
+.step5-option-button:hover {
+  background: #f0f0f0 !important; /* 호버 시 약간 진한 회색 */
+  border-color: #cecece !important;
 }
 
-.step5 .option-button {
-  position: absolute;
-  width: 344px;
-  height: 52px;
-  border-radius: 10px;
-  border: 1px solid #cecece;
-  background: #f9fafb;
-  text-align: center;
-  padding: 16px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  left: 50%;
-  transform: translateX(-50%);
+/* 옵션 버튼 내 텍스트 */
+.step5-option-text-lg {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: inherit !important; /* 부모 요소의 색상을 상속 */
+  text-align: center !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden !important; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis !important; /* 넘치는 텍스트는 ...으로 표시 */
 }
 
-.step5 .option-button:hover {
-  background: #e8e8e8;
+/* ===== 사진 미리보기 영역 ===== */
+.step5-photo-preview {
+  width: 100% !important;
+  max-width: 375px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0 20px !important;
+  margin-bottom: 40px !important;
+  position: relative !important; /* 상대 위치로 변경 */
 }
 
-.step5 .option-button.selected {
-  background: #deedff;
-  border: 1px solid #006eeb;
+.step5-preview-placeholder {
+  width: 100% !important;
+  height: 300px !important; /* 높이를 늘려서 사진이 더 잘 보이도록 */
+  background: #f5f5f5 !important;
+  border: 1px solid #cecece !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  margin-bottom: 15px !important;
+  position: relative !important; /* 상대 위치로 변경 */
 }
 
-.step5 .option-text-lg {
-  font-size: 18px;
-  font-weight: bold;
-  color: #374957;
-  line-height: 1.4;
+.step5-preview-placeholder img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important; /* 사진이 잘리지 않고 비율 유지 */
+  border-radius: 10px !important;
 }
 
-/* 각 옵션 버튼의 정확한 위치 */
-.step5 .option-button:nth-child(1) {
-  top: 240px;
+.step5-reupload-button {
+  position: absolute !important; /* 절대 위치로 변경 */
+  top: -50px !important; /* 사진 위쪽에 위치 - 15px에서 20px로 조정 */
+  right: 20px !important; /* 사진 오른쪽에 위치 - 15px에서 20px로 조정 */
+  width: auto !important; /* 자동 너비 */
+  height: 36px !important; /* 높이 줄임 */
+  background: #2459e0 !important; /* 파란색 배경 */
+  border: none !important;
+  border-radius: 8px !important;
+  color: #ffffff !important; /* 흰색 텍스트 */
+  font-size: 14px !important; /* 폰트 크기 줄임 */
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  padding: 0 16px !important; /* 좌우 패딩 추가 */
+  z-index: 10 !important; /* 사진 위에 표시 */
 }
 
-.step5 .option-button:nth-child(2) {
-  top: 340px; /* Adjusted from 321px to 340px for increased spacing */
+.step5-reupload-button:hover {
+  background: #1e4bb8 !important; /* 진한 파란색 */
 }
 
-/* 사진 미리보기 */
-.step5 .photo-preview {
-  position: absolute;
-  left: 50%;
-  top: 200px;
-  transform: translateX(-50%);
-  width: 342px;
-  height: 364px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ===== 신고 완료 버튼 ===== */
+.step5-next-button {
+  position: relative !important;
+  width: 100% !important; /* 전체 너비로 변경 */
+  max-width: 335px !important; /* 패딩 고려한 너비 */
+  height: 52px !important;
+  background: #2459e0 !important; /* 파란색 배경 */
+  border: none !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
+  margin-bottom: 40px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.step5 .preview-placeholder {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: #d9d9d9;
-  border-radius: 20px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* 신고 완료 버튼 호버 효과 */
+.step5-next-button:hover {
+  background: #1e4bb8 !important; /* 진한 파란색 */
 }
 
-.step5 .photo-label {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  z-index: 10;
+/* ===== 홈 인디케이터 ===== */
+.step5-home-indicator {
+  position: relative !important;
+  width: 139px !important;
+  height: 5px !important;
+  background: #000000 !important; /* 검은색 */
+  border-radius: 100px !important;
+  margin-top: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.step5 .reupload-button {
-  position: absolute;
-  top: -20px;
-  right: 15px;
-  background: #2459e0;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  z-index: 10;
-  transition: background 0.2s ease;
+/* ===== 메인 콘텐츠 영역 ===== */
+.step5-content {
+  width: 100% !important;
+  max-width: 375px !important; /* 모바일 앱 표준 너비 */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important; /* 전체 너비로 변경 */
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.step5 .reupload-button:hover {
-  background: #15378e;
+/* ===== 모달 스타일 ===== */
+.step5-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
 }
 
-/* 다음 버튼 */
-.step5 .next-button {
-  position: absolute;
-  top: 726px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 344px;
-  height: 52px;
-  background: #2459e0;
-  color: #fff;
-  border: 0;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s ease;
+.step5-modal-content {
+  background: #d4d4d4 !important; /* 회색빛 배경으로 변경 */
+  border-radius: 14px !important; /* 둥근 모서리 조정 */
+  padding: 24px !important; /* 패딩 조정 */
+  max-width: 300px !important; /* 너비 조정 */
+  width: 300px !important; /* 고정 너비 */
+  text-align: center !important;
+  position: relative !important;
+  border: 1px solid #2459e0 !important; /* 파란색 테두리 추가 */
+  backdrop-filter: blur(25px) !important; /* 블러 효과 추가 */
+  -webkit-backdrop-filter: blur(25px) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important; /* 그림자 추가 */
 }
 
-.step5 .next-button:hover {
-  background: #15378e;
+.step5-close-button {
+  position: absolute !important;
+  top: 12px !important; /* 위치 조정 */
+  right: 12px !important; /* 위치 조정 */
+  background: none !important;
+  border: none !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  color: #6b7280 !important; /* 색상 조정 */
 }
 
-/* 홈 인디케이터 */
-/* 홈 인디케이터 제거 */
-.step5 .home-indicator {
-  display: none;
+.step5-modal-resq-title {
+  margin-bottom: 20px !important; /* 마진 조정 */
 }
 
-/* 모달 */
-.step5 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+.step5-modal-resq-title img {
+  width: 90px !important;
+  height: auto !important;
 }
 
-.step5 .modal-content {
-  position: relative;
-  background: #d4d4d4;
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid #2459e0;
-  border-radius: 14px;
-  padding: 24px;
-  max-width: 300px;
-  width: 300px;
-  text-align: center;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+.step5-modal-body {
+  margin-bottom: 24px !important;
 }
 
-.step5 .modal-resq-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #2459e0;
-  text-align: center;
-  margin-bottom: 20px;
+.step5-modal-status {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin-bottom: 16px !important;
 }
 
-.step5 .modal-body {
-  margin-bottom: 24px;
+.step5-checkmark {
+  width: 24px !important;
+  height: 24px !important;
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
 }
 
-.step5 .modal-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
+.step5-status-text {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #000000 !important;
 }
 
-.step5 .checkmark {
-  font-size: 20px;
-  color: #10b981;
-  font-weight: bold;
+.step5-case-id {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #666666 !important;
+  margin-bottom: 16px !important;
+  padding: 8px 16px !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
 }
 
-.step5 .status-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #151515;
+.step5-modal-text {
+  font-size: 16px !important;
+  color: #666666 !important;
+  line-height: 1.5 !important;
 }
 
-.step5 .case-id {
-  font-size: 16px;
-  font-weight: 700;
-  color: #000000;
-  margin-bottom: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.step5-modal-button {
+  width: 100% !important;
+  height: 48px !important;
+  background: transparent !important; /* 투명 배경 */
+  border: none !important;
+  border-top: 0.5px solid rgba(128, 128, 128, 0.3) !important; /* 상단 테두리만 */
+  border-radius: 0 0 14px 14px !important; /* 하단만 둥글게 */
+  color: #2459e0 !important; /* 파란색 글씨 */
+  font-size: 17px !important; /* 폰트 크기 조정 */
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  padding-top: 2px !important; /* 상단 패딩 추가 */
 }
 
-.step5 .modal-text {
-  font-size: 14px;
-  color: #6b7280;
-  line-height: 1.4;
-  margin-bottom: 8px;
-}
-
-.step5 .modal-button {
-  width: 100%;
-  height: 30px;
-  background: transparent;
-  color: #0048ff;
-  border: none;
-  border-top: 0.5px solid rgba(128, 128, 128, 0.3);
-  border-radius: 0 0 10px 10px;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-family: "SF Pro", "Inter", sans-serif;
-  padding-top: 2px;
-}
-
-.step5 .modal-button:hover {
-  background: rgba(0, 72, 255, 0.1);
-}
-
-.step5 .close-button {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: none;
-  border: 0;
-  font-size: 24px;
-  cursor: pointer;
-  color: #6b7280;
+.step5-modal-button:hover {
+  background: rgba(0, 72, 255, 0.1) !important; /* 호버 시 연한 파란색 배경 */
 }

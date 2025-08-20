@@ -1,9 +1,12 @@
 // src/features/report/presenter/steps/Step5Photo.jsx
 // Step5: 현장 사진 업로드 페이지 - 사고 현장의 사진을 업로드하는 마지막 단계
 import { useRef, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Step5Photo.css";
 
 export default function Step5Photo({ onSubmit, onBack }) {
+  const navigate = useNavigate();
+
   // 파일 입력을 위한 ref
   const fileRef = useRef(null);
   // 업로드된 사진의 미리보기 URL을 저장하는 상태
@@ -39,21 +42,20 @@ export default function Step5Photo({ onSubmit, onBack }) {
   const confirm = () => {
     setShowModal(false);
     // 바로 홈화면으로 이동
-    window.location.href = "/";
+    navigate("/");
   };
 
   // 홈으로 이동하는 함수
   const goHome = () => {
-    // 역할 선택 페이지로 이동
-    window.location.href = "/role-selection"; // 또는 적절한 경로
+    navigate("/");
   };
 
   return (
-    <div className="app-container step5">
+    <div className="step5-app-container">
       {/* 헤더 - 뒤로가기 버튼과 제목 */}
-      <div className="header">
+      <div className="step5-header">
         <button
-          className="back-btn"
+          className="step5-back-btn"
           type="button"
           aria-label="뒤로가기"
           onClick={onBack}
@@ -67,14 +69,13 @@ export default function Step5Photo({ onSubmit, onBack }) {
             />
           </svg>
         </button>
-        <h1 className="text-base font-bold text-black">사고 리포트 작성</h1>
-        <div style={{ width: 24 }} />
+        <h1>사고 리포트 작성</h1>
       </div>
 
-      {/* 홈으로 버튼 - 헤더 아래 오른쪽에 별도 배치 */}
-      <div className="home-link-container">
+      {/* 홈으로 버튼 */}
+      <div className="step5-home-link-container">
         <button
-          className="home-btn"
+          className="step5-home-btn"
           type="button"
           onClick={goHome}
           aria-label="홈으로"
@@ -84,48 +85,51 @@ export default function Step5Photo({ onSubmit, onBack }) {
       </div>
 
       {/* 진행 상황 표시 - 현재 단계/전체 단계 */}
-      <div className="progress">
-        <div className="progress-text">5/5</div>
+      <div className="step5-progress">
+        <div className="step5-progress-text">5/5</div>
       </div>
 
       {/* 메인 콘텐츠 */}
-      <div className="content">
+      <div className="step5-content">
         {/* 제목 섹션 - 현장 사진 업로드 안내 */}
-        <div className="title-container">
-          <h2 className="main-title">
-            <span className="blue-text">현장 사진</span>
-            <span className="black-text">을</span>
-          </h2>
-          <p className="sub-title">보여주세요.</p>
+        <div className="step5-title-container">
+          <div className="step5-main-title-container">
+            <h2 className="step5-main-title">현장 사진을</h2>
+            <div className="step5-subtitle-row">
+              <p className="step5-sub-title">보여주세요.</p>
+              <span className="step5-optional-text">(선택)</span>
+            </div>
+          </div>
         </div>
-
-        {/* 선택 사항 안내 텍스트 */}
-        <div className="optional-text">(선택)</div>
 
         {/* 사진이 업로드되지 않았을 때 표시되는 옵션들 */}
         {!previewUrl && (
-          <div className="options-container">
+          <div className="step5-options-container">
             {/* 사진 업로드 버튼 */}
-            <button type="button" className="option-button" onClick={pickFile}>
-              <div className="option-text-lg">사진 업로드</div>
+            <button
+              type="button"
+              className="step5-option-button"
+              onClick={pickFile}
+            >
+              <div className="step5-option-text-lg">사진 업로드</div>
             </button>
 
             {/* 사진 찍기 버튼 (카메라 기능은 앱/모바일 환경에서 구현) */}
             <button
               type="button"
-              className="option-button"
+              className="step5-option-button"
               onClick={() => alert("카메라는 앱/모바일 환경에서 구현됩니다.")}
             >
-              <div className="option-text-lg">사진 찍기</div>
+              <div className="step5-option-text-lg">사진 찍기</div>
             </button>
           </div>
         )}
 
         {/* 사진이 업로드되었을 때 표시되는 미리보기와 재업로드 버튼 */}
         {previewUrl && (
-          <div className="photo-preview">
+          <div className="step5-photo-preview">
             {/* 사진 미리보기 영역 */}
-            <div className="preview-placeholder">
+            <div className="step5-preview-placeholder">
               <img
                 src={previewUrl}
                 alt="현장사진"
@@ -135,7 +139,7 @@ export default function Step5Photo({ onSubmit, onBack }) {
             {/* 다시 업로드 버튼 */}
             <button
               type="button"
-              className="reupload-button"
+              className="step5-reupload-button"
               onClick={pickFile}
             >
               다시 업로드
@@ -145,12 +149,9 @@ export default function Step5Photo({ onSubmit, onBack }) {
       </div>
 
       {/* 신고 완료 버튼 - 모달을 열어 신고 접수 완료 처리 */}
-      <button type="button" className="next-button" onClick={openModal}>
+      <button type="button" className="step5-next-button" onClick={openModal}>
         신고 완료
       </button>
-
-      {/* 홈 인디케이터 - 하단 검은 선 */}
-      <div className="home-indicator" />
 
       {/* 숨겨진 파일 입력 요소 */}
       <input
@@ -163,11 +164,11 @@ export default function Step5Photo({ onSubmit, onBack }) {
 
       {/* 신고 접수 완료 모달 */}
       {showModal && (
-        <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="modal-content">
+        <div className="step5-modal-overlay" role="dialog" aria-modal="true">
+          <div className="step5-modal-content">
             {/* 모달 닫기 버튼 */}
             <button
-              className="close-button"
+              className="step5-close-button"
               onClick={() => setShowModal(false)}
               aria-label="닫기"
             >
@@ -175,7 +176,7 @@ export default function Step5Photo({ onSubmit, onBack }) {
             </button>
 
             {/* ResQ 로고 제목 */}
-            <div className="modal-resq-title">
+            <div className="step5-modal-resq-title">
               <img
                 src="/src/assets/icons/logo.svg"
                 alt="ResQ Logo"
@@ -184,18 +185,18 @@ export default function Step5Photo({ onSubmit, onBack }) {
             </div>
 
             {/* 모달 본문 내용 */}
-            <div className="modal-body">
+            <div className="step5-modal-body">
               {/* 신고 접수 완료 상태 표시 */}
-              <div className="modal-status">
-                <div className="checkmark">✓</div>
-                <span className="status-text">신고 접수 완료</span>
+              <div className="step5-modal-status">
+                <div className="step5-checkmark">✓</div>
+                <span className="step5-status-text">신고 접수 완료</span>
               </div>
 
               {/* 케이스 ID 표시 */}
-              <div className="case-id">케이스 ID: {caseId}</div>
+              <div className="step5-case-id">케이스 ID: {caseId}</div>
 
               {/* 안내 메시지 */}
-              <div className="modal-text">
+              <div className="step5-modal-text">
                 119 구급대원과 병원에 정보가
                 <br />
                 전송되었습니다.
@@ -203,7 +204,7 @@ export default function Step5Photo({ onSubmit, onBack }) {
             </div>
 
             {/* 확인 버튼 - 클릭 시 홈화면으로 이동 */}
-            <button className="modal-button" onClick={confirm}>
+            <button className="step5-modal-button" onClick={confirm}>
               확인
             </button>
           </div>
