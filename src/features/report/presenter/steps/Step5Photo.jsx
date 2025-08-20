@@ -33,13 +33,21 @@ export default function Step5Photo({ onSubmit, onBack }) {
   const [selectedFile, setSelectedFile] = useState(null);
 
   // 간단한 케이스 ID 생성 (디자인 데모용)
-  const caseId = useMemo(() => {
-    const d = new Date();
-    const pad = (n) => String(n).padStart(2, "0");
-    return `SX-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
-      d.getDate()
-    )}-${Math.floor(1000 + Math.random() * 9000)}`;
-  }, []);
+  // const caseId = useMemo(() => {
+  //   const d = new Date();
+  //   const pad = (n) => String(n).padStart(2, "0");
+  //   return `SX-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
+  //     d.getDate()
+  //   )}-${Math.floor(1000 + Math.random() * 9000)}`;
+  // }, []);
+
+  const [caseId, setCaseId] = useState({
+    y: "2025",
+    m: "08",
+    d: "26",
+    id: "100"
+  }); 
+
 
   // 파일 선택 다이얼로그를 여는 함수
   const pickFile = () => fileRef.current?.click();
@@ -343,6 +351,18 @@ export default function Step5Photo({ onSubmit, onBack }) {
 
       if (result.ok) {
         // 성공 시 모달 표시
+        const created = result.data.data.created; // "2025-08-20T14:07:59.174276"
+        const id = result.data.data.id; 
+
+        const [year, month, day] = created.split("T")[0].split("-");
+
+        setCaseId({
+          y: year,   
+          m: month,  
+          d: day,    
+          id: String(id) 
+        });
+
         setShowModal(true);
       } else {
         // 실패 시 에러 처리
@@ -519,7 +539,7 @@ export default function Step5Photo({ onSubmit, onBack }) {
               </div>
 
               {/* 케이스 ID 표시 */}
-              <div className="step5-case-id">케이스 ID: {caseId}</div>
+              <div className="step5-case-id">케이스 ID: SX-{caseId.y}-{caseId.m}-{caseId.d}-{caseId.id} </div>
 
               {/* 안내 메시지 */}
               <div className="step5-modal-text">
