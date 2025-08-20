@@ -66,11 +66,7 @@ export default function HomePage() {
     <div className="homepage-container">
       {/* ResQ 로고 섹션 */}
       <div className="logo-section">
-        <img
-          src="/icons/logo.svg"
-          alt="ResQ Logo"
-          className="resq-logo"
-        />
+        <img src="/icons/logo.svg" alt="ResQ Logo" className="resq-logo" />
         <p className="slogan">
           Tech with a heartbeat.
           <br />
@@ -100,11 +96,7 @@ export default function HomePage() {
           className={`role-btn ${selectedRole === "emt" ? "selected" : ""}`}
           onClick={handleEMTClick}
         >
-          <img
-            src="/icons/emt-icon.svg"
-            alt="구급대원"
-            className="role-icon"
-          />
+          <img src="/icons/emt-icon.svg" alt="구급대원" className="role-icon" />
           <span>구급대원</span>
         </button>
 

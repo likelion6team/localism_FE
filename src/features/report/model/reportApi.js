@@ -18,10 +18,14 @@ export async function sendReport(payload) {
       accidentType: payload.accidentTypes,
       mainSymptoms: payload.symptoms,
       breathingStatus: payload.breathing,
-      location: payload.location.address,
-      lat: payload.location.lat,
-      lng: payload.location.lng,
     };
+
+    // 위치 정보가 있는 경우에만 추가
+    if (payload.location) {
+      payloadData.location = payload.location.address;
+      payloadData.lat = payload.location.lat;
+      payloadData.lng = payload.location.lng;
+    }
 
     // 디버깅: 실제 전송되는 데이터 확인
     console.log("payloadData:", payloadData);
@@ -91,7 +95,7 @@ export async function getAddressFromCoordinates(lat, lng) {
     // 실제 구현에서는 지도 API 서비스 사용 (Google Maps, Kakao Maps 등)
     // 현재는 기본 주소 형식으로 반환
     return `위도: ${lat}, 경도: ${lng}`;
-  } catch (_error) {
+  } catch {
     console.error("주소 변환 실패");
     return `위도: ${lat}, 경도: ${lng}`;
   }
