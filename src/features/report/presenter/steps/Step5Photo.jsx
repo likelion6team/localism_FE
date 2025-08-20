@@ -50,6 +50,282 @@ export default function Step5Photo({ onSubmit, onBack }) {
     setPreviewUrl(url);
   };
 
+  // 모바일 카메라로 사진 찍기 (모바일 최적화)
+  const takePhoto = () => {
+    console.log("모바일 카메라 접근 시도...");
+    console.log("User Agent:", navigator.userAgent);
+    console.log("HTTPS:", window.location.protocol === "https:");
+
+    // 모바일 환경 확인
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+    console.log("모바일 기기:", isMobile);
+
+    // HTTPS 확인 (모바일에서 필수)
+    if (
+      isMobile &&
+      window.location.protocol !== "https:" &&
+      !window.location.hostname.includes("localhost")
+    ) {
+      alert(
+        "모바일에서 카메라를 사용하려면 HTTPS 환경이 필요합니다.\n\n사진 업로드를 이용해주세요."
+      );
+      return;
+    }
+
+    // 간단한 카메라 접근 (모바일 최적화)
+    const constraints = {
+      video: {
+        facingMode: "environment", // 후면 카메라
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+      },
+    };
+
+    // 최신 방식 시도
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      console.log("최신 방식으로 카메라 접근 시도...");
+
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+          console.log("✅ 카메라 접근 성공!");
+          const video = document.createElement("video");
+          video.srcObject = stream;
+          video.play();
+          showCameraPreview(video, stream);
+        })
+        .catch((error) => {
+          console.error("❌ 최신 방식 카메라 오류:", error);
+
+          // 모바일 특화 오류 처리
+          if (isMobile) {
+            handleMobileCameraError(error);
+          } else {
+            handleCameraError(error);
+          }
+        });
+    }
+    // 구형 방식 시도
+    else {
+      console.log("구형 방식으로 카메라 접근 시도...");
+
+      const getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia;
+
+      if (getUserMedia) {
+        getUserMedia.call(
+          navigator,
+          constraints,
+          (stream) => {
+            console.log("✅ 구형 방식 카메라 성공!");
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.play();
+            showCameraPreview(video, stream);
+          },
+          (error) => {
+            console.error("❌ 구형 방식 카메라 오류:", error);
+            if (isMobile) {
+              handleMobileCameraError(error);
+            } else {
+              handleCameraError(error);
+            }
+          }
+        );
+      } else {
+        alert("이 기기에서는 카메라를 지원하지 않습니다.");
+      }
+    }
+  };
+
+  // 모바일 전용 카메라 오류 처리
+  const handleMobileCameraError = (error) => {
+    console.error("모바일 카메라 오류:", error);
+
+    let message = "";
+
+    if (error.name === "NotAllowedError") {
+      message = "📱 모바일 카메라 권한이 거부되었습니다.\n\n";
+      if (
+        navigator.userAgent.includes("iPhone") ||
+        navigator.userAgent.includes("iPad")
+      ) {
+        message += "📱 iOS 설정:\n";
+        message += "설정 → Safari → 카메라 → 허용\n";
+        message += "또는\n";
+        message += "설정 → 개인정보 보호 및 보안 → 카메라 → Safari 허용";
+      } else if (navigator.userAgent.includes("Android")) {
+        message += "🤖 Android 설정:\n";
+        message += "설정 → 앱 → Chrome → 권한 → 카메라 허용";
+      }
+      message += "\n\n권한 설정 후 페이지를 새로고침해주세요.";
+    } else if (error.name === "NotFoundError") {
+      message =
+        "📱 카메라를 찾을 수 없습니다.\n\n다른 카메라를 사용하거나 사진 업로드를 이용해주세요.";
+    } else if (error.name === "NotReadableError") {
+      message =
+        "📱 카메라가 다른 앱에서 사용 중입니다.\n\n카메라 앱이나 다른 앱을 종료하고 다시 시도해주세요.";
+    } else if (error.name === "OverconstrainedError") {
+      message =
+        "📱 카메라 설정을 지원하지 않습니다.\n\n기본 카메라로 다시 시도해주세요.";
+    } else {
+      message = `📱 모바일 카메라 오류: ${error.message}\n\n사진 업로드를 이용해주세요.`;
+    }
+
+    alert(message);
+  };
+
+  // 카메라 오류 처리
+  const handleCameraError = (error) => {
+    console.error("카메라 오류 상세:", error);
+
+    let message = "";
+
+    if (error.name === "NotAllowedError") {
+      message = "카메라 권한이 거부되었습니다.\n\n";
+      if (navigator.userAgent.includes("Safari")) {
+        message += "iOS 설정 → Safari → 카메라 → 허용으로 설정해주세요.";
+      } else {
+        message += "브라우저 설정에서 카메라 권한을 허용해주세요.";
+      }
+    } else if (error.name === "NotFoundError") {
+      message = "카메라를 찾을 수 없습니다.\n\n다른 카메라를 사용해주세요.";
+    } else if (error.name === "NotSupportedError") {
+      message = "이 브라우저에서는 카메라를 지원하지 않습니다.";
+    } else if (error.name === "NotReadableError") {
+      message =
+        "카메라가 다른 앱에서 사용 중입니다.\n\n다른 앱을 종료하고 다시 시도해주세요.";
+    } else if (error.name === "OverconstrainedError") {
+      message =
+        "카메라 설정을 지원하지 않습니다.\n\n기본 설정으로 다시 시도해주세요.";
+    } else {
+      message = `카메라 오류: ${error.message}\n\n사진 업로드를 이용해주세요.`;
+    }
+
+    alert(message);
+  };
+
+  // 카메라 프리뷰 모달 표시
+  const showCameraPreview = (video, stream) => {
+    // 기존 모달 제거
+    const existingModal = document.getElementById("camera-modal");
+    if (existingModal) existingModal.remove();
+
+    // 카메라 모달 생성
+    const modal = document.createElement("div");
+    modal.id = "camera-modal";
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+    `;
+
+    // 비디오 요소 스타일링
+    video.style.cssText = `
+      width: 100%;
+      height: calc(100% - 120px);
+      object-fit: cover;
+    `;
+
+    // 컨트롤 버튼들
+    const controls = document.createElement("div");
+    controls.style.cssText = `
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 20px;
+      background: #000;
+      height: 120px;
+    `;
+
+    // 촬영 버튼
+    const captureBtn = document.createElement("button");
+    captureBtn.textContent = "촬영";
+    captureBtn.style.cssText = `
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+    `;
+    captureBtn.onclick = () => capturePhoto(video, stream, modal);
+
+    // 취소 버튼
+    const cancelBtn = document.createElement("button");
+    cancelBtn.textContent = "취소";
+    cancelBtn.style.cssText = `
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 18px;
+    `;
+    cancelBtn.onclick = () => {
+      stream.getTracks().forEach((track) => track.stop());
+      modal.remove();
+    };
+
+    controls.appendChild(captureBtn);
+    controls.appendChild(cancelBtn);
+
+    modal.appendChild(video);
+    modal.appendChild(controls);
+    document.body.appendChild(modal);
+  };
+
+  // 사진 촬영 및 처리
+  const capturePhoto = (video, stream, modal) => {
+    // 캔버스 생성하여 비디오 프레임 캡처
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // 비디오 프레임을 캔버스에 그리기
+    ctx.drawImage(video, 0, 0);
+
+    // 캔버스를 Blob으로 변환
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          // 파일 객체 생성
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: "image/jpeg",
+          });
+
+          // 상태 업데이트
+          setSelectedFile(file);
+          setPreviewUrl(URL.createObjectURL(blob));
+
+          // 카메라 스트림 정리
+          stream.getTracks().forEach((track) => track.stop());
+          modal.remove();
+
+          // 성공 메시지
+          alert("사진이 촬영되었습니다!");
+        }
+      },
+      "image/jpeg",
+      0.9
+    );
+  };
+
   // 신고 완료 처리 함수
   const handleSubmitReport = async () => {
     if (isSubmitting) return; // 중복 제출 방지
@@ -179,11 +455,11 @@ export default function Step5Photo({ onSubmit, onBack }) {
               <div className="step5-option-text-lg">사진 업로드</div>
             </button>
 
-            {/* 사진 찍기 버튼 (카메라 기능은 앱/모바일 환경에서 구현) */}
+            {/* 사진 찍기 버튼 (모바일 카메라 기능) */}
             <button
               type="button"
               className="step5-option-button"
-              onClick={() => alert("카메라는 앱/모바일 환경에서 구현됩니다.")}
+              onClick={takePhoto}
             >
               <div className="step5-option-text-lg">사진 찍기</div>
             </button>

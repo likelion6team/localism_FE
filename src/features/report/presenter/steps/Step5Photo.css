@@ -1,6 +1,35 @@
 /* Step5Photo.css */
 /* Step5: 현장 사진 업로드 페이지의 스타일 - 사고 현장의 사진을 업로드하는 마지막 단계의 디자인을 담당 */
 
+/* Step5Photo.css */
+/* Step5: 현장 사진 업로드 페이지의 스타일 - 사고 현장의 사진을 업로드하는 마지막 단계의 디자인을 담당 */
+
+/* ===== 모바일 카메라 최적화 ===== */
+@media (max-width: 768px) {
+  /* 터치 인터페이스 최적화 */
+  button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* 카메라 모달 최적화 */
+  #camera-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+  }
+
+  /* 카메라 컨트롤 버튼 터치 최적화 */
+  #camera-modal button {
+    min-height: 44px !important; /* iOS 터치 최소 크기 */
+    min-width: 80px !important;
+    font-size: 16px !important; /* iOS 최소 폰트 크기 */
+  }
+}
+
 /* ===== 전체 앱 컨테이너 ===== */
 .step5-app-container {
   position: relative !important;
