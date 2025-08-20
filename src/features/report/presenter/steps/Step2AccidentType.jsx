@@ -95,7 +95,7 @@ export default function Step2AccidentType({ onNext, onBack }) {
     },
     {
       id: "burn",
-      text: "화상",
+      text: "화재",
       icon: "/icons/burn.svg",
     },
     {

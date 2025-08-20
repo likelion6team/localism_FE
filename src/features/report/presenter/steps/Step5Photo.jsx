@@ -1,6 +1,6 @@
 // src/features/report/presenter/steps/Step5Photo.jsx
 // Step5: 현장 사진 업로드 페이지 - 사고 현장의 사진을 업로드하는 마지막 단계
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   sendReport,
@@ -24,6 +24,10 @@ export default function Step5Photo({ onBack }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   // 선택된 파일을 저장하는 상태
   const [selectedFile, setSelectedFile] = useState(null);
+  // 현재 위치를 저장하는 상태
+  const [currentLocation, setCurrentLocation] = useState(null);
+  // 주소 정보를 저장하는 상태
+  const [currentAddress, setCurrentAddress] = useState(null);
 
   // 간단한 케이스 ID 생성 (디자인 데모용)
   const caseId = useMemo(() => {
@@ -48,6 +52,22 @@ export default function Step5Photo({ onBack }) {
     // 선택된 파일을 URL로 변환하여 미리보기 표시
     const url = URL.createObjectURL(f);
     setPreviewUrl(url);
+  };
+
+  // 현재 위치 가져오기
+  const getCurrentLocationInfo = async () => {
+    try {
+      // 현재 위치 가져오기
+      const coords = await getCurrentLocation();
+      setCurrentLocation(coords);
+
+      // 주소 정보 가져오기
+      const address = await getAddressFromCoordinates(coords.lat, coords.lng);
+      setCurrentAddress(address);
+      console.log("현재 위치 주소:", address);
+    } catch (error) {
+      console.error("위치 정보 가져오기 실패:", error);
+    }
   };
 
   // 모바일 카메라로 사진 찍기 (모바일 최적화)
@@ -325,6 +345,11 @@ export default function Step5Photo({ onBack }) {
   const goHome = () => {
     navigate("/");
   };
+
+  // 컴포넌트 마운트 시 현재 위치 정보 가져오기
+  useEffect(() => {
+    getCurrentLocationInfo();
+  }, []);
 
   return (
     <div className="step5-app-container">
