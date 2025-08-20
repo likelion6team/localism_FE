@@ -1,6 +1,6 @@
 // src/features/report/presenter/steps/Step5Photo.jsx
 // Step5: 현장 사진 업로드 페이지 - 사고 현장의 사진을 업로드하는 마지막 단계
-import { useRef, useState, useMemo, useContext } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   sendReport,
@@ -10,16 +10,9 @@ import {
 import { useReport } from "../../model/ReportContext";
 import "./Step5Photo.css";
 
-export default function Step5Photo({ onSubmit, onBack }) {
+export default function Step5Photo({ onBack }) {
   const navigate = useNavigate();
-  const {
-    consciousness,
-    accidentTypes,
-    symptoms,
-    breathing,
-    location,
-    setLocation,
-  } = useReport();
+  const { consciousness, accidentTypes, symptoms, breathing } = useReport();
 
   // 파일 입력을 위한 ref
   const fileRef = useRef(null);
@@ -124,43 +117,6 @@ export default function Step5Photo({ onSubmit, onBack }) {
       alert(`❌ 카메라 오류: ${error.name} - ${error.message}`);
       handleCameraError(error);
     }
-  };
-
-  // 모바일 전용 카메라 오류 처리
-  const handleMobileCameraError = (error) => {
-    console.error("모바일 카메라 오류:", error);
-
-    let message = "";
-
-    if (error.name === "NotAllowedError") {
-      message = "📱 모바일 카메라 권한이 거부되었습니다.\n\n";
-      if (
-        navigator.userAgent.includes("iPhone") ||
-        navigator.userAgent.includes("iPad")
-      ) {
-        message += "📱 iOS 설정:\n";
-        message += "설정 → Safari → 카메라 → 허용\n";
-        message += "또는\n";
-        message += "설정 → 개인정보 보호 및 보안 → 카메라 → Safari 허용";
-      } else if (navigator.userAgent.includes("Android")) {
-        message += "🤖 Android 설정:\n";
-        message += "설정 → 앱 → Chrome → 권한 → 카메라 허용";
-      }
-      message += "\n\n권한 설정 후 페이지를 새로고침해주세요.";
-    } else if (error.name === "NotFoundError") {
-      message =
-        "📱 카메라를 찾을 수 없습니다.\n\n다른 카메라를 사용하거나 사진 업로드를 이용해주세요.";
-    } else if (error.name === "NotReadableError") {
-      message =
-        "📱 카메라가 다른 앱에서 사용 중입니다.\n\n카메라 앱이나 다른 앱을 종료하고 다시 시도해주세요.";
-    } else if (error.name === "OverconstrainedError") {
-      message =
-        "📱 카메라 설정을 지원하지 않습니다.\n\n기본 카메라로 다시 시도해주세요.";
-    } else {
-      message = `📱 모바일 카메라 오류: ${error.message}\n\n사진 업로드를 이용해주세요.`;
-    }
-
-    alert(message);
   };
 
   // 카메라 오류 처리
@@ -358,9 +314,6 @@ export default function Step5Photo({ onSubmit, onBack }) {
     }
   };
 
-  // 사진이 없어도 신고 가능 → 모달 먼저 띄움
-  const openModal = () => setShowModal(true);
-
   // 모달의 "확인" 버튼을 클릭했을 때 호출되는 함수
   const confirm = () => {
     setShowModal(false);
@@ -506,7 +459,7 @@ export default function Step5Photo({ onSubmit, onBack }) {
             {/* ResQ 로고 제목 */}
             <div className="step5-modal-resq-title">
               <img
-                src="/src/assets/icons/logo.svg"
+                src="/icons/logo.svg"
                 alt="ResQ Logo"
                 style={{ width: "90px", height: "auto" }}
               />
