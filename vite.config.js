@@ -14,4 +14,14 @@ export default defineConfig({
       "https://api.localism0825.store"
     ),
   },
+  // SVG 파일들을 제대로 처리하도록 설정
+  publicDir: "public",
+  build: {
+    assetsDir: "assets",
+    rollupOptions: {
+      input: {
+        main: "index.html",
+      },
+    },
+  },
 });
