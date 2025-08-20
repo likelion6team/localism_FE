@@ -13,4 +13,10 @@ export default defineConfig({
   optimizeDeps: {
     include: ["**/*.svg"],
   },
+  // 환경 변수 명시적 정의
+  define: {
+    "import.meta.env.VITE_API_URL": JSON.stringify(
+      process.env.VITE_API_URL || "https://api.localism0825.store"
+    ),
+  },
 });

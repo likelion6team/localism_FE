@@ -1,7 +1,11 @@
 // src/features/report/model/reportApi.js
 // 신고 리포트 관련 API 함수들
 
-const API_BASE_URL = "https://api.localism0825.store";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+// 환경 변수 확인용 로그 (테스트 후 삭제)
+console.log("API_BASE_URL:", API_BASE_URL);
+console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 
 // 신고 리포트 작성 API
 export async function sendReport(payload) {
