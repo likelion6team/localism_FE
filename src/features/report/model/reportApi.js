@@ -18,7 +18,7 @@ export async function sendReport(payload) {
     console.log("breathing:", payload.breathing);
     console.log("location:", payload.location);
     console.log("photo:", payload.photo);
-    
+
     const formData = new FormData();
 
     // 필드 구조 맞추기 위해서 객체 하나 만들고 값을 넣어줌.
@@ -61,10 +61,17 @@ export async function sendReport(payload) {
     for (let [key, value] of formData.entries()) {
       console.log(`  ${key}:`, value);
     }
+
+    // CORS 우회를 위한 프록시 사용
+    const proxyUrl = `https://cors-anywhere.herokuapp.com/${API_BASE_URL}/api/reports`;
+    console.log("프록시 URL 사용:", proxyUrl);
     
-    const response = await fetch(`${API_BASE_URL}/api/reports`, {
+    const response = await fetch(proxyUrl, {
       method: "POST",
       body: formData,
+      headers: {
+        'Origin': 'https://localismtest2.netlify.app'
+      }
     });
 
     console.log("API 응답 상태:", response.status);
