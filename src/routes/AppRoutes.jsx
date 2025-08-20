@@ -3,6 +3,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import ReportFlowPage from "../features/report/presenter/ReportFlowPage";
+import EmergencyResponderPage from "../pages/EmergencyResponderPage";
+import HospitalViewerPage from "../pages/HospitalViewerPage";
 
 export default function AppRoutes() {
   return (
@@ -12,6 +14,12 @@ export default function AppRoutes() {
 
       {/* 리포트 작성 플로우 - Step1~Step5 */}
       <Route path="/report" element={<ReportFlowPage />} />
+
+      {/* 구급대원 페이지 */}
+      <Route path="/emergency-responder" element={<EmergencyResponderPage />} />
+
+      {/* 병원 페이지 */}
+      <Route path="/hospital" element={<HospitalViewerPage />} />
 
       {/* 잘못된 경로로 접근 시 홈페이지로 리다이렉트 */}
       <Route path="*" element={<Navigate to="/" replace />} />

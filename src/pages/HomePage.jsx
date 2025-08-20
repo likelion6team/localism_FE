@@ -17,18 +17,22 @@ export default function HomePage() {
     }, 200);
   };
 
-  // 구급대원 버튼 클릭 시 알림 표시 (아직 구현되지 않음)
+  // 구급대원 버튼 클릭 시 구급대원 페이지로 이동
   const handleEMTClick = () => {
     setSelectedRole("emt");
-    alert("구급대원 기능은 아직 구현되지 않았습니다.");
-    setSelectedRole(null);
+    // 약간의 지연 후 페이지 이동 (선택 효과를 보기 위해)
+    setTimeout(() => {
+      navigate("/emergency-responder");
+    }, 200);
   };
 
-  // 병원 버튼 클릭 시 알림 표시 (아직 구현되지 않음)
+  // 병원 버튼 클릭 시 병원 페이지로 이동
   const handleHospitalClick = () => {
     setSelectedRole("hospital");
-    alert("병원 기능은 아직 구현되지 않았습니다.");
-    setSelectedRole(null);
+    // 약간의 지연 후 페이지 이동 (선택 효과를 보기 위해)
+    setTimeout(() => {
+      navigate("/hospital");
+    }, 200);
   };
 
   return (
