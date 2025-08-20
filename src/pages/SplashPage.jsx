@@ -31,11 +31,7 @@ export default function SplashPage({ onComplete }) {
     <div className="splash-container" onClick={handleClick}>
       <div className="splash-content">
         {/* ResQ 로고 이미지 */}
-        <img
-          src="/src/assets/icons/logo2.svg"
-          alt="ResQ Logo"
-          className="splash-logo"
-        />
+        <img src="/icons/logo2.svg" alt="ResQ Logo" className="splash-logo" />
 
         {/* ResQ 슬로건 */}
         <p className="splash-slogan">Tech with a heartbeat. That's ResQ.</p>

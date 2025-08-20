@@ -85,52 +85,52 @@ export default function Step3Symptoms({ onNext, onBack }) {
     {
       id: "breathing-difficulty",
       text: "호흡곤란",
-      icon: "/src/assets/icons/breathing-difficulty.svg",
+      icon: "/icons/breathing-difficulty.svg",
     },
     {
       id: "drug-reaction",
       text: "약물반응",
-      icon: "/src/assets/icons/drug-reaction.svg",
+      icon: "/icons/drug-reaction.svg",
     },
     {
       id: "bleeding",
       text: "출혈",
-      icon: "/src/assets/icons/bleeding.svg",
+      icon: "/icons/bleeding.svg",
     },
     {
       id: "unconscious",
       text: "의식없음",
-      icon: "/src/assets/icons/unconscious.svg",
+      icon: "/icons/unconscious.svg",
     },
     {
       id: "vomiting",
       text: "구토",
-      icon: "/src/assets/icons/vomiting.svg",
+      icon: "/icons/vomiting.svg",
     },
     {
       id: "convulsion",
       text: "경련",
-      icon: "/src/assets/icons/convulsion.svg",
+      icon: "/icons/convulsion.svg",
     },
     {
       id: "hypothermia",
       text: "저체온증",
-      icon: "/src/assets/icons/hypothermia.svg",
+      icon: "/icons/hypothermia.svg",
     },
     {
       id: "fracture",
       text: "골절",
-      icon: "/src/assets/icons/fracture.svg",
+      icon: "/icons/fracture.svg",
     },
     {
       id: "burn",
       text: "화상",
-      icon: "/src/assets/icons/burn.svg",
+      icon: "/icons/burn.svg",
     },
     {
       id: "other",
       text: "기타/모름",
-      icon: "/src/assets/icons/other.svg",
+      icon: "/icons/other.svg",
     },
   ];
 

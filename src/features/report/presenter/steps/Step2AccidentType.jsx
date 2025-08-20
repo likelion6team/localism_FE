@@ -76,32 +76,32 @@ export default function Step2AccidentType({ onNext, onBack }) {
     {
       id: "traffic",
       text: "교통사고",
-      icon: "/src/assets/icons/traffic.svg",
+      icon: "/icons/traffic.svg",
     },
     {
       id: "electric",
       text: "감전",
-      icon: "/src/assets/icons/electric.svg",
+      icon: "/icons/electric.svg",
     },
     {
       id: "fall",
       text: "추락/낙상",
-      icon: "/src/assets/icons/fall.svg",
+      icon: "/icons/fall.svg",
     },
     {
       id: "bleeding",
       text: "자상/출혈",
-      icon: "/src/assets/icons/bleeding.svg",
+      icon: "/icons/bleeding.svg",
     },
     {
       id: "burn",
       text: "화상",
-      icon: "/src/assets/icons/burn.svg",
+      icon: "/icons/burn.svg",
     },
     {
       id: "other",
       text: "기타 / 모름",
-      icon: "/src/assets/icons/other.svg",
+      icon: "/icons/other.svg",
     },
   ];
 
