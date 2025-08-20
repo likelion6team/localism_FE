@@ -10,6 +10,15 @@ console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 // 신고 리포트 작성 API
 export async function sendReport(payload) {
   try {
+    console.log("=== sendReport 시작 ===");
+    console.log("전체 payload:", payload);
+    console.log("consciousness:", payload.consciousness);
+    console.log("accidentTypes:", payload.accidentTypes);
+    console.log("symptoms:", payload.symptoms);
+    console.log("breathing:", payload.breathing);
+    console.log("location:", payload.location);
+    console.log("photo:", payload.photo);
+    
     const formData = new FormData();
 
     // 필드 구조 맞추기 위해서 객체 하나 만들고 값을 넣어줌.
@@ -47,13 +56,24 @@ export async function sendReport(payload) {
       console.log(`FormData ${key}:`, value);
     }
 
+    console.log("API 호출 시작:", `${API_BASE_URL}/api/reports`);
+    console.log("FormData 내용:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`  ${key}:`, value);
+    }
+    
     const response = await fetch(`${API_BASE_URL}/api/reports`, {
       method: "POST",
       body: formData,
     });
 
+    console.log("API 응답 상태:", response.status);
+    console.log("API 응답 헤더:", response.headers);
+
     if (!response.ok) {
-      throw new Error(`API 호출 실패: ${response.status}`);
+      const errorText = await response.text();
+      console.error("API 오류 응답:", errorText);
+      throw new Error(`API 호출 실패: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
