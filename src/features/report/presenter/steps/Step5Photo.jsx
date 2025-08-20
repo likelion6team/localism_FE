@@ -12,7 +12,14 @@ import "./Step5Photo.css";
 
 export default function Step5Photo({ onSubmit, onBack }) {
   const navigate = useNavigate();
-  const { consciousness, accidentTypes, symptoms, breathing } = useReport();
+  const {
+    consciousness,
+    accidentTypes,
+    symptoms,
+    breathing,
+    location,
+    setLocation,
+  } = useReport();
 
   // 파일 입력을 위한 ref
   const fileRef = useRef(null);

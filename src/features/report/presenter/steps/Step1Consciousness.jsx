@@ -2,10 +2,12 @@
 // Step1: 의식 상태 선택 페이지 - 환자의 의식 상태를 선택하는 화면
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useReport } from "../../model/ReportContext";
 import "./Step1Consciousness.css";
 
 export default function Step1Consciousness({ onNext }) {
   const navigate = useNavigate();
+  const { setConsciousness } = useReport();
 
   // 선택된 의식 상태 옵션을 저장하는 상태
   const [selected, setSelected] = useState(null);
@@ -15,10 +17,12 @@ export default function Step1Consciousness({ onNext }) {
     if (selected === option) {
       // 이미 선택된 옵션을 다시 클릭하면 선택 해제
       setSelected(null);
+      setConsciousness(null);
       localStorage.removeItem("consciousness");
     } else {
       // 새로운 옵션 선택
       setSelected(option);
+      setConsciousness(option);
       localStorage.setItem("consciousness", option);
     }
   };

@@ -2,10 +2,12 @@
 // Step4: 호흡 상태 선택 페이지 - 환자의 호흡 상태를 선택하는 화면
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useReport } from "../../model/ReportContext";
 import "./Step4Breathing.css";
 
 export default function Step4Breathing({ onNext, onBack }) {
   const navigate = useNavigate();
+  const { setBreathing } = useReport();
 
   // 선택된 호흡 상태 옵션을 저장하는 상태
   const [selected, setSelected] = useState(null);
@@ -23,10 +25,12 @@ export default function Step4Breathing({ onNext, onBack }) {
     if (selected === option) {
       // 이미 선택된 옵션을 다시 클릭하면 선택 해제
       setSelected(null);
+      setBreathing(null);
       localStorage.removeItem("breathing");
     } else {
       // 새로운 옵션 선택
       setSelected(option);
+      setBreathing(option);
       localStorage.setItem("breathing", option);
     }
   };
@@ -34,6 +38,8 @@ export default function Step4Breathing({ onNext, onBack }) {
   // 다음 단계로 이동하는 함수
   const goNext = () => {
     if (selected) {
+      // ReportContext에 최종 선택된 값 저장
+      setBreathing(selected);
       onNext();
     }
   };

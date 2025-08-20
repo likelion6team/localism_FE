@@ -2,10 +2,12 @@
 // Step2: 사고 유형 선택 페이지 - 어떤 종류의 사고인지 선택하는 화면
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useReport } from "../../model/ReportContext";
 import "./Step2AccidentType.css";
 
 export default function Step2AccidentType({ onNext, onBack }) {
   const navigate = useNavigate();
+  const { setAccidentTypes } = useReport();
 
   // 선택된 사고 유형들을 저장하는 상태 (배열로 변경)
   const [selected, setSelected] = useState([]);
@@ -26,7 +28,9 @@ export default function Step2AccidentType({ onNext, onBack }) {
   const toggle = (option) => {
     if (selected.includes(option)) {
       // 이미 선택된 옵션을 다시 클릭하면 선택 해제
-      setSelected(selected.filter((item) => item !== option));
+      const newSelected = selected.filter((item) => item !== option);
+      setSelected(newSelected);
+      setAccidentTypes(newSelected);
       if (option === "기타 / 모름") {
         setShowOtherInput(false);
         setOtherText("");
@@ -36,6 +40,7 @@ export default function Step2AccidentType({ onNext, onBack }) {
       // 새로운 옵션 선택 (기존 선택에 추가)
       const newSelected = [...selected, option];
       setSelected(newSelected);
+      setAccidentTypes(newSelected);
       if (option === "기타 / 모름") {
         setShowOtherInput(true);
       }
@@ -46,19 +51,17 @@ export default function Step2AccidentType({ onNext, onBack }) {
   // 다음 단계로 이동하는 함수
   const goNext = () => {
     if (selected.length > 0) {
+      let finalSelected = [...selected];
+
       if (selected.includes("기타 / 모름") && otherText.trim()) {
         // "기타/모름" 선택 시 추가 텍스트가 있으면 함께 저장
         const otherIndex = selected.indexOf("기타 / 모름");
-        const newSelected = [...selected];
-        newSelected[otherIndex] = `기타 / 모름: ${otherText.trim()}`;
-        localStorage.setItem("accidentTypes", newSelected.join(", "));
-      } else if (selected.includes("기타 / 모름")) {
-        // "기타/모름" 선택 시 텍스트가 없어도 그냥 저장
-        localStorage.setItem("accidentTypes", selected.join(", "));
-      } else {
-        // 다른 옵션들만 선택된 경우
-        localStorage.setItem("accidentTypes", selected.join(", "));
+        finalSelected[otherIndex] = `기타 / 모름: ${otherText.trim()}`;
       }
+
+      // ReportContext에 최종 선택된 값 저장
+      setAccidentTypes(finalSelected);
+      localStorage.setItem("accidentTypes", finalSelected.join(", "));
       onNext();
     }
   };

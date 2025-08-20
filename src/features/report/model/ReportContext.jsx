@@ -6,6 +6,7 @@ export function ReportProvider({ children }) {
   const [symptoms, setSymptoms] = useState([]);
   const [breathing, setBreathing] = useState(null);
   const [photos, setPhotos] = useState([]);
+  const [location, setLocation] = useState(null);
   const value = {
     consciousness,
     setConsciousness,
@@ -17,6 +18,8 @@ export function ReportProvider({ children }) {
     setBreathing,
     photos,
     setPhotos,
+    location,
+    setLocation,
   };
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

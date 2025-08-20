@@ -3,7 +3,7 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-// 환경 변수 확인용 로그 (테스트 후 삭제)
+// 환경 변수 확인용 로그
 console.log("API_BASE_URL:", API_BASE_URL);
 console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 
@@ -12,22 +12,35 @@ export async function sendReport(payload) {
   try {
     const formData = new FormData();
 
-    // 기본 데이터 추가
-    formData.append("consciousnessStatus", payload.consciousness);
-    formData.append("accidentType", JSON.stringify(payload.accidentTypes));
-    formData.append("mainSymptoms", JSON.stringify(payload.symptoms));
-    formData.append("breathingStatus", payload.breathing);
+    // 필드 구조 맞추기 위해서 객체 하나 만들고 값을 넣어줌.
+    const payloadData = {
+      consciousnessStatus: payload.consciousness,
+      accidentType: payload.accidentTypes,
+      mainSymptoms: payload.symptoms,
+      breathingStatus: payload.breathing,
+      location: payload.location.address,
+      lat: payload.location.lat,
+      lng: payload.location.lng,
+    };
 
-    // 위치 정보 추가
-    if (payload.location) {
-      formData.append("lat", payload.location.lat);
-      formData.append("lng", payload.location.lng);
-      formData.append("location", payload.location.address);
+    // 디버깅: 실제 전송되는 데이터 확인
+    console.log("payloadData:", payloadData);
+
+    // data와 image
+    formData.append(
+      "data",
+      new Blob([JSON.stringify(payloadData)], { type: "application/json" })
+    );
+
+    // 사진 파일 추가 (있는 경우에만)
+    if (payload.photo) {
+      formData.append("image", payload.photo);
+      console.log("사진 파일:", payload.photo);
     }
 
-    // 사진 파일 추가
-    if (payload.photo) {
-      formData.append("photo", payload.photo);
+    // FormData 내용 확인
+    for (let [key, value] of formData.entries()) {
+      console.log(`FormData ${key}:`, value);
     }
 
     const response = await fetch(`${API_BASE_URL}/api/reports`, {
@@ -78,7 +91,7 @@ export async function getAddressFromCoordinates(lat, lng) {
     // 실제 구현에서는 지도 API 서비스 사용 (Google Maps, Kakao Maps 등)
     // 현재는 기본 주소 형식으로 반환
     return `위도: ${lat}, 경도: ${lng}`;
-  } catch {
+  } catch (_error) {
     console.error("주소 변환 실패");
     return `위도: ${lat}, 경도: ${lng}`;
   }

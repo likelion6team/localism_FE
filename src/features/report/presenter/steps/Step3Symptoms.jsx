@@ -2,10 +2,12 @@
 // Step3: 현재 증상 선택 페이지 - 환자가 겪고 있는 증상을 선택하는 화면
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useReport } from "../../model/ReportContext";
 import "./Step3Symptoms.css";
 
 export default function Step3Symptoms({ onNext, onBack }) {
   const navigate = useNavigate();
+  const { setSymptoms } = useReport();
 
   // 선택된 증상들을 저장하는 상태 (배열로 여러 개 선택 가능)
   const [selected, setSelected] = useState([]);
@@ -44,6 +46,7 @@ export default function Step3Symptoms({ onNext, onBack }) {
           setShowOtherInput(true);
         }
       }
+      // ReportContext에 즉시 저장하지 않음 (React 에러 방지)
       return newSelected;
     });
   };
@@ -65,6 +68,9 @@ export default function Step3Symptoms({ onNext, onBack }) {
       }
       // 텍스트가 없어도 "기타/모름" 선택은 유효
     }
+
+    // ReportContext에 최종 선택된 값 저장
+    setSymptoms(dataToSave);
     localStorage.setItem("symptoms", JSON.stringify(dataToSave));
     onNext();
   };

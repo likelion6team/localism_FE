@@ -8,4 +8,10 @@ export default defineConfig({
     port: 5173,
     // https: true 제거 - HTTP로 변경
   },
+  define: {
+    // 환경 변수를 클라이언트에서 사용할 수 있도록 설정
+    "import.meta.env.VITE_API_URL": JSON.stringify(
+      "https://api.localism0825.store"
+    ),
+  },
 });
