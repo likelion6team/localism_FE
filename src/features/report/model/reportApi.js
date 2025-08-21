@@ -2,6 +2,7 @@
 // 신고 리포트 관련 API 함수들
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const TMAP_APP_KEY = import.meta.env.VITE_TMAP_APP_KEY;
 
 
 // 환경 변수 확인용 로그
@@ -113,7 +114,6 @@ export async function getCurrentLocation() {
 // 좌표를 주소로 변환하는 API (예시)
 export async function getAddressFromCoordinates(lat, lng) {
   try {
-    const TMAP_APP_KEY = "api-key";
 
     // ✅ 엔드포인트 경로 포함
     const url = new URL("https://apis.openapi.sk.com/tmap/geo/reversegeocoding");
@@ -162,7 +162,6 @@ export async function getAddressFromCoordinates(lat, lng) {
       .replace(/\s+/g, " ")
       .trim();
 
-    // ✅ 이제 위경도만 리턴하지 말고 주소를 리턴!
     return road.replace(/\s+/g, " ").trim();
   } catch (e) {
     console.error("주소 변환 실패", e);
