@@ -53,7 +53,7 @@ export default function ReportListPage() {
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
           <img
-            src="/src/assets/arrow-left.png"
+            src="/icons/arrow-left.png"
             alt="뒤로가기"
             className="back-icon"
           />
@@ -73,11 +73,7 @@ export default function ReportListPage() {
             <div className="report-content">
               <div className="report-header">
                 <span className="report-date">{report.date}</span>
-                <img
-                  src="/src/assets/clock.svg"
-                  alt="시계"
-                  className="time-icon"
-                />
+                <img src="/icons/clock.svg" alt="시계" className="time-icon" />
                 <span className="report-time">{report.time}</span>
               </div>
               <div className="report-type">{report.type}</div>

@@ -26,7 +26,7 @@ export default function PatientInfoPage() {
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
           <img
-            src="/src/assets/arrow-left.png"
+            src="/icons/arrow-left.png"
             alt="뒤로가기"
             className="back-icon"
           />
@@ -60,7 +60,7 @@ export default function PatientInfoPage() {
             <div className="button-group">
               <div className="info-button">
                 <img
-                  src="/src/assets/car.svg"
+                  src="/icons/car.svg"
                   alt="교통사고"
                   className="button-icon"
                 />
@@ -68,7 +68,7 @@ export default function PatientInfoPage() {
               </div>
               <div className="info-button">
                 <img
-                  src="/src/assets/knife.svg"
+                  src="/icons/knife.svg"
                   alt="자상"
                   className="button-icon"
                 />
@@ -85,18 +85,14 @@ export default function PatientInfoPage() {
             <div className="button-group">
               <div className="info-button">
                 <img
-                  src="/src/assets/blood.svg"
+                  src="/icons/blood.svg"
                   alt="출혈"
                   className="button-icon"
                 />
                 출혈
               </div>
               <div className="info-button">
-                <img
-                  src="/src/assets/bone.svg"
-                  alt="골절"
-                  className="button-icon"
-                />
+                <img src="/icons/bone.svg" alt="골절" className="button-icon" />
                 골절
               </div>
             </div>

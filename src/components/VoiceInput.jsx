@@ -48,7 +48,7 @@ export default function VoiceInput() {
                 onClick={handleRecordClick}
               >
                 <img
-                  src="/src/assets/material-symbols_mic.svg"
+                  src="/icons/material-symbols_mic.svg"
                   alt="마이크"
                   className="mic-icon"
                 />

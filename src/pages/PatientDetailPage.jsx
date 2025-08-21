@@ -25,7 +25,7 @@ export default function PatientDetailPage() {
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
           <img
-            src="/src/assets/arrow-left.png"
+            src="/icons/arrow-left.png"
             alt="뒤로가기"
             className="back-icon"
           />
@@ -110,7 +110,7 @@ export default function PatientDetailPage() {
             </div>
             <div className="barcode-bar">
               <img
-                src="/src/assets/barcode.svg"
+                src="/icons/barcode.svg"
                 alt="바코드"
                 className="barcode-image"
               />
