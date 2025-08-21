@@ -1,144 +1,128 @@
-/* src/pages/HomePage.css */
+/* HomePage.css */
+/* 홈페이지 스타일 - 역할 선택 화면의 디자인을 담당 */
 
-.home-page {
+/* 전체 홈페이지 컨테이너 */
+.homepage-container {
   min-height: 100vh;
   background: #fefefe;
-  font-family: "Inter", "Noto Sans KR", system-ui, -apple-system, Segoe UI,
-    Roboto, Helvetica, Arial, sans-serif;
-  position: relative;
-  max-width: 420px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 375px;
   margin: 0 auto;
 }
 
-/* 상단을 위로 딱 붙이고 가운데 정렬 */
-.home-page .hero {
-  padding: 20px 20px 24px;
+/* ResQ 로고 섹션 */
+.logo-section {
   text-align: center;
-  position: relative;
+  margin-bottom: 50px; /* 로고와 역할 버튼 사이 간격 감소 (80px → 50px) */
+  margin-top: 40px;
 }
 
-/* 우측 상단 관리자 배지 */
-.home-page .admin-badge {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  background: #151515;
-  color: #fff;
-  border: 0;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
+/* ResQ 로고 이미지 */
+.resq-logo {
+  width: 320px; /* 로고 크기 더 증가 (280px → 320px) */
+  height: auto;
+  margin-bottom: 15px; /* 로고와 슬로건 사이 간격 감소 (25px → 15px) */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ResQ 슬로건 텍스트 */
+.slogan {
+  font-size: 18px; /* 슬로건 글씨 크기 감소 (22px → 18px) */
+  color: #2459e0;
   font-weight: 600;
-  cursor: pointer;
+  margin: 0;
+  line-height: 1.4;
 }
 
-/* 🚑 ResQ 한 줄 로고 */
-.home-page .logo-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-.home-page .logo-emoji {
-  font-size: 22px;
-  line-height: 1;
-}
-.home-page .logo-word {
-  font-size: 20px;
-  font-weight: 800;
-  color: #151515;
-  letter-spacing: 0.2px;
-}
-
-/* 슬로건 */
-.home-page .slogan {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #6b7280;
-  line-height: 1.35;
-}
-
-/* 본문 */
-.home-page .main {
-  padding: 0 24px 80px;
-}
-.home-page .title {
-  margin: 22px 0 28px;
-  font-size: 24px;
-  font-weight: 800;
-  color: #151515;
-  line-height: 1.3;
-}
-
-/* 역할 버튼들 */
-.home-page .role-list {
+/* 역할 선택 버튼들을 감싸는 컨테이너 */
+.role-buttons {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin-bottom: 64px;
-}
-.home-page .role-btn {
+  gap: 24px; /* 버튼들 사이 간격 더 감소 (18px → 12px) */
   width: 100%;
-  height: 80px;
-  background: #374151;
-  color: #fff;
-  border: 0;
-  border-radius: 18px;
+  max-width: 335px; /* Step1과 동일한 최대 너비 */
+  padding: 0 20px;
+}
+
+/* 개별 역할 선택 버튼 - 피그마 디자인에 맞춤 */
+.role-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  font-size: 18px;
-  font-weight: 700;
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background-color 0.15s;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  height: 90px; /* 높이 더 증가 (80px → 90px) */
+  background: #f0f0f0; /* 기본 배경색 변경 (#fafafa → #f0f0f0) */
+  border: 2px solid #e5e5e5; /* 테두리 */
+  border-radius: 10px; /* 둥근 모서리를 더 각지게 (15px → 10px) */
   cursor: pointer;
+  transition: all 0.3s ease;
+  gap: 16px; /* 아이콘과 텍스트 사이 간격 증가 */
+  padding: 0 24px; /* 좌우 패딩 증가 */
 }
-.home-page .role-btn:hover {
-  background: #434b57;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+
+/* 역할 버튼에 마우스 올렸을 때 */
+.role-btn:hover {
+  background: #f0f0f0; /* 호버 배경색 */
+  border-color: #e5e5e5;
+  transform: translateY(-1px);
 }
-.home-page .role-btn:active {
+
+/* 역할 버튼 활성화 상태 */
+.role-btn:active,
+.role-btn:focus,
+.role-btn.selected {
+  background: #e8edff; /* 선택 배경색 */
+  border-color: #2459e0;
   transform: translateY(0);
 }
-.home-page .role-ico {
-  font-size: 22px;
+
+/* 역할 아이콘 이미지 */
+.role-icon {
+  width: 32px; /* 아이콘 크기 더 증가 */
+  height: 32px;
+  flex-shrink: 0;
 }
 
-/* 홈 인디케이터 */
-.home-page .home-indicator {
-  position: absolute;
-  bottom: 26px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 134px;
-  height: 5px;
-  background: #444;
-  border-radius: 3px;
+/* 역할 버튼 내 텍스트 */
+.role-btn span {
+  font-size: 18px; /* 글씨 크기 더 증가 */
+  font-weight: 600; /* 폰트 굵기 증가 */
+  color: #000000;
 }
 
-/* 작은 화면 보정 */
-@media (max-width: 390px) {
-  .home-page .logo-word {
-    font-size: 19px;
-  }
-  .home-page .slogan {
-    font-size: 12.5px;
-  }
-  .home-page .title {
-    font-size: 22px;
-  }
-  .home-page .role-btn {
-    height: 72px;
-    font-size: 16.5px;
-  }
-  .home-page .role-ico {
-    font-size: 21px;
-  }
+/* 인증 입력 필드 */
+.auth-input-container {
+  margin: 16px 0;
 }
 
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+}
+
+.auth-input::placeholder {
+  color: #999999;
+}
+
+/* 🔐 인증 모달 CSS */
 .alert-overlay {
   position: fixed;
   inset: 0; /* top/right/bottom/left:0 */
@@ -201,34 +185,8 @@
   color: #007aff;
   font-weight: 400;
 }
+
 .alert-button.yes {
   color: #007aff;
   font-weight: 600;
-}
-
-/* 인증 입력 필드 */
-.auth-input-container {
-  margin: 16px 0;
-}
-
-.auth-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 16px;
-  text-align: center;
-  background-color: #ffffff;
-  color: #000000;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.auth-input:focus {
-  border-color: #007aff;
-  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
-}
-
-.auth-input::placeholder {
-  color: #999999;
 }

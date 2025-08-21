@@ -1,50 +1,65 @@
 // src/features/report/presenter/steps/Step1Consciousness.jsx
-import { useEffect, useState } from "react";
+// Step1: 의식 상태 선택 페이지 - 환자의 의식 상태를 선택하는 화면
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useReport } from "../../model/ReportContext";
 import "./Step1Consciousness.css";
 
-export default function Step1Consciousness({ onNext, onBack }) {
-  const [selected, setSelected] = useState("");
+export default function Step1Consciousness({ onNext }) {
+  const navigate = useNavigate();
+  const { setConsciousness } = useReport();
 
+  // 선택된 의식 상태 옵션을 저장하는 상태
+  const [selected, setSelected] = useState(null);
+
+  // 의식 상태 옵션을 선택하거나 선택 해제하는 함수 (토글 기능)
+  const selectOption = (option) => {
+    if (selected === option) {
+      // 이미 선택된 옵션을 다시 클릭하면 선택 해제
+      setSelected(null);
+      setConsciousness(null);
+      localStorage.removeItem("consciousness");
+    } else {
+      // 새로운 옵션 선택
+      setSelected(option);
+      setConsciousness(option);
+      localStorage.setItem("consciousness", option);
+    }
+  };
+
+  // 다음 단계로 이동하는 함수
+  const goNext = () => {
+    if (selected) {
+      onNext();
+    }
+  };
+
+  // 홈으로 이동하는 함수
+  const goHome = () => {
+    navigate("/");
+  };
+
+  // 뒤로가기 함수 추가
+  const goBack = () => {
+    navigate(-1); // 이전 페이지로 이동
+  };
+
+  // 의식 상태 옵션들 (디자인 이미지와 동일하게)
   const options = [
-    { id: "normal", text: "정상 (말을 하고 반응함)" },
-    { id: "drowsy", text: "흐림 (반응이 느림)" },
-    { id: "unconscious", text: "의식잃음 (반응하지 않음)" },
+    "정상 (말을 하고 반응함)",
+    "흐림 (반응이 느림)",
+    "잃음 (반응하지 않음)",
   ];
 
-  const selectOption = (id) => {
-    setSelected(id);
-  };
-
-  const goToNext = () => {
-    if (!selected) return;
-    localStorage.setItem("consciousness", selected);
-    if (onNext) onNext();
-  };
-
-  const goBack = () => {
-    if (onBack) onBack();
-    else window.history.back();
-  };
-
-  const goHome = () => {
-    // 역할 선택 페이지로 이동
-    window.location.href = "/role-selection"; // 또는 적절한 경로
-  };
-
-  useEffect(() => {
-    const saved = localStorage.getItem("consciousness");
-    if (saved) setSelected(saved);
-  }, []);
-
   return (
-    <div className="app-container">
-      {/* Header - 뒤로가기 + 제목만 */}
-      <div className="header">
+    <div className="step1-app-container">
+      {/* 헤더 - 뒤로가기 버튼과 제목 */}
+      <div className="step1-header">
         <button
-          className="back-btn"
+          className="step1-back-btn"
           type="button"
-          onClick={goBack}
           aria-label="뒤로가기"
+          onClick={goBack}
         >
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -55,14 +70,13 @@ export default function Step1Consciousness({ onNext, onBack }) {
             />
           </svg>
         </button>
-        <h1 className="text-base font-bold text-black">사고 리포트 작성</h1>
-        <div style={{ width: 24 }} />
+        <h1>사고 리포트 작성</h1>
       </div>
 
-      {/* 홈으로 버튼 - 헤더 아래 오른쪽에 별도 배치 */}
-      <div className="home-link-container">
+      {/* 홈으로 버튼 */}
+      <div className="step1-home-link-container">
         <button
-          className="home-btn"
+          className="step1-home-btn"
           type="button"
           onClick={goHome}
           aria-label="홈으로"
@@ -71,50 +85,47 @@ export default function Step1Consciousness({ onNext, onBack }) {
         </button>
       </div>
 
-      {/* Progress */}
-      <div className="progress">
-        <div className="progress-text">1/5</div>
+      {/* 진행 상황 표시 - 현재 단계/전체 단계 */}
+      <div className="step1-progress">
+        <div className="step1-progress-text">1/5</div>
       </div>
 
-      {/* Main Content */}
-      <div className="content">
-        <div className="text-center mb-8">
-          <h2 className="main-title">
-            <span className="blue-text">의식상태</span>
-            <span className="black-text">를</span>
-          </h2>
-          <p className="main-title black-text">입력해주세요.</p>
+      {/* 메인 콘텐츠 */}
+      <div className="step1-content">
+        {/* 제목 섹션 - 의식 상태 입력 안내 */}
+        <div className="step1-title-container">
+          <div className="step1-main-title-container">
+            <h2 className="step1-main-title">의식 상태를</h2>
+            <p className="step1-sub-title">입력해주세요.</p>
+          </div>
         </div>
 
-        {/* Options */}
-        <div>
-          {options.map((o) => (
+        {/* 의식 상태 선택 옵션들 */}
+        <div className="step1-options-container">
+          {options.map((option) => (
             <button
-              key={o.id}
-              id={o.id}
+              key={option}
               type="button"
-              onClick={() => selectOption(o.id)}
-              className={`option-button ${selected === o.id ? "selected" : ""}`}
+              className={`step1-option-button ${
+                selected === option ? "selected" : ""
+              }`}
+              onClick={() => selectOption(option)}
             >
-              <div className="option-text-lg">{o.text}</div>
+              <div className="step1-option-text-lg">{option}</div>
             </button>
           ))}
         </div>
-
-        {/* Next Button */}
-        <button
-          id="nextBtn"
-          type="button"
-          onClick={goToNext}
-          disabled={!selected}
-          className="next-button"
-        >
-          다음
-        </button>
       </div>
 
-      {/* Home Indicator */}
-      <div className="home-indicator" />
+      {/* 다음 버튼 - 선택이 완료되어야 활성화 */}
+      <button
+        type="button"
+        className="step1-next-button"
+        onClick={goNext}
+        disabled={!selected}
+      >
+        다음
+      </button>
     </div>
   );
 }

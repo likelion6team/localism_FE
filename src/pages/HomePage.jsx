@@ -1,38 +1,61 @@
+// src/pages/HomePage.jsx
+// 앱의 메인 홈페이지 - 역할 선택 화면
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 
 export default function HomePage() {
-  const nav = useNavigate();
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const navigate = useNavigate();
+  const [selectedRole, setSelectedRole] = useState(null);
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
   const [authType, setAuthType] = useState(""); // "emergency" or "hospital"
   const [authNumber, setAuthNumber] = useState("");
 
-  const goReport = () => nav("/report"); // 예 → 1단계(의식상태)로 이동
-  const closeConfirm = () => setConfirmOpen(false);
+  // 신고자 버튼 클릭 시 인증 모달 표시
+  const handleReporterClick = () => {
+    setSelectedRole("reporter");
+    setAuthType("reporter");
+    setAuthPopupOpen(true);
+  };
 
-  const handleEmergencyClick = () => {
+  // 구급대원 버튼 클릭 시 인증 모달 표시
+  const handleEMTClick = () => {
+    setSelectedRole("emt");
     setAuthType("emergency");
     setAuthPopupOpen(true);
   };
 
+  // 병원 버튼 클릭 시 인증 모달 표시
   const handleHospitalClick = () => {
+    setSelectedRole("hospital");
     setAuthType("hospital");
     setAuthPopupOpen(true);
   };
 
+  // 인증 모달 닫기
   const closeAuthPopup = () => {
     setAuthPopupOpen(false);
     setAuthNumber("");
     setAuthType("");
   };
 
+  // 인증 제출 처리
   const handleAuthSubmit = () => {
-    if (authType === "emergency" && authNumber === "1111") {
-      nav("/report-list");
+    if (authType === "reporter" && authNumber === "2222") {
+      // 신고자 인증 성공
+      setTimeout(() => {
+        navigate("/report");
+      }, 200);
+    } else if (authType === "emergency" && authNumber === "1111") {
+      // 구급대원 인증 성공
+      setTimeout(() => {
+        navigate("/emergency-responder");
+      }, 200);
     } else if (authType === "hospital" && authNumber === "0000") {
-      nav("/hospital-viewer");
+      // 병원 인증 성공
+      setTimeout(() => {
+        navigate("/hospital");
+      }, 200);
     } else {
       alert("잘못된 번호입니다.");
     }
@@ -40,77 +63,67 @@ export default function HomePage() {
   };
 
   return (
-    <div className="home-page">
-      {/* 상단 영역 */}
-      <header className="hero">
+    <div className="homepage-container">
+      {/* ResQ 로고 섹션 */}
+      <div className="logo-section">
+        <img src="/icons/logo.svg" alt="ResQ Logo" className="resq-logo" />
+        <p className="slogan">
+          Tech with a heartbeat.
+          <br />
+          That's ResQ.
+        </p>
+      </div>
+
+      {/* 역할 선택 버튼들 */}
+      <div className="role-buttons">
+        {/* 신고자 버튼 - 리포트 작성으로 이동 */}
         <button
-          className="admin-badge"
-          onClick={() => alert("관리자 페이지 준비중")}
+          className={`role-btn ${
+            selectedRole === "reporter" ? "selected" : ""
+          }`}
+          onClick={handleReporterClick}
         >
-          관리자
+          <img
+            src="/icons/reporter-icon.svg"
+            alt="신고자"
+            className="role-icon"
+          />
+          <span>신고자</span>
         </button>
 
-        <div className="logo-row">
-          <span className="logo-emoji">🚑</span>
-          <span className="logo-word">ResQ</span>
-        </div>
+        {/* 구급대원 버튼 - 인증 모달 표시 */}
+        <button
+          className={`role-btn ${selectedRole === "emt" ? "selected" : ""}`}
+          onClick={handleEMTClick}
+        >
+          <img src="/icons/emt-icon.svg" alt="구급대원" className="role-icon" />
+          <span>구급대원</span>
+        </button>
 
-        <p className="slogan">Tech with a heartbeat. That&apos;s ResQ.</p>
-      </header>
-
-      <main className="main">
-        <h1 className="title">자신의 역할을 골라주세요</h1>
-
-        <div className="role-list">
-          {/* 신고자 */}
-          <button className="role-btn" onClick={() => setConfirmOpen(true)}>
-            <span className="role-ico">📱</span>
-            신고자
-          </button>
-
-          {/* 구급대원 */}
-          <button className="role-btn" onClick={handleEmergencyClick}>
-            <span className="role-ico">🚑</span>
-            구급대원
-          </button>
-
-          {/* 병원 */}
-          <button className="role-btn" onClick={handleHospitalClick}>
-            <span className="role-ico">🏥</span>
-            병원
-          </button>
-        </div>
-      </main>
-
-      <div className="home-indicator" />
-
-      {/* ✅ 신고 확인 모달 (조건부 렌더링) */}
-      {confirmOpen && (
-        <div className="alert-overlay" role="dialog" aria-modal="true">
-          <div className="alert-dialog">
-            <div className="alert-title">신고 하시겠습니까?</div>
-            <div className="alert-description">
-              공공기관에 대한 장난전화는 60만원 이하의 벌금, 구류 또는 과료로
-              처벌될 수 있습니다.
-            </div>
-            <div className="alert-buttons">
-              <button className="alert-button no" onClick={closeConfirm}>
-                아니요
-              </button>
-              <button className="alert-button yes" onClick={goReport}>
-                예
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        {/* 병원 버튼 - 인증 모달 표시 */}
+        <button
+          className={`role-btn ${
+            selectedRole === "hospital" ? "selected" : ""
+          }`}
+          onClick={handleHospitalClick}
+        >
+          <img
+            src="/icons/hospital-icon.svg"
+            alt="병원"
+            className="role-icon"
+          />
+          <span>병원</span>
+        </button>
+      </div>
 
       {/* 🔐 인증 팝업 모달 */}
       {authPopupOpen && (
         <div className="alert-overlay" role="dialog" aria-modal="true">
           <div className="alert-dialog">
             <div className="alert-title" style={{ color: "#dc3545" }}>
-              {authType === "emergency"
+              {authType === "reporter"
+                ? "신고자가 맞으신가요?"
+                : authType === "emergency"
                 ? "구급대원이십니까?"
                 : "병원 관계자이십니까?"}
             </div>

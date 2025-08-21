@@ -1,60 +1,119 @@
 // src/features/report/presenter/steps/Step2AccidentType.jsx
-import { useEffect, useState } from "react";
+// Step2: 사고 유형 선택 페이지 - 어떤 종류의 사고인지 선택하는 화면
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useReport } from "../../model/ReportContext";
 import "./Step2AccidentType.css";
 
 export default function Step2AccidentType({ onNext, onBack }) {
+  const navigate = useNavigate();
+  const { setAccidentTypes } = useReport();
+
+  // 선택된 사고 유형들을 저장하는 상태 (배열로 변경)
   const [selected, setSelected] = useState([]);
+  // "기타/모름" 선택 시 추가 입력 필드를 보여줄지 결정하는 상태
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  // "기타/모름" 입력 텍스트를 저장하는 상태
+  const [otherText, setOtherText] = useState("");
 
-  const options = [
-    { id: "traffic", icon: "🚗", text: "교통사고" },
-    { id: "electric", icon: "⚡", text: "감전" },
-    { id: "fall", icon: "🔄", text: "추락/낙상" },
-    { id: "stab", icon: "🔪", text: "자상/출혈" },
-    { id: "burn", icon: "🔥", text: "화상" },
-    { id: "other", icon: "❓", text: "기타 / 모름" },
-  ];
-
-  const toggle = (id) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
-  };
-
-  const goNext = () => {
-    if (selected.length === 0) return;
-    localStorage.setItem("accidentTypes", JSON.stringify(selected));
-    if (onNext) onNext();
-  };
-
-  const goBack = () => {
-    if (onBack) onBack();
-    else window.history.back();
-  };
-
-  const goHome = () => {
-    // 역할 선택 페이지로 이동
-    window.location.href = "/role-selection"; // 또는 적절한 경로
-  };
-
+  // 페이지 로드 시 이전에 선택한 옵션이 있다면 복원
   useEffect(() => {
-    const saved = localStorage.getItem("accidentTypes");
-    if (saved) {
-      try {
-        const arr = JSON.parse(saved);
-        if (Array.isArray(arr)) setSelected(arr);
-      } catch {}
-    }
+    // const saved = localStorage.getItem("accidentTypes");
+    // if (saved) {
+    //   setSelected(saved);
+    // }
   }, []);
 
+  // 사고 유형 옵션을 선택하거나 선택 해제하는 함수 (토글 기능)
+  const toggle = (option) => {
+    if (selected.includes(option)) {
+      // 이미 선택된 옵션을 다시 클릭하면 선택 해제
+      const newSelected = selected.filter((item) => item !== option);
+      setSelected(newSelected);
+      setAccidentTypes(newSelected);
+      if (option === "기타 / 모름") {
+        setShowOtherInput(false);
+        setOtherText("");
+      }
+      localStorage.removeItem("accidentTypes");
+    } else {
+      // 새로운 옵션 선택 (기존 선택에 추가)
+      const newSelected = [...selected, option];
+      setSelected(newSelected);
+      setAccidentTypes(newSelected);
+      if (option === "기타 / 모름") {
+        setShowOtherInput(true);
+      }
+      localStorage.setItem("accidentTypes", newSelected.join(", "));
+    }
+  };
+
+  // 다음 단계로 이동하는 함수
+  const goNext = () => {
+    if (selected.length > 0) {
+      let finalSelected = [...selected];
+
+      if (selected.includes("기타 / 모름") && otherText.trim()) {
+        // "기타/모름" 선택 시 추가 텍스트가 있으면 함께 저장
+        const otherIndex = selected.indexOf("기타 / 모름");
+        finalSelected[otherIndex] = `기타 / 모름: ${otherText.trim()}`;
+      }
+
+      // ReportContext에 최종 선택된 값 저장
+      setAccidentTypes(finalSelected);
+      localStorage.setItem("accidentTypes", finalSelected.join(", "));
+      onNext();
+    }
+  };
+
+  // 홈으로 이동하는 함수
+  const goHome = () => {
+    navigate("/");
+  };
+
+  // 사고 유형 옵션들 (SVG 아이콘 포함)
+  const options = [
+    {
+      id: "traffic",
+      text: "교통사고",
+      icon: "/icons/traffic.svg",
+    },
+    {
+      id: "electric",
+      text: "감전",
+      icon: "/icons/electric.svg",
+    },
+    {
+      id: "fall",
+      text: "추락/낙상",
+      icon: "/icons/fall.svg",
+    },
+    {
+      id: "bleeding",
+      text: "자상/출혈",
+      icon: "/icons/bleeding.svg",
+    },
+    {
+      id: "burn",
+      text: "화상",
+      icon: "/icons/burn.svg",
+    },
+    {
+      id: "other",
+      text: "기타 / 모름",
+      icon: "/icons/other.svg",
+    },
+  ];
+
   return (
-    <div className="app-container">
-      {/* Header */}
-      <div className="header">
+    <div className="step2-app-container">
+      {/* 헤더 - 뒤로가기 버튼과 제목 */}
+      <div className="step2-header">
         <button
-          className="back-btn"
+          className="step2-back-btn"
           type="button"
-          onClick={goBack}
           aria-label="뒤로가기"
+          onClick={onBack}
         >
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -65,14 +124,13 @@ export default function Step2AccidentType({ onNext, onBack }) {
             />
           </svg>
         </button>
-        <h1 className="text-base font-bold text-black">사고 리포트 작성</h1>
-        <div style={{ width: 24 }} />
+        <h1>사고 리포트 작성</h1>
       </div>
 
-      {/* 홈으로 버튼 - 헤더 아래 오른쪽에 별도 배치 */}
-      <div className="home-link-container">
+      {/* 홈으로 버튼 */}
+      <div className="step2-home-link-container">
         <button
-          className="home-btn"
+          className="step2-home-btn"
           type="button"
           onClick={goHome}
           aria-label="홈으로"
@@ -81,54 +139,66 @@ export default function Step2AccidentType({ onNext, onBack }) {
         </button>
       </div>
 
-      {/* Progress */}
-      <div className="progress">
-        <div className="progress-text">2/5</div>
+      {/* 진행 상황 표시 - 현재 단계/전체 단계 */}
+      <div className="step2-progress">
+        <div className="step2-progress-text">2/5</div>
       </div>
 
-      {/* Main Content */}
-      <div className="content">
-        <div className="text-center mb-8">
-          <h2 className="main-title">
-            <span className="blue-text">사고 유형을</span>
-          </h2>
-          <p className="main-title black-text">선택해주세요.</p>
-          <p className="sub-title">어떤 사고 상황인가요? (중복가능)</p>
+      {/* 메인 콘텐츠 */}
+      <div className="step2-content">
+        {/* 제목 섹션 - 사고 유형 입력 안내 */}
+        <div className="step2-title-container">
+          <div className="step2-main-title-container">
+            <h2 className="step2-main-title">사고 유형을</h2>
+            <p className="step2-sub-title">선택해주세요.</p>
+          </div>
+          <p className="step2-description">어떤 사고 상황인가요? (중복가능)</p>
         </div>
 
-        {/* Options Grid */}
-        <div className="option-grid">
-          {options.map((o) => {
-            const isSelected = selected.includes(o.id);
-            return (
-              <button
-                key={o.id}
-                id={o.id}
-                type="button"
-                className={`option-button ${isSelected ? "selected" : ""}`}
-                onClick={() => toggle(o.id)}
-              >
-                <div className="option-icon">{o.icon}</div>
-                <div className="option-text">{o.text}</div>
-              </button>
-            );
-          })}
+        {/* 사고 유형 선택 옵션들 */}
+        <div className="step2-options-container">
+          {options.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className={`step2-option-button ${
+                selected.includes(option.text) ? "selected" : ""
+              }`}
+              onClick={() => toggle(option.text)}
+            >
+              <img
+                src={option.icon}
+                alt={option.text}
+                className="step2-option-icon"
+              />
+              <div className="step2-option-text-lg">{option.text}</div>
+            </button>
+          ))}
         </div>
+
+        {/* "기타/모름" 선택 시 추가 입력 필드 */}
+        {showOtherInput && (
+          <div className="step2-other-input-container">
+            <input
+              type="text"
+              className="step2-other-input"
+              placeholder="구체적인 사고 유형을 입력해주세요."
+              value={otherText}
+              onChange={(e) => setOtherText(e.target.value)}
+            />
+          </div>
+        )}
       </div>
 
-      {/* Next Button */}
+      {/* 다음 버튼 - 선택이 완료되어야 활성화 */}
       <button
-        id="nextBtn"
         type="button"
+        className="step2-next-button"
         onClick={goNext}
         disabled={selected.length === 0}
-        className="next-button"
       >
         다음
       </button>
-
-      {/* Home Indicator */}
-      <div className="home-indicator" />
     </div>
   );
 }
