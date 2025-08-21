@@ -1,12 +1,10 @@
 // src/features/report/presenter/steps/Step2AccidentType.jsx
 // Step2: 사고 유형 선택 페이지 - 어떤 종류의 사고인지 선택하는 화면
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useReport } from "../../model/ReportContext";
 import "./Step2AccidentType.css";
 
 export default function Step2AccidentType({ onNext, onBack }) {
-  const navigate = useNavigate();
   const { setAccidentTypes } = useReport();
 
   // 선택된 사고 유형들을 저장하는 상태 (배열로 변경)
@@ -66,11 +64,6 @@ export default function Step2AccidentType({ onNext, onBack }) {
     }
   };
 
-  // 홈으로 이동하는 함수
-  const goHome = () => {
-    navigate("/");
-  };
-
   // 사고 유형 옵션들 (SVG 아이콘 포함)
   const options = [
     {
@@ -125,18 +118,6 @@ export default function Step2AccidentType({ onNext, onBack }) {
           </svg>
         </button>
         <h1>사고 리포트 작성</h1>
-      </div>
-
-      {/* 홈으로 버튼 */}
-      <div className="step2-home-link-container">
-        <button
-          className="step2-home-btn"
-          type="button"
-          onClick={goHome}
-          aria-label="홈으로"
-        >
-          ← 홈으로
-        </button>
       </div>
 
       {/* 진행 상황 표시 - 현재 단계/전체 단계 */}

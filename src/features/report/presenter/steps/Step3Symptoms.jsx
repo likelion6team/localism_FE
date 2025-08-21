@@ -75,11 +75,6 @@ export default function Step3Symptoms({ onNext, onBack }) {
     onNext();
   };
 
-  // 홈으로 이동하는 함수
-  const goHome = () => {
-    navigate("/");
-  };
-
   // 증상 옵션들 (10가지 주요 증상 + SVG 아이콘)
   const options = [
     {
@@ -154,18 +149,6 @@ export default function Step3Symptoms({ onNext, onBack }) {
           </svg>
         </button>
         <h1>사고 리포트 작성</h1>
-      </div>
-
-      {/* 홈으로 버튼 */}
-      <div className="step3-home-link-container">
-        <button
-          className="step3-home-btn"
-          type="button"
-          onClick={goHome}
-          aria-label="홈으로"
-        >
-          ← 홈으로
-        </button>
       </div>
 
       {/* 진행 상황 표시 - 현재 단계/전체 단계 */}

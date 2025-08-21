@@ -341,11 +341,6 @@ export default function Step5Photo({ onBack }) {
     navigate("/");
   };
 
-  // 홈으로 이동하는 함수
-  const goHome = () => {
-    navigate("/");
-  };
-
   // 컴포넌트 마운트 시 현재 위치 정보 가져오기
   useEffect(() => {
     getCurrentLocationInfo();
@@ -371,18 +366,6 @@ export default function Step5Photo({ onBack }) {
           </svg>
         </button>
         <h1>사고 리포트 작성</h1>
-      </div>
-
-      {/* 홈으로 버튼 */}
-      <div className="step5-home-link-container">
-        <button
-          className="step5-home-btn"
-          type="button"
-          onClick={goHome}
-          aria-label="홈으로"
-        >
-          ← 홈으로
-        </button>
       </div>
 
       {/* 진행 상황 표시 - 현재 단계/전체 단계 */}
