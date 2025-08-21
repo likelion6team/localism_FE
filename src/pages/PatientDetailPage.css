@@ -1,6 +1,6 @@
 .patient-detail-page {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #fefefa;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   flex-direction: column;
@@ -51,7 +51,7 @@
   flex: 1;
   padding: 20px 16px;
   overflow-y: auto;
-  background-color: #f8f9fa;
+  background-color: #fefefe;
 }
 
 /* 섹션 제목 */

@@ -1,6 +1,6 @@
 .hospital-viewer-page {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #fefefe;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   flex-direction: column;
@@ -83,7 +83,7 @@
 .emergency-list {
   flex: 1;
   padding: 0px 16px;
-  background-color: #f8f9fa;
+  background-color: #fefefe;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

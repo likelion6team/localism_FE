@@ -39,8 +39,9 @@ export default function PatientInfoPage() {
       <main className="main-content">
         <h2 className="main-title">
           <span className="title-blue">환자 정보</span>
+          <span className="title-black">를</span>
           <br />
-          <span className="title-black">를 확인해주세요</span>
+          <span className="title-black">확인해주세요</span>
         </h2>
 
         {/* 의식 섹션 */}
