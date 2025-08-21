@@ -62,7 +62,7 @@ export async function sendReport(payload) {
       console.log(`  ${key}:`, value);
     }
 
-        const response = await fetch(`${API_BASE_URL}/api/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports`, {
       method: "POST",
       body: formData,
     });
@@ -109,14 +109,50 @@ export async function getCurrentLocation() {
   }
 }
 
-// 좌표를 주소로 변환하는 API (예시)
+// TMAP API 키 (실제 사용시 환경변수로 관리해야 함)
+const TMAP_API_KEY =
+  import.meta.env.VITE_TMAP_API_KEY ||
+  "sVHWS8NG5uR7YE7Kdlou2tUK4HfK6OG6kq9Tnh53";
+
+// 좌표를 주소로 변환하는 API (TMAP API 사용)
 export async function getAddressFromCoordinates(lat, lng) {
   try {
-    // 실제 구현에서는 지도 API 서비스 사용 (Google Maps, Kakao Maps 등)
-    // 현재는 기본 주소 형식으로 반환
-    return `위도: ${lat}, 경도: ${lng}`;
-  } catch {
-    console.error("주소 변환 실패");
+    if (!TMAP_API_KEY || TMAP_API_KEY === "your-tmap-api-key-here") {
+      console.warn(
+        "TMAP API 키가 설정되지 않았습니다. 기본 주소 형식으로 반환합니다."
+      );
+      return `위도: ${lat}, 경도: ${lng}`;
+    }
+
+    const response = await fetch(
+      `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&format=json&callback=result&appKey=${TMAP_API_KEY}&lat=${lat}&lon=${lng}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`TMAP API 호출 실패: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.status === "OK" && data.result && data.result.length > 0) {
+      const addressInfo = data.result[0];
+      return `${
+        addressInfo.newAddressList.newAddressName[0].fullAddress ||
+        addressInfo.newAddressList.newAddressName[0].sidoName +
+          " " +
+          addressInfo.newAddressList.newAddressName[0].sggName
+      }`;
+    } else {
+      return `위도: ${lat}, 경도: ${lng}`;
+    }
+  } catch (error) {
+    console.error("TMAP API 주소 변환 실패:", error);
     return `위도: ${lat}, 경도: ${lng}`;
   }
 }
