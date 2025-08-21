@@ -27,6 +27,7 @@
   justify-content: space-between;
   padding: 16px;
   border-bottom: 1px solid #f0f0f0;
+  background-color: #ffffff;
 }
 
 .back-button {
@@ -43,6 +44,12 @@
   background-color: #f5f5f5;
 }
 
+.back-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .page-title {
   font-size: 18px;
   font-weight: 600;
@@ -54,81 +61,91 @@
   width: 40px;
 }
 
-/* 정렬 옵션 */
-.sort-option {
-  padding: 12px 16px;
-  background-color: #f8f9fa;
+/* 신고 목록 */
+.report-list {
+  padding: 16px;
+  background-color: #ffffff;
 }
 
-.sort-label {
+.report-item {
+  background-color: #f5f5f5;
+  padding: 16px;
+  margin-bottom: 0;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: stretch;
+}
+
+.report-item:hover {
+  background-color: #eeeeee;
+}
+
+/* 모든 카드에 왼쪽 사각형 추가 - 더 크게 */
+.report-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  background-color: #a9a9a9;
+  z-index: 2;
+  transition: background-color 0.2s ease;
+}
+
+/* 호버 시 왼쪽 사각형 색상 변경 */
+.report-item:hover::before {
+  background-color: #0084ff;
+}
+
+.report-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 16px;
+  flex: 1;
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.report-date {
   font-size: 14px;
   color: #666666;
   font-weight: 500;
 }
 
-/* 신고 목록 */
-.report-list {
-  padding: 0;
-}
-
-.report-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.report-item:hover {
-  background-color: #f8f9fa;
-}
-
-.report-item.selected {
-  background-color: #ffffff;
-  border-left: 4px solid #007aff;
-  padding-left: 12px;
-}
-
-.report-item.selected .report-type {
-  color: #000000;
-}
-
-.report-item.selected .report-address {
+.time-icon {
+  width: 12px;
+  height: 12px;
   color: #666666;
-}
-
-.report-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.report-type {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000000;
-  margin: 0;
-}
-
-.report-address {
-  font-size: 14px;
-  color: #666666;
-  margin: 0;
 }
 
 .report-time {
   font-size: 14px;
   color: #666666;
   font-weight: 500;
-  margin-left: 16px;
 }
 
-.report-item.selected .report-time {
+.report-type {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.report-address {
+  font-size: 14px;
   color: #666666;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* 홈 인디케이터 */
@@ -158,12 +175,17 @@
     padding: 12px 16px;
   }
 
+  .report-list {
+    padding: 12px;
+  }
+
   .report-item {
-    padding: 14px 16px;
+    padding: 16px;
+    margin-bottom: 0;
   }
 
   .report-type {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .report-address {
