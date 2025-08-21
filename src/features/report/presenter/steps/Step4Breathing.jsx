@@ -44,11 +44,6 @@ export default function Step4Breathing({ onNext, onBack }) {
     }
   };
 
-  // 홈으로 이동하는 함수
-  const goHome = () => {
-    navigate("/");
-  };
-
   // 호흡 상태 옵션들 (피그마와 동일하게 3개로 수정)
   const options = [
     "정상 (규칙적)",
@@ -76,18 +71,6 @@ export default function Step4Breathing({ onNext, onBack }) {
           </svg>
         </button>
         <h1>사고 리포트 작성</h1>
-      </div>
-
-      {/* 홈으로 버튼 */}
-      <div className="step4-home-link-container">
-        <button
-          className="step4-home-btn"
-          type="button"
-          onClick={goHome}
-          aria-label="홈으로"
-        >
-          ← 홈으로
-        </button>
       </div>
 
       {/* 진행 상황 표시 - 현재 단계/전체 단계 */}

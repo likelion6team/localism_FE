@@ -64,7 +64,7 @@ export async function sendReport(payload) {
       console.log(`  ${key}:`, value);
     }
 
-        const response = await fetch(`${API_BASE_URL}/api/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports`, {
       method: "POST",
       body: formData,
     });
@@ -111,7 +111,12 @@ export async function getCurrentLocation() {
   }
 }
 
-// 좌표를 주소로 변환하는 API (예시)
+// TMAP API 키 (실제 사용시 환경변수로 관리해야 함)
+const TMAP_API_KEY =
+  import.meta.env.VITE_TMAP_API_KEY ||
+  "sVHWS8NG5uR7YE7Kdlou2tUK4HfK6OG6kq9Tnh53";
+
+// 좌표를 주소로 변환하는 API (TMAP API 사용)
 export async function getAddressFromCoordinates(lat, lng) {
   try {
 
