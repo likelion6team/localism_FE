@@ -33,10 +33,6 @@ function Inner() {
 
   return (
     <div>
-      {/* title prop 제거 - 중복 제목 방지 */}
-      <PageHeader onBack={back} />
-      <StepIndicator current={step} total={5} />
-
       {step === 1 && <Step1 onNext={next} onBack={back} />}
       {step === 2 && <Step2 onNext={next} onBack={back} />}
       {step === 3 && <Step3 onNext={next} onBack={back} />}
