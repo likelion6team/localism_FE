@@ -264,3 +264,13 @@
     gap: 8px;
   }
 }
+
+/* PatientInfoPage 전용: hover 시 색상 변화 제거 및 커서 기본으로 */
+.patient-info-page .info-button {
+  cursor: default;
+}
+
+.patient-info-page .info-button:hover {
+  border-color: #b6c9fc;
+  background-color: #deedff;
+}
