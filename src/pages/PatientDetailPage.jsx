@@ -7,9 +7,9 @@ export default function PatientDetailPage() {
   const navigate = useNavigate();
   const [isPrinting, setIsPrinting] = useState(false);
 
-  const goBack = () => navigate("/hospital-viewer");
+  const goBack = () => navigate("/hospital");
   const handleComplete = () => {
-    navigate("/hospital-viewer");
+    navigate("/hospital");
   };
 
   const handlePrint = () => {
