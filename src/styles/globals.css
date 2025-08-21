@@ -14,7 +14,8 @@ body,
 }
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+  font-family: "Pretendard Variable", Pretendard, Inter, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   background: #fff;
 }
 .mobile {
@@ -43,4 +44,20 @@ body {
 /* 전역 CTA 래퍼 안의 것만 보이게 */
 .report-flow .global-cta-holder .bottom-cta-wrap {
   display: block !important;
+}
+
+/* 상태바 완전 제거 */
+.status-bar {
+  display: none !important;
+}
+
+/* 브라우저 상태바 숨기기 */
+body::before,
+body::after {
+  display: none !important;
+}
+
+/* 페이지 하단 홈 인디케이터 완전 제거 */
+.home-indicator {
+  display: none !important;
 }

@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PatientInfoPage.css";
+import PhotoPlaceholder from "../components/PhotoPlaceholder";
 
 export default function PatientInfoPage() {
   const navigate = useNavigate();
-  const [selectedAccidentType, setSelectedAccidentType] = useState("traffic");
-  const [selectedSymptom, setSelectedSymptom] = useState("bleeding");
 
   const goBack = () => navigate("/report-list");
   const handleComplete = () => {
@@ -27,7 +25,11 @@ export default function PatientInfoPage() {
       {/* 헤더 */}
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
-          ←
+          <img
+            src="/icons/arrow-left.png"
+            alt="뒤로가기"
+            className="back-icon"
+          />
         </button>
         <h1 className="page-title">환자 정보</h1>
         <div className="header-spacer"></div>
@@ -35,91 +37,89 @@ export default function PatientInfoPage() {
 
       {/* 메인 콘텐츠 */}
       <main className="main-content">
-        <h2 className="main-title">환자 정보를 확인해주세요.</h2>
+        <h2 className="main-title">
+          <span className="title-blue">환자 정보</span>
+          <br />
+          <span className="title-black">를 확인해주세요</span>
+        </h2>
 
         {/* 의식 섹션 */}
-        <section className="info-section">
+        <div className="section-container">
           <label className="section-label">의식</label>
-          <div className="single-button-container">
-            <button className="info-button yellow-border">
-              흐림 (반응이 느림)
-            </button>
-          </div>
-        </section>
+          <section className="info-section">
+            <div className="single-button-container">
+              <div className="info-button">흐림 (반응이 느림)</div>
+            </div>
+          </section>
+        </div>
 
         {/* 사고 유형 섹션 */}
-        <section className="info-section">
+        <div className="section-container">
           <label className="section-label">사고 유형</label>
-          <div className="button-group">
-            <button
-              className={`info-button ${
-                selectedAccidentType === "traffic" ? "selected" : ""
-              }`}
-              onClick={() => setSelectedAccidentType("traffic")}
-            >
-              <span className="button-icon">🚗</span>
-              교통사고
-            </button>
-            <button
-              className={`info-button ${
-                selectedAccidentType === "stab" ? "selected" : ""
-              }`}
-              onClick={() => setSelectedAccidentType("stab")}
-            >
-              <span className="button-icon">🔪</span>
-              자상
-            </button>
-          </div>
-        </section>
+          <section className="info-section">
+            <div className="button-group">
+              <div className="info-button">
+                <img
+                  src="/icons/car.svg"
+                  alt="교통사고"
+                  className="button-icon"
+                />
+                교통사고
+              </div>
+              <div className="info-button">
+                <img
+                  src="/icons/knife.svg"
+                  alt="자상"
+                  className="button-icon"
+                />
+                자상
+              </div>
+            </div>
+          </section>
+        </div>
 
         {/* 환자 증상 섹션 */}
-        <section className="info-section">
+        <div className="section-container">
           <label className="section-label">환자 증상</label>
-          <div className="button-group">
-            <button
-              className={`info-button ${
-                selectedSymptom === "bleeding" ? "selected" : ""
-              }`}
-              onClick={() => setSelectedSymptom("bleeding")}
-            >
-              <span className="button-icon">🩸</span>
-              출혈
-            </button>
-            <button
-              className={`info-button ${
-                selectedSymptom === "fracture" ? "selected" : ""
-              }`}
-              onClick={() => setSelectedSymptom("fracture")}
-            >
-              <span className="button-icon">🦴</span>
-              골절
-            </button>
-          </div>
-        </section>
+          <section className="info-section">
+            <div className="button-group">
+              <div className="info-button">
+                <img
+                  src="/icons/blood.svg"
+                  alt="출혈"
+                  className="button-icon"
+                />
+                출혈
+              </div>
+              <div className="info-button">
+                <img src="/icons/bone.svg" alt="골절" className="button-icon" />
+                골절
+              </div>
+            </div>
+          </section>
+        </div>
 
         {/* 호흡 섹션 */}
-        <section className="info-section">
+        <div className="section-container">
           <label className="section-label">호흡</label>
-          <div className="single-button-container">
-            <button className="info-button yellow-border">
-              어려움 (가쁘거나 불규칙)
-            </button>
-          </div>
-        </section>
+          <section className="info-section">
+            <div className="single-button-container">
+              <div className="info-button">어려움 (가쁘거나 불규칙)</div>
+            </div>
+          </section>
+        </div>
 
         {/* 현장사진 섹션 */}
         <section className="info-section">
-          <label className="section-label">현장사진</label>
-          <div className="photo-placeholder">
-            <span className="photo-text">현장사진</span>
-          </div>
+          <label className="section-label"></label>
+          <PhotoPlaceholder />
         </section>
       </main>
 
-      {/* 접수 완료 버튼 */}
+      {/* 확인 완료 버튼 */}
       <footer className="page-footer">
         <button className="complete-button" onClick={handleComplete}>
-          접수 완료
+          확인 완료
         </button>
       </footer>
 
