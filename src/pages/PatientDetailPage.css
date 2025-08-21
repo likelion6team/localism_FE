@@ -1,25 +1,9 @@
 .patient-detail-page {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #f8f9fa;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   flex-direction: column;
-}
-
-/* 상태바 */
-.status-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  background-color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.status-icons {
-  display: flex;
-  gap: 4px;
 }
 
 /* 헤더 */
@@ -45,6 +29,12 @@
   background-color: #f5f5f5;
 }
 
+.back-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .page-title {
   font-size: 18px;
   font-weight: 600;
@@ -59,411 +49,380 @@
 /* 메인 콘텐츠 */
 .main-content {
   flex: 1;
-  padding: 16px;
+  padding: 20px 16px;
   overflow-y: auto;
   background-color: #f8f9fa;
 }
 
-/* 환자 정보 카드 */
-.patient-info-card {
-  display: flex;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.patient-info-card .info-content {
-  flex: 1;
-  padding: 16px;
-}
-
-.patient-info-card .info-row {
-  display: flex;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.patient-info-card .info-label {
-  font-weight: 600;
-  color: #333333;
-  min-width: 80px;
-  margin-right: 8px;
-}
-
-.patient-info-card .info-value {
-  color: #000000;
-  flex: 1;
-}
-
-.emt-findings {
-  margin-top: 12px;
-}
-
-.findings-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #dc3545;
-  margin: 0 0 8px 0;
-}
-
-.findings-content {
-  font-size: 13px;
-  color: #333333;
-  line-height: 1.4;
-}
-
-.findings-content p {
-  margin: 4px 0;
-}
-
-.red-indicator {
-  width: 8px;
-  background-color: #dc3545;
-}
-
-/* 활력징후 트렌드 섹션 */
-.vital-trends-section {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
+/* 섹션 제목 */
 .section-title {
+  color: #374957;
+  text-align: center;
+  font-family: Inter;
   font-size: 16px;
-  font-weight: 600;
-  color: #000000;
-  margin: 0 0 16px 0;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 200%; /* 32px */
+  margin: 0 0 12px 0;
+  background: transparent;
+  padding: 0;
 }
 
-.graph-container {
-  position: relative;
+/* 환자 상세 정보 섹션 */
+.patient-info-section {
+  margin-bottom: 24px;
 }
 
-.graph-area {
+.patient-info-card {
+  width: 372px;
+  height: 169px;
+  flex-shrink: 0;
+  border-radius: 22px 0 0 22px;
+  background: #e9e9eb;
+  display: flex;
   position: relative;
-  height: 200px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  overflow: hidden;
+}
+
+.patient-info-card::before {
+  content: "";
+  position: absolute;
+  right: 25px;
+  top: 0;
+  width: 25px;
+  height: 169px;
+  flex-shrink: 0;
+  background: #e32727;
+  z-index: 1;
+}
+
+.patient-info-content {
+  flex: 1;
   padding: 16px;
+  margin-right: 85px;
+  z-index: 2;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.info-item.emt-label-item {
   margin-bottom: 12px;
 }
 
-.graph-lines {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-}
-
-.heart-rate-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    transparent 10%,
-    #dc3545 10%,
-    #dc3545 20%,
-    transparent 20%,
-    transparent 30%,
-    #dc3545 30%,
-    #dc3545 40%,
-    transparent 40%,
-    transparent 50%,
-    #dc3545 50%,
-    #dc3545 60%,
-    transparent 60%,
-    transparent 70%,
-    #dc3545 70%,
-    #dc3545 80%,
-    transparent 80%,
-    transparent 90%,
-    #dc3545 90%,
-    #dc3545 100%
-  );
-  height: 2px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.blood-pressure-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    transparent 15%,
-    #007aff 15%,
-    #007aff 25%,
-    transparent 25%,
-    transparent 35%,
-    #007aff 35%,
-    #007aff 45%,
-    transparent 45%,
-    transparent 55%,
-    #007aff 55%,
-    #007aff 65%,
-    transparent 65%,
-    transparent 75%,
-    #007aff 75%,
-    #007aff 85%,
-    transparent 85%,
-    transparent 95%,
-    #007aff 95%,
-    #007aff 100%
-  );
-  height: 2px;
-  top: 60%;
-  transform: translateY(-50%);
-}
-
-.graph-axes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-}
-
-.y-axis-left {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  font-size: 10px;
-  color: #666666;
-}
-
-.y-axis-right {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  font-size: 10px;
-  color: #666666;
-}
-
-.x-axis {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: #666666;
-}
-
-.graph-legend {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #333333;
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-}
-
-.legend-color.heart-rate {
-  background-color: #dc3545;
-}
-
-.legend-color.blood-pressure {
-  background-color: #007aff;
-}
-
-/* AI 추천 섹션 */
-.ai-recommendation-section {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.recommendation-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.radio-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: background-color 0.2s;
-}
-
-.radio-option:hover {
-  background-color: #f8f9fa;
-}
-
-.radio-option input[type="radio"] {
-  width: 18px;
-  height: 18px;
-  accent-color: #007aff;
-}
-
-.radio-label {
-  font-size: 14px;
-  color: #333333;
-}
-
-/* 구분선 */
-.divider {
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 16px 0;
-  border-style: dashed;
-}
-
-/* 응급 정보 카드 */
-.emergency-info-card {
-  display: flex;
-  background-color: #ffffff;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-  min-height: 80px;
-}
-
-.emergency-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #000000;
-  margin: 0 0 8px 0;
-  text-align: center;
-}
-
-.info-content {
-  flex: 1;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.info-row {
-  display: flex;
-  margin-bottom: 4px;
-  font-size: 12px;
-  text-align: center;
-  justify-content: center;
+.info-item:last-child {
+  margin-bottom: 0;
 }
 
 .info-label {
-  font-weight: 600;
-  color: #333333;
-  margin-right: 4px;
+  color: #374957;
+  text-align: left;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 19.5px */
+  margin-bottom: 0;
 }
 
 .info-value {
-  color: #000000;
+  color: #000;
+  text-align: left;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 19.5px */
+  word-wrap: break-word;
+  white-space: normal;
 }
 
-.barcode-indicator {
-  width: 40px;
-  background-color: #6f42c1;
-  position: relative;
+.id-value {
+  color: #000;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 130%; /* 13px */
+}
+
+.emt-label {
+  color: #e32727;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 13px */
+  margin-bottom: -12px;
+}
+
+.emt-findings {
+  color: #e32727;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%; /* 14.3px */
+  margin-bottom: 4px;
+}
+
+/* ETA 바 */
+.eta-bar {
+  background-color: transparent;
+  color: #e32727;
+  padding: 12px 8px;
+  border-radius: 4px;
   display: flex;
+  flex-direction: column;
   align-items: flex-end;
-  padding-bottom: 8px;
-}
-
-.barcode-indicator::before {
-  content: "";
+  justify-content: flex-end;
+  min-width: 100px;
   position: absolute;
-  bottom: 8px;
-  left: 4px;
-  right: 4px;
-  height: 20px;
-  background: repeating-linear-gradient(
-    90deg,
-    #000 0px, #000 1px, transparent 1px, transparent 2px,
-    #000 2px, #000 3px, transparent 3px, transparent 4px,
-    #000 4px, #000 5px, transparent 5px, transparent 6px,
-    #000 6px, #000 7px, transparent 7px, transparent 8px,
-    #000 8px, #000 9px, transparent 9px, transparent 10px,
-    #000 10px, #000 11px, transparent 11px, transparent 12px,
-    #000 12px, #000 13px, transparent 13px, transparent 14px,
-    #000 14px, #000 15px, transparent 15px, transparent 16px,
-    #000 16px, #000 17px, transparent 17px, transparent 18px,
-    #000 18px, #000 19px, transparent 19px, transparent 20px,
-    #000 20px, #000 21px, transparent 21px, transparent 22px,
-    #000 22px, #000 23px, transparent 23px, transparent 24px,
-    #000 24px, #000 25px, transparent 25px, transparent 26px,
-    #000 26px, #000 27px, transparent 27px, transparent 28px,
-    #000 28px, #000 29px, transparent 29px, transparent 30px,
-    #000 30px, #000 31px, transparent 31px, transparent 32px
-  );
+  right: 65px;
+  bottom: 3px;
+  z-index: 3;
 }
 
-/* 인쇄 섹션 */
-.print-section {
+.eta-label {
+  color: #e32727;
+  text-align: right;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 100%; /* 16px */
+  margin-bottom: 4px;
+}
+
+.eta-time {
+  color: #e32727;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 100%;
+}
+
+/* 활력징후 트렌드 섹션 */
+.vital-trend-section {
+  margin-bottom: 24px;
+}
+
+/* 라벨 섹션 */
+.label-section {
+  margin-bottom: 24px;
+}
+
+.label-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .print-button {
-  padding: 8px 16px;
-  background-color: #007aff;
+  background-color: transparent;
+  color: #2459e0;
   border: none;
-  border-radius: 6px;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 500;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-style: normal;
+  line-height: 130%; /* 20.8px */
 }
 
-.print-button:hover:not(:disabled) {
+.print-button:hover {
   background-color: #0056b3;
+  color: #ffffff;
 }
 
-.print-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.print-status {
+/* 인쇄 상태 */
+.printing-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0;
   font-size: 12px;
   color: #666666;
+}
+
+.printing-text {
+  margin-right: 4px;
+}
+
+.printing-dots {
+  animation: printingDots 1.5s infinite;
+}
+
+@keyframes printingDots {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.label-card {
+  width: 369px;
+  height: 102px;
+  flex-shrink: 0;
+  border-radius: 22px 0 0 22px;
+  background: #e9e9eb;
+  display: flex;
+  position: relative;
+  padding: 0;
+}
+
+.label-content {
+  flex: 1;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.label-item {
+  margin-bottom: 6px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 0 20px 0 0;
+}
+
+.label-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ID 텍스트 */
+.label-id {
+  color: #000;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 130%; /* 13px */
+}
+
+/* 응급환자 텍스트 */
+.label-emergency {
+  color: #000;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 18.2px */
+}
+
+/* 시간, 증상 텍스트 */
+.label-time-symptoms {
+  color: #000;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 16.9px */
+}
+
+/* 날짜, 시간, 증상 내용 텍스트 */
+.label-datetime-content {
+  color: #000;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 18.2px */
+}
+
+/* 기본 라벨 텍스트 (기존 호환성용) */
+.label-text {
+  color: #000;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Pretendard Variable";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 18.2px */
+}
+
+/* 바코드 바 */
+.barcode-bar {
+  display: inline-flex;
+  padding: 12px 0 21px 24px;
+  flex-direction: column;
+  align-items: center;
+  background: #e32727;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 102px;
+  width: 125px;
+}
+
+.barcode-pattern {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.barcode-line {
+  width: 2px;
+  height: 40px;
+  background-color: #000000;
+}
+
+.barcode-line:nth-child(odd) {
+  height: 30px;
+}
+
+.barcode-line:nth-child(even) {
+  height: 40px;
+}
+
+.barcode-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  margin-left: -20px;
 }
 
 /* 페이지 푸터 */
@@ -476,7 +435,7 @@
 .complete-button {
   width: 100%;
   padding: 16px;
-  background-color: #007aff;
+  background-color: #15378e;
   border: none;
   border-radius: 12px;
   color: #ffffff;
@@ -487,11 +446,11 @@
 }
 
 .complete-button:hover {
-  background-color: #0056b3;
+  background-color: #1a252f;
 }
 
 .complete-button:active {
-  background-color: #004085;
+  background-color: #0f1419;
 }
 
 /* 홈 인디케이터 */
@@ -514,26 +473,25 @@
 /* 반응형 디자인 */
 @media (max-width: 480px) {
   .main-content {
-    padding: 12px;
+    padding: 16px;
   }
 
   .patient-info-card,
-  .emergency-info-card {
-    margin-bottom: 12px;
+  .label-card {
+    flex-direction: column;
   }
 
-  .info-content {
-    padding: 12px;
+  .eta-bar,
+  .barcode-bar {
+    align-self: flex-end;
+    margin-top: 12px;
   }
 
-  .vital-trends-section,
-  .ai-recommendation-section {
-    padding: 12px;
-    margin-bottom: 12px;
-  }
-
-  .graph-area {
+  .graph-placeholder {
     height: 150px;
-    padding: 12px;
+  }
+
+  .x-axis {
+    font-size: 8px;
   }
 }

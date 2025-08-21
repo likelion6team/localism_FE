@@ -44,3 +44,14 @@ body {
 .report-flow .global-cta-holder .bottom-cta-wrap {
   display: block !important;
 }
+
+/* 상태바 완전 제거 */
+.status-bar {
+  display: none !important;
+}
+
+/* 브라우저 상태바 숨기기 */
+body::before,
+body::after {
+  display: none !important;
+}
