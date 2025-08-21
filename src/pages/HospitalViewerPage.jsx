@@ -42,7 +42,7 @@ export default function HospitalViewerPage() {
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
           <img
-            src="/src/assets/arrow-left.png"
+            src="/icons/arrow-left.png"
             alt="뒤로가기"
             className="back-icon"
           />
@@ -54,7 +54,7 @@ export default function HospitalViewerPage() {
       {/* 섹션 제목 */}
       <div className="section-title">
         <img
-          src="/src/assets/Rectangle 34625276.png"
+          src="/icons/Rectangle 34625276.png"
           alt="section icon"
           className="section-icon"
         />

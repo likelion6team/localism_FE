@@ -50,7 +50,7 @@ export default function EmergencyResponderPage() {
                 onClick={handleRecordClick}
               >
                 <img
-                  src="/src/assets/material-symbols_mic.svg"
+                  src="/icons/material-symbols_mic.svg"
                   alt="마이크"
                   className="mic-icon"
                 />
@@ -105,7 +105,7 @@ export default function EmergencyResponderPage() {
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
           <img
-            src="/src/assets/arrow-left.png"
+            src="/icons/arrow-left.png"
             alt="뒤로가기"
             className="back-icon"
           />
@@ -128,11 +128,7 @@ export default function EmergencyResponderPage() {
         {/* 활력징후 섹션 */}
         <div className="vital-card">
           <div className="vital-header">
-            <img
-              src="/src/assets/buzz.svg"
-              alt="활력징후"
-              className="vital-icon"
-            />
+            <img src="/icons/buzz.svg" alt="활력징후" className="vital-icon" />
             <h3 className="vital-title">
               활력징후 <span className="vital-subtitle">(BLE 자동수집)</span>
             </h3>
@@ -141,7 +137,7 @@ export default function EmergencyResponderPage() {
             <div className="vital-signs">
               <div className="vital-item">
                 <img
-                  src="/src/assets/Rectangle2.png"
+                  src="/icons/Rectangle2.png"
                   alt="아이콘"
                   className="vital-item-icon"
                 />
@@ -152,7 +148,7 @@ export default function EmergencyResponderPage() {
               </div>
               <div className="vital-item">
                 <img
-                  src="/src/assets/Rectangle2.png"
+                  src="/icons/Rectangle2.png"
                   alt="아이콘"
                   className="vital-item-icon"
                 />
@@ -163,7 +159,7 @@ export default function EmergencyResponderPage() {
               </div>
               <div className="vital-item">
                 <img
-                  src="/src/assets/Rectangle2.png"
+                  src="/icons/Rectangle2.png"
                   alt="아이콘"
                   className="vital-item-icon"
                 />
@@ -174,7 +170,7 @@ export default function EmergencyResponderPage() {
               </div>
               <div className="vital-item">
                 <img
-                  src="/src/assets/Rectangle2.png"
+                  src="/icons/Rectangle2.png"
                   alt="아이콘"
                   className="vital-item-icon"
                 />
@@ -190,22 +186,18 @@ export default function EmergencyResponderPage() {
         {/* 위치, 시간, 상태 정보 */}
         <section className="info-card">
           <div className="info-row">
-            <img src="/src/assets/pin.svg" alt="위치" className="info-icon" />
+            <img src="/icons/pin.svg" alt="위치" className="info-icon" />
             <span className="info-text">
               서울특별시 성북구 종암로 25길 10 (종암동)
             </span>
           </div>
           <div className="info-row">
-            <img
-              src="/src/assets/clock2.svg"
-              alt="시간"
-              className="info-icon"
-            />
+            <img src="/icons/clock2.svg" alt="시간" className="info-icon" />
             <span className="info-text">오후 2:15:35</span>
           </div>
           <div className="info-row">
             <img
-              src="/src/assets/heartbreaker.svg"
+              src="/icons/heartbreaker.svg"
               alt="상태"
               className="info-icon"
             />
@@ -230,7 +222,7 @@ export default function EmergencyResponderPage() {
           <div className="popup-dialog">
             <div className="popup-header">
               <img
-                src="/src/assets/resqlooogo.svg"
+                src="/icons/resqlooogo.svg"
                 alt="ResQ"
                 className="popup-logo"
               />
