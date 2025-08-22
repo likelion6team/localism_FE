@@ -207,7 +207,6 @@ export default function Step5Photo({ onBack }) {
       width: 100%;
       height: calc(100% - 120px);
       object-fit: cover;
-      transform: scaleX(-1); /* 거울 효과로 자연스럽게 */
       background: #000;
     `;
 
@@ -269,9 +268,7 @@ export default function Step5Photo({ onBack }) {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // 거울 효과를 제거하고 올바른 방향으로 그리기
-    ctx.scale(-1, 1);
-    ctx.translate(-canvas.width, 0);
+    // 비디오 프레임을 캔버스에 그리기
     ctx.drawImage(video, 0, 0);
 
     // 캔버스를 Blob으로 변환
