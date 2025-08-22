@@ -4,7 +4,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const TMAP_APP_KEY = import.meta.env.VITE_TMAP_APP_KEY;
 
-
 // 환경 변수 확인용 로그
 console.log("API_BASE_URL:", API_BASE_URL);
 console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
@@ -71,7 +70,7 @@ export async function sendReport(payload) {
 
     console.log("API 응답 상태:", response.status);
     console.log("API 응답 헤더:", response.headers);
-    console.log("response:",response);
+    console.log("response:", response);
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API 오류 응답:", errorText);
@@ -122,7 +121,9 @@ export async function getAddressFromCoordinates(lat, lng) {
     const TMAP_APP_KEY = "dVnE4kwFT15MzSsJpkdHj5XPEjklK0rm6Nc20AvP";
 
     // ✅ 엔드포인트 경로 포함
-    const url = new URL("https://apis.openapi.sk.com/tmap/geo/reversegeocoding");
+    const url = new URL(
+      "https://apis.openapi.sk.com/tmap/geo/reversegeocoding"
+    );
     url.searchParams.set("version", "1");
     url.searchParams.set("format", "json");
     url.searchParams.set("coordType", "WGS84GEO");
@@ -148,7 +149,10 @@ export async function getAddressFromCoordinates(lat, lng) {
     // 새주소 조립
     const lastLegal = info.legalDong?.slice(-1) ?? "";
     let road = `${info.city_do ?? ""} ${info.gu_gun ?? ""} `;
-    if ((info.eup_myun ?? "") === "" && (lastLegal === "읍" || lastLegal === "면")) {
+    if (
+      (info.eup_myun ?? "") === "" &&
+      (lastLegal === "읍" || lastLegal === "면")
+    ) {
       road += info.legalDong ?? "";
     } else {
       road += info.eup_myun ?? "";
@@ -156,15 +160,18 @@ export async function getAddressFromCoordinates(lat, lng) {
     road += ` ${info.roadName ?? ""} ${info.buildingIndex ?? ""}`.trim();
 
     if ((info.legalDong ?? "") && !(lastLegal === "읍" || lastLegal === "면")) {
-      road += (info.buildingName ?? "")
-        ? ` (${info.legalDong}, ${info.buildingName})`
-        : ` (${info.legalDong})`;
+      road +=
+        info.buildingName ?? ""
+          ? ` (${info.legalDong}, ${info.buildingName})`
+          : ` (${info.legalDong})`;
     } else if (info.buildingName) {
       road += ` (${info.buildingName})`;
     }
 
     // 지번 주소도 필요하면 함께 반환
-    const jibun = `${info.city_do ?? ""} ${info.gu_gun ?? ""} ${info.legalDong ?? ""} ${info.ri ?? ""} ${info.bunji ?? ""}`
+    const jibun = `${info.city_do ?? ""} ${info.gu_gun ?? ""} ${
+      info.legalDong ?? ""
+    } ${info.ri ?? ""} ${info.bunji ?? ""}`
       .replace(/\s+/g, " ")
       .trim();
 
@@ -176,3 +183,64 @@ export async function getAddressFromCoordinates(lat, lng) {
   }
 }
 
+// 음성 녹음 기반 구조 요청 리포트 API
+export async function sendRescueReport(payload) {
+  try {
+    console.log("=== sendRescueReport 시작 ===");
+    console.log("전체 payload:", payload);
+
+    // 1단계: 음성 전사 API 호출하여 voiceId 받기
+    const voiceFormData = new FormData();
+    voiceFormData.append("file", payload.voiceBlob, "recording.wav");
+
+    console.log("음성 전사 API 호출 중...");
+    const voiceResponse = await fetch(`${API_BASE_URL}/api/voice/transcribe`, {
+      method: "POST",
+      body: voiceFormData,
+    });
+
+    if (!voiceResponse.ok) {
+      throw new Error(`음성 전사 실패: ${voiceResponse.status}`);
+    }
+
+    const voiceResult = await voiceResponse.json();
+    const voiceId = voiceResult.data?.id || voiceResult.id;
+
+    if (!voiceId) {
+      throw new Error("음성 전사 ID를 받을 수 없습니다.");
+    }
+
+    console.log("음성 전사 성공, voiceId:", voiceId);
+
+    // 2단계: 구조 요청 리포트 전송
+    const apiPayload = {
+      reportId: payload.reportId || 1, // 실제 리포트 ID
+      voiceId: voiceId, // 음성 전사에서 받은 ID
+    };
+
+    console.log("API로 전송할 payload:", apiPayload);
+
+    const response = await fetch(`${API_BASE_URL}/api/rescueReports`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(apiPayload),
+    });
+
+    console.log("API 응답 상태:", response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API 오류 응답:", errorText);
+      throw new Error(`API 호출 실패: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log("구조 요청 리포트 전송 성공:", result);
+    return { ok: true, data: result, id: result.id || result.reportId };
+  } catch (error) {
+    console.error("구조 요청 리포트 전송 실패:", error);
+    return { ok: false, error: error.message };
+  }
+}
