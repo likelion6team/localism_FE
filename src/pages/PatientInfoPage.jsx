@@ -168,8 +168,10 @@ export default function PatientInfoPage() {
 
         {/* 현장사진 */}
         <section className="info-section">
-          <label className="section-label">현장 사진</label>
-          <PhotoPlaceholder />
+          <label className="section-label"></label>
+          <PhotoPlaceholder
+            reportId={report?.data?.reportId || report?.data?.id}
+          />
         </section>
       </main>
 
