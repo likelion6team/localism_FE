@@ -1,14 +1,28 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getDetailReport } from "../features/report/model/rescueReportDetailApi"; // 경로는 맞게 조정
 import "./PatientInfoPage.css";
 import PhotoPlaceholder from "../components/PhotoPlaceholder";
 
 export default function PatientInfoPage() {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [report, setReport] = useState(null);
 
   const goBack = () => navigate("/report-list");
-  const handleComplete = () => {
-    navigate("/emergency-responder");
-  };
+  const handleComplete = () => navigate("/emergency-responder");
+
+  useEffect(() => {
+    if (id) {
+      getDetailReport(id).then((data) => {
+        setReport(data); // result.data만 리턴하도록 해뒀으니 바로 환자 객체 들어옴
+      });
+
+      console.log("신고 리포트 상세 조회:", report);
+    }
+  }, [id]);
+
+  if (!report) return <div>로딩 중...</div>;
 
   return (
     <div className="patient-info-page">
@@ -25,11 +39,7 @@ export default function PatientInfoPage() {
       {/* 헤더 */}
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
-          <img
-            src="/icons/arrow-left.png"
-            alt="뒤로가기"
-            className="back-icon"
-          />
+          <img src="/icons/arrow-left.png" alt="뒤로가기" className="back-icon" />
         </button>
         <h1 className="page-title">환자 정보</h1>
         <div className="header-spacer"></div>
@@ -44,75 +54,70 @@ export default function PatientInfoPage() {
           <span className="title-black">확인해주세요</span>
         </h2>
 
-        {/* 의식 섹션 */}
+        {/* 의식 */}
         <div className="section-container">
           <label className="section-label">의식</label>
           <section className="info-section">
             <div className="single-button-container">
-              <div className="info-button">흐림 (반응이 느림)</div>
+              <div className="info-button">{report.data.consciousnessStatus}</div>
             </div>
           </section>
         </div>
 
-        {/* 사고 유형 섹션 */}
+        {/* 사고 유형 */}
         <div className="section-container">
           <label className="section-label">사고 유형</label>
           <section className="info-section">
             <div className="button-group">
-              <div className="info-button">
-                <img
-                  src="/icons/car.svg"
-                  alt="교통사고"
-                  className="button-icon"
-                />
-                교통사고
-              </div>
-              <div className="info-button">
-                <img
-                  src="/icons/knife.svg"
-                  alt="자상"
-                  className="button-icon"
-                />
-                자상
-              </div>
+              {report.data.accidentType?.map((type, idx) => (
+                <div key={idx} className="info-button">
+                  {/* 아이콘 매핑 */}
+                  {type.includes("교통") && (
+                    <img src="/icons/car.svg" alt="교통사고" className="button-icon" />
+                  )}
+                  {type.includes("자상") && (
+                    <img src="/icons/knife.svg" alt="자상" className="button-icon" />
+                  )}
+                  {type}
+                </div>
+              ))}
             </div>
           </section>
         </div>
 
-        {/* 환자 증상 섹션 */}
+        {/* 환자 증상 */}
         <div className="section-container">
           <label className="section-label">환자 증상</label>
           <section className="info-section">
             <div className="button-group">
-              <div className="info-button">
-                <img
-                  src="/icons/blood.svg"
-                  alt="출혈"
-                  className="button-icon"
-                />
-                출혈
-              </div>
-              <div className="info-button">
-                <img src="/icons/bone.svg" alt="골절" className="button-icon" />
-                골절
-              </div>
+              {report.data.majorSymptoms?.map((symptom, idx) => (
+                <div key={idx} className="info-button">
+                  {symptom.includes("출혈") && (
+                    <img src="/icons/blood.svg" alt="출혈" className="button-icon" />
+                  )}
+                  {symptom.includes("골절") && (
+                    <img src="/icons/bone.svg" alt="골절" className="button-icon" />
+                  )}
+                  {symptom}
+                </div>
+              ))}
             </div>
           </section>
         </div>
 
-        {/* 호흡 섹션 */}
+        {/* 호흡 */}
         <div className="section-container">
           <label className="section-label">호흡</label>
           <section className="info-section">
             <div className="single-button-container">
-              <div className="info-button">어려움 (가쁘거나 불규칙)</div>
+              <div className="info-button">{report.data.breathingStatus}</div>
             </div>
           </section>
         </div>
 
-        {/* 현장사진 섹션 */}
+        {/* 현장사진 */}
         <section className="info-section">
-          <label className="section-label"></label>
+          <label className="section-label">현장 사진</label>
           <PhotoPlaceholder />
         </section>
       </main>
@@ -124,7 +129,6 @@ export default function PatientInfoPage() {
         </button>
       </footer>
 
-      {/* 홈 인디케이터 */}
       <div className="home-indicator" />
     </div>
   );
