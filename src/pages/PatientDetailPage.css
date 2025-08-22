@@ -234,11 +234,11 @@
 }
 
 .print-button {
-  background-color: transparent;
+  background: none;
   color: #2459e0;
   border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
+  border-radius: 0;
+  padding: 0;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
@@ -251,8 +251,8 @@
 }
 
 .print-button:hover {
-  background-color: #0056b3;
-  color: #ffffff;
+  background-color: transparent;
+  color: #0056b3;
 }
 
 /* 인쇄 상태 */

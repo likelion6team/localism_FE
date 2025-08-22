@@ -102,6 +102,7 @@
 /* 섹션 스타일 */
 .info-section {
   margin-bottom: 0;
+  display: block;
 }
 
 .section-label {
@@ -131,6 +132,7 @@
 .single-button-container {
   width: 100%;
   padding: 0 16px;
+  box-sizing: border-box;
 }
 
 /* 버튼 그룹 */
@@ -213,7 +215,9 @@
   border-radius: 12px;
   color: #ffffff;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700; /* 인쇄 버튼과 동일 굵기 */
+  font-family: "Pretendard Variable"; /* 인쇄 버튼과 동일 폰트 */
+  line-height: 130%;
   cursor: pointer;
   transition: background-color 0.2s;
 }
