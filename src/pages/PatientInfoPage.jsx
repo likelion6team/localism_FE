@@ -10,7 +10,9 @@ export default function PatientInfoPage() {
   const [report, setReport] = useState(null);
 
   const goBack = () => navigate("/report-list");
-  const handleComplete = () => navigate("/emergency-responder");
+  const handleComplete = () => {
+    navigate("/emergency-responder", { state: report.data });
+  };
 
   useEffect(() => {
     if (id) {

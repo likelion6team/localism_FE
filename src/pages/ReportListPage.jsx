@@ -33,8 +33,7 @@ export default function ReportListPage() {
 
   const handleReportClick = () => {
     setTimeout(() => {
-      //navigate("/patient-info");
-      navigate(`/patient-info/75`);
+      navigate("/patient-info");
     }, 200);
   };
 

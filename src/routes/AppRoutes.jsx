@@ -23,15 +23,13 @@ export default function AppRoutes() {
 
       {/* 구급대원 신고 리스트 및 환자 정보 작성 */}
       <Route path="/report-list" element={<ReportListPage />} />  
-      {/* <Route path="/patient-info" element={<PatientInfoPage />} />  */}
-      <Route path="/patient-info/:id" element={<PatientInfoPage />} />
+      <Route path="/patient-info" element={<PatientInfoPage />} />
 
       {/* 병원 페이지 */}
       <Route path="/hospital" element={<HospitalViewerPage />} />
 
       {/* 병원 환자 상세 페이지 */}
-      {/* <Route path="/patient-detail" element={<PatientDetailPage />} /> */}
-      <Route path="/patient-detail/:id" element={<PatientDetailPage />} />  
+      <Route path="/patient-detail" element={<PatientDetailPage />} />
 
       {/* 잘못된 경로로 접근 시 홈페이지로 리다이렉트 */}
       <Route path="*" element={<Navigate to="/" replace />} />
