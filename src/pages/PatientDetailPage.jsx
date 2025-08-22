@@ -13,23 +13,24 @@ export default function PatientDetailPage() {
   const [loading, setLoading] = useState(true);
 
   const goBack = () => navigate("/hospital");
-const handleComplete = async () => {
+  const handleComplete = async () => {
+    try {
+      // ✅ PATCH 요청으로 변경
+      const res = await axios.patch(
+        `https://api.localism0825.store/api/rescueReports/${id}/complete`
+      );
+      console.log("📌 완료 API 응답:", res);
 
-  try {
-    // ✅ PATCH 요청으로 변경
-    const res = await axios.patch(`https://api.localism0825.store/api/rescueReports/${id}/complete`);
-    console.log("📌 완료 API 응답:", res);
+      // ✅ 프론트 상태 초기화 (선택)
+      setPatient(null);
 
-    // ✅ 프론트 상태 초기화 (선택)
-    setPatient(null);
-
-    // ✅ 병원 목록 페이지로 이동
-    navigate("/hospital");
-  } catch (err) {
-    console.error("🚨 완료 처리 실패:", err);
-    alert("완료 처리에 실패했습니다. 다시 시도해주세요.");
-  }
-};
+      // ✅ 병원 목록 페이지로 이동
+      navigate("/hospital");
+    } catch (err) {
+      console.error("🚨 완료 처리 실패:", err);
+      alert("완료 처리에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   const handlePrint = () => {
     setIsPrinting(true);
@@ -39,7 +40,9 @@ const handleComplete = async () => {
   // ✅ 환자 상세 API 호출
   const fetchPatient = async (id) => {
     try {
-      const res = await axios.get(`https://api.localism0825.store/api/rescueReports/${id}`);
+      const res = await axios.get(
+        `https://api.localism0825.store/api/rescueReports/${id}`
+      );
       console.log("📌 API 응답:", res);
 
       const d = res.data.data; // ✅ API 구조에 맞게 꺼냄
@@ -51,9 +54,9 @@ const handleComplete = async () => {
         consciousness: d.consciousnessStatus ?? "정보 없음",
         findings: d.details ?? "정보 없음",
         eta: d.eta
-          ? `${Math.floor(d.eta / 60).toString().padStart(2, "0")}:${(d.eta % 60)
+          ? `${Math.floor(d.eta / 60)
               .toString()
-              .padStart(2, "0")}`
+              .padStart(2, "0")}:${(d.eta % 60).toString().padStart(2, "0")}`
           : "정보 없음",
       };
 
@@ -86,7 +89,11 @@ const handleComplete = async () => {
       {/* 헤더 */}
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
-          <img src="/icons/arrow-left.png" alt="뒤로가기" className="back-icon" />
+          <img
+            src="/icons/arrow-left.png"
+            alt="뒤로가기"
+            className="back-icon"
+          />
         </button>
         <h1 className="page-title">환자 상세 정보</h1>
         <div className="header-spacer"></div>
@@ -113,10 +120,14 @@ const handleComplete = async () => {
                 <span className="info-value">{patient.consciousness}</span>
               </div>
               <div className="info-item emt-label-item">
-                <span className="info-label emt-label">{"<"}EMT 소견{">"}</span>
+                <span className="info-label emt-label">
+                  {"<"}EMT 소견{">"}
+                </span>
               </div>
               <div className="info-item">
-                <span className="info-value emt-findings">{patient.findings}</span>
+                <span className="info-value emt-findings">
+                  {patient.findings}
+                </span>
               </div>
             </div>
             <div className="eta-bar">
@@ -130,7 +141,7 @@ const handleComplete = async () => {
         <section className="vital-trend-section">
           <h2 className="section-title">활력징후 트렌드</h2>
           {/* ✅ patient null 방어 */}
-          {patient.id ? <VitalTrendGraph reportId={patient.id} /> : <p>데이터 없음</p>}
+          {id ? <VitalTrendGraph reportId={id} /> : <p>데이터 없음</p>}
         </section>
 
         {/* 라벨 섹션 */}
@@ -163,11 +174,17 @@ const handleComplete = async () => {
               </div>
               <div className="label-item">
                 <span className="label-time-symptoms">증상</span>
-                <span className="label-datetime-content">{patient.mainSymptom}</span>
+                <span className="label-datetime-content">
+                  {patient.mainSymptom}
+                </span>
               </div>
             </div>
             <div className="barcode-bar">
-              <img src="/icons/barcode.svg" alt="바코드" className="barcode-image" />
+              <img
+                src="/icons/barcode.svg"
+                alt="바코드"
+                className="barcode-image"
+              />
             </div>
           </div>
         </section>
