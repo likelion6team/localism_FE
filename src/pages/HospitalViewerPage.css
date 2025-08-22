@@ -1,6 +1,6 @@
 .hospital-viewer-page {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #fefefe;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   flex-direction: column;
@@ -83,10 +83,11 @@
 .emergency-list {
   flex: 1;
   padding: 0px 16px;
-  background-color: #f8f9fa;
+  background-color: #fefefe;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* 화면 높이에 따라 간격이 달라지지 않도록 */
+  gap: 24px; /* 카드 간 고정 간격 */
 }
 
 /* 응급 카드 */
@@ -277,20 +278,20 @@
 /* 반응형 디자인 */
 @media (max-width: 480px) {
   .emergency-list {
-    padding: 6px 12px;
+    padding: 0px 16px; /* 데스크탑과 동일 유지 */
   }
 
   .emergency-card {
-    padding: 14px;
-    margin-bottom: 6px;
-    height: 70px;
+    padding: 32px; /* 데스크탑과 동일 유지 */
+    margin-bottom: 0px; /* 데스크탑과 동일 유지 */
+    height: 180px; /* 데스크탑과 동일 유지 */
   }
 
   .card-content {
-    padding-left: 12px;
+    padding-left: 0px; /* 데스크탑과 동일 유지 */
   }
 
   .eta-time {
-    font-size: 18px;
+    font-size: 26.154px; /* 데스크탑과 동일 유지 */
   }
 }

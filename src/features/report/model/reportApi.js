@@ -64,14 +64,14 @@ export async function sendReport(payload) {
       console.log(`  ${key}:`, value);
     }
 
-        const response = await fetch(`${API_BASE_URL}/api/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports`, {
       method: "POST",
       body: formData,
     });
 
     console.log("API 응답 상태:", response.status);
     console.log("API 응답 헤더:", response.headers);
-
+    console.log("response:",response);
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API 오류 응답:", errorText);
@@ -111,9 +111,15 @@ export async function getCurrentLocation() {
   }
 }
 
-// 좌표를 주소로 변환하는 API (예시)
+// TMAP API 키 (실제 사용시 환경변수로 관리해야 함)
+const TMAP_API_KEY =
+  import.meta.env.VITE_TMAP_API_KEY ||
+  "sVHWS8NG5uR7YE7Kdlou2tUK4HfK6OG6kq9Tnh53";
+
+// 좌표를 주소로 변환하는 API (TMAP API 사용)
 export async function getAddressFromCoordinates(lat, lng) {
   try {
+    const TMAP_APP_KEY = "dVnE4kwFT15MzSsJpkdHj5XPEjklK0rm6Nc20AvP";
 
     // ✅ 엔드포인트 경로 포함
     const url = new URL("https://apis.openapi.sk.com/tmap/geo/reversegeocoding");
