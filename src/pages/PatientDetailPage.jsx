@@ -13,11 +13,11 @@ export default function PatientDetailPage() {
 
   const goBack = () => navigate("/hospital");
 const handleComplete = async () => {
-  if (!patient?.id) return;
 
   try {
     // ✅ PATCH 요청으로 변경
-    await axios.patch(`https://api.localism0825.store/api/rescueReports/${patient.id}/complete`);
+    const res = await axios.patch(`https://api.localism0825.store/api/rescueReports/${id}/complete`);
+    console.log("📌 완료 API 응답:", res);
 
     // ✅ 프론트 상태 초기화 (선택)
     setPatient(null);
