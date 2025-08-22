@@ -12,22 +12,20 @@ export default function EmergencyResponderPage() {
   const location = useLocation();
   const reportData = location.state;
 
-  if (!reportData) return <div>데이터 없음</div>;
-
   const goBack = () => navigate("/patient-info");
   const handleSend = () => setShowPopup(true);
   const handleNewCase = () => navigate("/report-list");
 
-const [mediaStream, setMediaStream] = useState(null);
-const [audioContext, setAudioContext] = useState(null);
-const [processor, setProcessor] = useState(null);
-const [chunks, setChunks] = useState([]);
+  const [mediaStream, setMediaStream] = useState(null);
+  const [audioContext, setAudioContext] = useState(null);
+  const [processor, setProcessor] = useState(null);
+  const [chunks, setChunks] = useState([]);
 
-// ⬇️ handleRecordClick 수정
-const handleRecordClick = async () => {
-  if (recordingState === "ready") {
+  if (!reportData) return <div>데이터 없음</div>;
+
+  // 녹음 시작
+  const startRecording = async () => {
     setRecordingState("recording");
-
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -43,7 +41,6 @@ const handleRecordClick = async () => {
         sampleRate: 16000,
       });
 
-      // AudioWorklet 로드
       await ctx.audioWorklet.addModule("/recorder-processor.js");
       const source = ctx.createMediaStreamSource(stream);
       const proc = new AudioWorkletNode(ctx, "recorder-processor");
@@ -64,12 +61,27 @@ const handleRecordClick = async () => {
       console.error("🚨 마이크 접근 실패:", err);
       setVoiceText("마이크 권한이 필요합니다.");
       setRecordingState("completed");
+      throw err;
     }
-  } else if (recordingState === "recording") {
-    // 🔴 중지 버튼 클릭 시
-    processor.disconnect();
-    mediaStream.getTracks().forEach((track) => track.stop());
-    audioContext.close();
+  };
+
+  // 녹음 중지 후 처리
+  const stopAndProcess = async () => {
+    try {
+      if (processor) processor.disconnect();
+    } catch (e) {
+      console.debug("processor disconnect failed", e);
+    }
+    try {
+      if (mediaStream) mediaStream.getTracks().forEach((track) => track.stop());
+    } catch (e) {
+      console.debug("mediaStream stop failed", e);
+    }
+    try {
+      if (audioContext) await audioContext.close();
+    } catch (e) {
+      console.debug("audioContext close failed", e);
+    }
 
     let totalLength = chunks.reduce((acc, cur) => acc + cur.length, 0);
     let pcmData = new Float32Array(totalLength);
@@ -85,10 +97,13 @@ const handleRecordClick = async () => {
 
     setRecordingState("processing");
     try {
-      const res = await fetch("https://api.localism0825.store/api/voice/transcribe", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        "https://api.localism0825.store/api/voice/transcribe",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!res.ok) throw new Error("STT API 요청 실패");
       const result = await res.json();
@@ -100,43 +115,82 @@ const handleRecordClick = async () => {
     } finally {
       setRecordingState("completed");
     }
-  }
-};
-
-// 🔧 WAV 변환 함수
-function exportWAV(pcmData, sampleRate) {
-  const buffer = new ArrayBuffer(44 + pcmData.length * 2); // 16bit = 2바이트
-  const view = new DataView(buffer);
-
-  const writeString = (offset, str) => {
-    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
   };
 
-  // WAV 헤더
-  writeString(0, "RIFF");
-  view.setUint32(4, 36 + pcmData.length * 2, true);
-  writeString(8, "WAVE");
-  writeString(12, "fmt ");
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true); // PCM
-  view.setUint16(22, 1, true); // mono
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * 2, true); // byte rate
-  view.setUint16(32, 2, true); // block align
-  view.setUint16(34, 16, true); // bits per sample
-  writeString(36, "data");
-  view.setUint32(40, pcmData.length * 2, true);
+  // 오디오 리셋 (처리 없이 즉시 정리)
+  const resetAudio = async () => {
+    try {
+      if (processor) processor.disconnect();
+    } catch (e) {
+      console.debug("processor disconnect failed", e);
+    }
+    try {
+      if (mediaStream) mediaStream.getTracks().forEach((track) => track.stop());
+    } catch (e) {
+      console.debug("mediaStream stop failed", e);
+    }
+    try {
+      if (audioContext) await audioContext.close();
+    } catch (e) {
+      console.debug("audioContext close failed", e);
+    }
+    setChunks([]);
+    setVoiceText("");
+    setRecordingState("ready");
+  };
 
-  // Float32 → Int16 변환
-  let offset = 44;
-  for (let i = 0; i < pcmData.length; i++, offset += 2) {
-    let s = Math.max(-1, Math.min(1, pcmData[i]));
-    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+  // ⬇️ handleRecordClick 수정: 상태에 따라 분기
+  const handleRecordClick = async () => {
+    if (recordingState === "ready") {
+      await startRecording();
+    } else if (recordingState === "recording") {
+      await stopAndProcess();
+    }
+  };
+
+  // 음성 입력 영역 더블클릭 시 재녹음 (정리 후 즉시 새 녹음 시작)
+  const handleVoiceDoubleClick = async () => {
+    try {
+      await resetAudio();
+    } catch (e) {
+      console.debug("double click re-record failed", e);
+    }
+  };
+
+  // 🔧 WAV 변환 함수
+  function exportWAV(pcmData, sampleRate) {
+    const buffer = new ArrayBuffer(44 + pcmData.length * 2); // 16bit = 2바이트
+    const view = new DataView(buffer);
+
+    const writeString = (offset, str) => {
+      for (let i = 0; i < str.length; i++)
+        view.setUint8(offset + i, str.charCodeAt(i));
+    };
+
+    // WAV 헤더
+    writeString(0, "RIFF");
+    view.setUint32(4, 36 + pcmData.length * 2, true);
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); // PCM
+    view.setUint16(22, 1, true); // mono
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); // byte rate
+    view.setUint16(32, 2, true); // block align
+    view.setUint16(34, 16, true); // bits per sample
+    writeString(36, "data");
+    view.setUint32(40, pcmData.length * 2, true);
+
+    // Float32 → Int16 변환
+    let offset = 44;
+    for (let i = 0; i < pcmData.length; i++, offset += 2) {
+      let s = Math.max(-1, Math.min(1, pcmData[i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+    }
+
+    return new Blob([view], { type: "audio/wav" });
   }
-
-  return new Blob([view], { type: "audio/wav" });
-}
-
 
   const renderVoiceContent = () => {
     switch (recordingState) {
@@ -221,7 +275,7 @@ function exportWAV(pcmData, sampleRate) {
       {/* 메인 콘텐츠 */}
       <main className="main-content">
         {/* 음성 입력 섹션 */}
-        <div className="voice-card">
+        <div className="voice-card" onDoubleClick={handleVoiceDoubleClick}>
           <div className="voice-header">
             <div className="voice-wave-icon">((o))</div>
             <h3 className="voice-title">음성 입력</h3>
@@ -247,7 +301,9 @@ function exportWAV(pcmData, sampleRate) {
                 />
                 <div className="vital-text">
                   <span className="vital-label">호흡수</span>
-                  <span className="vital-value">{reportData.respiration}/min</span>
+                  <span className="vital-value">
+                    {reportData.respiration}/min
+                  </span>
                 </div>
               </div>
               <div className="vital-item">
@@ -258,7 +314,9 @@ function exportWAV(pcmData, sampleRate) {
                 />
                 <div className="vital-text">
                   <span className="vital-label">혈압</span>
-                  <span className="vital-value">{reportData.systolic}/{reportData.diastolic}mmHg</span>
+                  <span className="vital-value">
+                    {reportData.systolic}/{reportData.diastolic}mmHg
+                  </span>
                 </div>
               </div>
               <div className="vital-item">
@@ -291,9 +349,7 @@ function exportWAV(pcmData, sampleRate) {
         <section className="info-card">
           <div className="info-row">
             <img src="/icons/pin.svg" alt="위치" className="info-icon" />
-            <span className="info-text">
-              {reportData.location}
-            </span>
+            <span className="info-text">{reportData.location}</span>
           </div>
           <div className="info-row">
             <img src="/icons/clock.svg" alt="시간" className="info-icon" />

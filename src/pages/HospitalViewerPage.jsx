@@ -11,34 +11,6 @@ export default function HospitalViewerPage() {
   const goBack = () => navigate("/");
   const handleCaseClick = (id) => navigate(`/patient-detail/${id}`);
 
-  // 샘플 응급 상황 데이터 (fallback)
-  const fallbackCases = [
-    {
-      id: 1,
-      date: "2025.08.14",
-      mainSymptom: "호흡 어려움, 뇌출혈",
-      consciousness: "흐림",
-      eta: "01:01",
-      priority: "high", // red
-    },
-    {
-      id: 2,
-      date: "2025.08.14",
-      mainSymptom: "골절",
-      consciousness: "있음",
-      eta: "05:15",
-      priority: "medium", // yellow
-    },
-    {
-      id: 3,
-      date: "2025.08.14",
-      mainSymptom: "화상, 출혈",
-      consciousness: "없음",
-      eta: "08:18",
-      priority: "low", // grey
-    },
-  ];
-
   // 공통 유틸: mm:ss 포맷, 우선순위 분류
   const formatMmSs = (sec) => {
     if (sec == null || Number.isNaN(sec)) return "-";
@@ -54,6 +26,21 @@ export default function HospitalViewerPage() {
     if (etaSec < 10 * 60) return "medium";
     return "low";
   };
+
+  // 최초 진입 시 캐시된 카드 즉시 표시
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("hospital_cases_cache");
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (Array.isArray(cached) && cached.length > 0) {
+          setCases(cached);
+        }
+      }
+    } catch (e) {
+      console.debug("hospital_cases_cache read failed", e);
+    }
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,45 +83,44 @@ export default function HospitalViewerPage() {
 
     const extractList = (payload) => {
       if (!payload) return [];
-      if (Array.isArray(payload)) return payload;
-      const candidates = [
+      const pickArray = (arr) =>
+        Array.isArray(arr) && arr.length && typeof arr[0] === "object"
+          ? arr
+          : null;
+
+      if (Array.isArray(payload)) {
+        const picked = pickArray(payload);
+        if (picked) return picked;
+      }
+
+      const top = [
         payload?.rescueReports,
         payload?.reports,
-        payload?.data,
         payload?.content,
         payload?.items,
         payload?.list,
-        payload?.rows,
         payload?.results,
+        payload?.rows,
       ];
-      const found = candidates.find((c) => Array.isArray(c));
-      if (found) return found;
+      for (const x of top) {
+        const picked = pickArray(x);
+        if (picked) return picked;
+      }
+
       const dataObj = payload?.data;
-      const nested = [
+      const underData = [
         dataObj?.rescueReports,
         dataObj?.reports,
         dataObj?.content,
         dataObj?.items,
         dataObj?.list,
-        dataObj?.rows,
         dataObj?.results,
+        dataObj?.rows,
       ];
-      const foundNested = nested.find((c) => Array.isArray(c));
-      if (foundNested) return foundNested;
-      // BFS로 첫 번째 배열 찾기 (totalCount가 있는 페이지 응답 대응)
-      const bfs = (obj, depth = 0) => {
-        if (!obj || depth > 3) return [];
-        if (Array.isArray(obj)) return obj;
-        if (typeof obj === "object") {
-          for (const key of Object.keys(obj)) {
-            const res = bfs(obj[key], depth + 1);
-            if (Array.isArray(res) && res.length) return res;
-          }
-        }
-        return [];
-      };
-      const deep = bfs(payload);
-      if (deep.length) return deep;
+      for (const x of underData) {
+        const picked = pickArray(x);
+        if (picked) return picked;
+      }
       return [];
     };
 
@@ -142,33 +128,18 @@ export default function HospitalViewerPage() {
       try {
         setLoading(true);
         setError("");
-        const endpoints = [
-          "https://api.localism0825.store/api/rescueReports/wait",
-          "https://api.localism0825.store/api/rescueReports",
-          "https://api.localism0825.store/api/rescueReports/list",
-          "https://api.localism0825.store/api/rescueReports/waits",
-        ];
-        let list = [];
-        for (const url of endpoints) {
-          try {
-            const res = await fetch(url, {
-              method: "GET",
-              headers: { accept: "*/*" },
-              signal: controller.signal,
-            });
-            if (!res.ok) continue;
-            const json = await res.json();
-            console.log("rescueReports fetch", url, json);
-            const extracted = extractList(json);
-            if (extracted.length) {
-              list = extracted;
-              break;
-            }
-          } catch {
-            // try next
+        // 캐시 방지 파라미터 추가로 새 데이터 즉시 반영
+        const res = await fetch(
+          `https://api.localism0825.store/api/rescueReports/wait?t=${Date.now()}`,
+          {
+            method: "GET",
+            headers: { accept: "*/*" },
+            signal: controller.signal,
           }
-        }
-        // 목록이 비어도 에러로 처리하지 않고 fallback 사용
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const list = extractList(json);
 
         const mapped = list.map((it, idx) => {
           const id = it?.id ?? it?.reportId ?? it?.rescueReportId ?? idx + 1;
@@ -216,6 +187,11 @@ export default function HospitalViewerPage() {
         });
 
         setCases(mapped);
+        try {
+          localStorage.setItem("hospital_cases_cache", JSON.stringify(mapped));
+        } catch (e) {
+          console.debug("hospital_cases_cache write failed", e);
+        }
       } catch {
         setError("데이터를 불러오지 못했습니다.");
       } finally {
@@ -224,7 +200,20 @@ export default function HospitalViewerPage() {
     }
 
     fetchCases();
-    return () => controller.abort();
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        fetchCases();
+      }
+    };
+    window.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+
+    return () => {
+      controller.abort();
+      window.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
   }, []);
 
   // 초 단위 카운트다운
@@ -262,7 +251,7 @@ export default function HospitalViewerPage() {
         <div className="header-spacer"></div>
       </header>
 
-      {/* 섹션 제목 */}
+      {/* 제목은 항상 표시 */}
       <div className="section-title">
         <img
           src="/icons/Rectangle 34625276.png"
@@ -273,13 +262,12 @@ export default function HospitalViewerPage() {
         <span className="section-subtitle">(ETA 순 정렬)</span>
       </div>
 
-      {/* 응급 상황 목록 */}
+      {/* 카드 영역 */}
       <main className="emergency-list">
-        {loading && <div>불러오는 중...</div>}
-        {!loading && error && <div>{error}</div>}
-        {!loading &&
-          !error &&
-          (cases.length ? cases : fallbackCases).map((case_) => (
+        {error && !cases.length && <div className="error-text">{error}</div>}
+
+        {cases.length > 0 &&
+          cases.map((case_) => (
             <div
               key={case_.id}
               className={`emergency-card ${case_.priority}`}
@@ -304,6 +292,36 @@ export default function HospitalViewerPage() {
               </div>
             </div>
           ))}
+
+        {cases.length === 0 && loading && (
+          <>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="emergency-card loading">
+                <div className="card-content">
+                  <div className="card-date">&nbsp;</div>
+                  <div className="card-details">
+                    <div className="detail-item">
+                      <span className="detail-label">주증상</span>
+                      <span className="detail-value">불러오는 중...</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">의식</span>
+                      <span className="detail-value">불러오는 중...</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="eta-section">
+                  <span className="eta-label">ETA</span>
+                  <span className="eta-time">--:--</span>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+
+        {cases.length === 0 && !loading && !error && (
+          <div className="empty-text">대기 중인 환자가 없습니다.</div>
+        )}
       </main>
 
       {/* 홈 인디케이터 */}
