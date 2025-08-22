@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./EmergencyResponderPage.css";
 
 export default function EmergencyResponderPage() {
@@ -7,6 +8,11 @@ export default function EmergencyResponderPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [recordingState, setRecordingState] = useState("ready"); // "ready", "recording", "processing", "completed"
   const [voiceText, setVoiceText] = useState("");
+
+  const location = useLocation();
+  const reportData = location.state;
+
+  if (!reportData) return <div>데이터 없음</div>;
 
   const goBack = () => navigate("/patient-info");
   const handleSend = () => setShowPopup(true);
@@ -147,7 +153,7 @@ export default function EmergencyResponderPage() {
                 />
                 <div className="vital-text">
                   <span className="vital-label">호흡수</span>
-                  <span className="vital-value">30 /min</span>
+                  <span className="vital-value">{reportData.respiration}/min</span>
                 </div>
               </div>
               <div className="vital-item">
@@ -158,7 +164,7 @@ export default function EmergencyResponderPage() {
                 />
                 <div className="vital-text">
                   <span className="vital-label">혈압</span>
-                  <span className="vital-value">90/60mmHg</span>
+                  <span className="vital-value">{reportData.systolic}/{reportData.diastolic}mmHg</span>
                 </div>
               </div>
               <div className="vital-item">
@@ -169,7 +175,7 @@ export default function EmergencyResponderPage() {
                 />
                 <div className="vital-text">
                   <span className="vital-label">산소포화도</span>
-                  <span className="vital-value">88%</span>
+                  <span className="vital-value">{reportData.spo2}%</span>
                 </div>
               </div>
               <div className="vital-item">
@@ -180,7 +186,7 @@ export default function EmergencyResponderPage() {
                 />
                 <div className="vital-text">
                   <span className="vital-label">맥박</span>
-                  <span className="vital-value">124 bpm</span>
+                  <span className="vital-value">{reportData.pulse} bpm</span>
                 </div>
               </div>
             </div>
@@ -192,12 +198,19 @@ export default function EmergencyResponderPage() {
           <div className="info-row">
             <img src="/icons/pin.svg" alt="위치" className="info-icon" />
             <span className="info-text">
-              서울특별시 성북구 종암로 25길 10 (종암동)
+              {reportData.location}
             </span>
           </div>
           <div className="info-row">
-            <img src="/icons/clock2.svg" alt="시간" className="info-icon" />
-            <span className="info-text">오후 2:15:35</span>
+            <img src="/icons/clock.svg" alt="시간" className="info-icon" />
+            <span className="info-text">
+              {new Date(reportData.created).toLocaleTimeString("ko-KR", {
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+                hour12: true,
+              })}
+            </span>
           </div>
           <div className="info-row">
             <img
@@ -205,7 +218,9 @@ export default function EmergencyResponderPage() {
               alt="상태"
               className="info-icon"
             />
-            <span className="info-text">심정지</span>
+            <span className="info-text">
+              {reportData.majorSymptoms?.join(", ")}
+            </span>
           </div>
         </section>
       </main>

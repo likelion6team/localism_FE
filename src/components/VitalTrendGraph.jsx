@@ -1,11 +1,27 @@
 import React from "react";
 import "./VitalTrendGraph.css";
 
-export default function VitalTrendGraph() {
-  // 더미 데이터 - 이미지에 맞게 조정
-  const heartRateData = [125.8, 124.5, 127.2, 123.9, 126.5, 124.0, 127.8]; // 심박수 데이터
-  const bloodPressureData = [90.8, 89.5, 90.2, 88.8, 89.8, 88.5, 89.2]; // 혈압 데이터
-  const timeLabels = ["10분전", "8분전", "6분전", "4분전", "2분전", "1분전", "현재"];
+export default function VitalTrendGraph({
+  heartRateData: heartRateDataProp,
+  bloodPressureData: bloodPressureDataProp,
+  timeLabels: timeLabelsProp,
+}) {
+  // 더미 데이터 - API가 없으면 fallback
+  const heartRateData = heartRateDataProp ?? [
+    125.8, 124.5, 127.2, 123.9, 126.5, 124.0, 127.8,
+  ];
+  const bloodPressureData = bloodPressureDataProp ?? [
+    90.8, 89.5, 90.2, 88.8, 89.8, 88.5, 89.2,
+  ];
+  const timeLabels = timeLabelsProp ?? [
+    "10분전",
+    "8분전",
+    "6분전",
+    "4분전",
+    "2분전",
+    "1분전",
+    "현재",
+  ];
 
   // SVG 경로 생성 함수
   const createPath = (data, maxValue, minValue, height) => {
@@ -36,7 +52,7 @@ export default function VitalTrendGraph() {
               <span>123</span>
             </div>
           </div>
-          
+
           <div className="graph-content">
             <div className="graph-lines">
               {/* 심박수 라인 (빨간색) */}
@@ -58,7 +74,7 @@ export default function VitalTrendGraph() {
                 />
               </svg>
             </div>
-            
+
             {/* X축 시간 라벨 */}
             <div className="x-axis">
               {timeLabels.map((label, index) => (
@@ -82,7 +98,7 @@ export default function VitalTrendGraph() {
             </div>
           </div>
         </div>
-        
+
         {/* 범례 */}
         <div className="graph-legend">
           <div className="legend-item">
