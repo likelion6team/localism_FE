@@ -9,7 +9,7 @@ export default function HospitalViewerPage() {
   const [error, setError] = useState("");
 
   const goBack = () => navigate("/");
-  const handleCaseClick = () => navigate("/patient-detail");
+  const handleCaseClick = (id) => navigate(`/patient-detail/${id}`);
 
   // 샘플 응급 상황 데이터 (fallback)
   const fallbackCases = [
@@ -283,7 +283,7 @@ export default function HospitalViewerPage() {
             <div
               key={case_.id}
               className={`emergency-card ${case_.priority}`}
-              onClick={handleCaseClick}
+              onClick={() => handleCaseClick(case_.id)}
             >
               <div className="card-content">
                 <div className="card-date">{case_.date}</div>

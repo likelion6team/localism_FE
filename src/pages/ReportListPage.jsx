@@ -279,9 +279,9 @@ export default function ReportListPage() {
     return () => controller.abort();
   }, []);
 
-  const handleReportClick = () => {
+  const handleReportClick = (id) => {
     setTimeout(() => {
-      navigate("/patient-info");
+      navigate(`/patient-info/${id}`);
     }, 200);
   };
 
@@ -320,7 +320,7 @@ export default function ReportListPage() {
             <div
               key={report.id}
               className="report-item"
-              onClick={handleReportClick}
+              onClick={() => handleReportClick(report.id)}
             >
               <div className="report-content">
                 <div className="report-header">
