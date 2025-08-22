@@ -138,12 +138,15 @@
 /* 버튼 그룹 */
 .button-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   padding: 0 16px;
 }
 
 .button-group .info-button {
-  flex: 1;
+  /* 한 줄에 2개씩 배치 */
+  flex: 0 1 calc((100% - 12px) / 2);
+  max-width: calc((100% - 12px) / 2);
 }
 
 /* 정보 버튼 */
@@ -193,6 +196,38 @@
   width: 24px;
   height: 24px;
   object-fit: contain;
+}
+
+/* 텍스트만 표시하는 버튼 (예: 기타) */
+.info-button.text-only,
+.info-button.etc {
+  justify-content: flex-start;
+  position: relative;
+  padding-left: 28px; /* 도트 여백 */
+}
+.info-button.text-only .button-icon,
+.info-button.etc .button-icon {
+  display: none;
+}
+
+/* 기타/모름은 한 줄 전체 너비 사용 */
+.button-group .info-button.text-only,
+.button-group .info-button.etc {
+  flex: 0 1 100%;
+  max-width: 100%;
+}
+
+/* 텍스트 앞 도트 이미지 표시 */
+.info-button.text-only::before,
+.info-button.etc::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: url("/icons/dot.png") no-repeat center center / contain;
 }
 
 /* 선택된 버튼의 아이콘 색상 조정 */
