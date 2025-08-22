@@ -1,34 +1,91 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "./PatientDetailPage.css";
 import VitalTrendGraph from "../components/VitalTrendGraph";
+import axios from "axios";
 
 export default function PatientDetailPage() {
   const navigate = useNavigate();
+  const { id } = useParams(); // /patient-detail/:id
   const [isPrinting, setIsPrinting] = useState(false);
+  const [patient, setPatient] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const goBack = () => navigate("/hospital");
-  const handleComplete = () => {
+const handleComplete = async () => {
+
+  try {
+    // ✅ PATCH 요청으로 변경
+    const res = await axios.patch(`https://api.localism0825.store/api/rescueReports/${id}/complete`);
+    console.log("📌 완료 API 응답:", res);
+
+    // ✅ 프론트 상태 초기화 (선택)
+    setPatient(null);
+
+    // ✅ 병원 목록 페이지로 이동
     navigate("/hospital");
-  };
+  } catch (err) {
+    console.error("🚨 완료 처리 실패:", err);
+    alert("완료 처리에 실패했습니다. 다시 시도해주세요.");
+  }
+};
 
   const handlePrint = () => {
     setIsPrinting(true);
-    setTimeout(() => {
-      setIsPrinting(false);
-    }, 10000); // 10초 후 숨김
+    setTimeout(() => setIsPrinting(false), 10000);
   };
+
+  // ✅ 환자 상세 API 호출
+  const fetchPatient = async (id) => {
+    try {
+      const res = await axios.get(`https://api.localism0825.store/api/rescueReports/${id}`);
+      console.log("📌 API 응답:", res);
+
+      const d = res.data.data; // ✅ API 구조에 맞게 꺼냄
+
+      const formatted = {
+        id: d.reportId, // ✅ reportId를 id로 매핑
+        created: d.created,
+        mainSymptom: (d.majorSymptoms ?? []).join(", "),
+        consciousness: d.consciousnessStatus ?? "정보 없음",
+        findings: d.details ?? "정보 없음",
+        eta: d.eta
+          ? `${Math.floor(d.eta / 60).toString().padStart(2, "0")}:${(d.eta % 60)
+              .toString()
+              .padStart(2, "0")}`
+          : "정보 없음",
+      };
+
+      setPatient(formatted);
+    } catch (err) {
+      console.error("🚨 환자 상세 조회 실패:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchPatient(id);
+    }
+  }, [id]);
+
+  // ✅ 로딩 중
+  if (loading) {
+    return <p className="loading-text">⏳ 환자 정보를 불러오는 중...</p>;
+  }
+
+  // ✅ 실패했거나 데이터 없음
+  if (!patient) {
+    return <p className="error-text">❌ 환자 정보를 불러올 수 없습니다.</p>;
+  }
 
   return (
     <div className="patient-detail-page">
       {/* 헤더 */}
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
-          <img
-            src="/icons/arrow-left.png"
-            alt="뒤로가기"
-            className="back-icon"
-          />
+          <img src="/icons/arrow-left.png" alt="뒤로가기" className="back-icon" />
         </button>
         <h1 className="page-title">환자 상세 정보</h1>
         <div className="header-spacer"></div>
@@ -42,31 +99,28 @@ export default function PatientDetailPage() {
           <div className="patient-info-card">
             <div className="patient-info-content">
               <div className="info-item">
-                <span className="info-value id-value">SX-2025-08-11-0012</span>
+                <span className="info-value id-value">
+                  {`SX-${patient.created.split("T")[0].replace(/-/g, "")}-${patient.id}`}
+                </span>
               </div>
               <div className="info-item">
                 <span className="info-label">주증상</span>
-                <span className="info-value">호흡 어려움, 뇌출혈</span>
+                <span className="info-value">{patient.mainSymptom}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">의식</span>
-                <span className="info-value">흐림</span>
+                <span className="info-value">{patient.consciousness}</span>
               </div>
               <div className="info-item emt-label-item">
-                <span className="info-label emt-label">
-                  {"<"}EMT 소견{">"}
-                </span>
+                <span className="info-label emt-label">{"<"}EMT 소견{">"}</span>
               </div>
               <div className="info-item">
-                <span className="info-value emt-findings">
-                  호흡수 30회, 혈압 90에 60, 맥박 124, 산소포화도 88%, 구토
-                  있음, 뇌출혈 가능성 큼
-                </span>
+                <span className="info-value emt-findings">{patient.findings}</span>
               </div>
             </div>
             <div className="eta-bar">
               <span className="eta-label">ETA</span>
-              <span className="eta-time">01:01</span>
+              <span className="eta-time">{patient.eta}</span>
             </div>
           </div>
         </section>
@@ -74,7 +128,8 @@ export default function PatientDetailPage() {
         {/* 활력징후 트렌드 섹션 */}
         <section className="vital-trend-section">
           <h2 className="section-title">활력징후 트렌드</h2>
-          <VitalTrendGraph />
+          {/* ✅ patient null 방어 */}
+          {patient.id ? <VitalTrendGraph reportId={patient.id} /> : <p>데이터 없음</p>}
         </section>
 
         {/* 라벨 섹션 */}
@@ -94,26 +149,24 @@ export default function PatientDetailPage() {
           <div className="label-card">
             <div className="label-content">
               <div className="label-item">
-                <span className="label-id">SX-2025-08-11-0012</span>
+                <span className="label-id">
+                  {`SX-${patient.created.split("T")[0].replace(/-/g, "")}-${patient.id}`}
+                </span>
                 <span className="label-emergency">응급환자</span>
               </div>
               <div className="label-item">
                 <span className="label-time-symptoms">시간</span>
                 <span className="label-datetime-content">
-                  2025.8.11 PM 8:27
+                  {new Date(patient.created).toLocaleString("ko-KR")}
                 </span>
               </div>
               <div className="label-item">
                 <span className="label-time-symptoms">증상</span>
-                <span className="label-datetime-content">뇌출혈, 호흡곤란</span>
+                <span className="label-datetime-content">{patient.mainSymptom}</span>
               </div>
             </div>
             <div className="barcode-bar">
-              <img
-                src="/icons/barcode.svg"
-                alt="바코드"
-                className="barcode-image"
-              />
+              <img src="/icons/barcode.svg" alt="바코드" className="barcode-image" />
             </div>
           </div>
         </section>

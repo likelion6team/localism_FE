@@ -71,7 +71,7 @@ export async function sendReport(payload) {
 
     console.log("API 응답 상태:", response.status);
     console.log("API 응답 헤더:", response.headers);
-
+    console.log("response:",response);
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API 오류 응답:", errorText);
@@ -119,6 +119,7 @@ const TMAP_API_KEY =
 // 좌표를 주소로 변환하는 API (TMAP API 사용)
 export async function getAddressFromCoordinates(lat, lng) {
   try {
+    const TMAP_APP_KEY = "dVnE4kwFT15MzSsJpkdHj5XPEjklK0rm6Nc20AvP";
 
     // ✅ 엔드포인트 경로 포함
     const url = new URL("https://apis.openapi.sk.com/tmap/geo/reversegeocoding");
