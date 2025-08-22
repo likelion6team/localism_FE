@@ -156,3 +156,34 @@ export async function getAddressFromCoordinates(lat, lng) {
     return `위도: ${lat}, 경도: ${lng}`;
   }
 }
+
+// 음성 녹음 기반 구조 요청 리포트 API
+export async function sendRescueReport(payload) {
+  try {
+    console.log("=== sendRescueReport 시작 ===");
+    console.log("전체 payload:", payload);
+
+    const response = await fetch(`${API_BASE_URL}/api/rescueReports`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    console.log("API 응답 상태:", response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API 오류 응답:", errorText);
+      throw new Error(`API 호출 실패: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log("구조 요청 리포트 전송 성공:", result);
+    return { ok: true, data: result, id: result.id || result.reportId };
+  } catch (error) {
+    console.error("구조 요청 리포트 전송 실패:", error);
+    return { ok: false, error: error.message };
+  }
+}
