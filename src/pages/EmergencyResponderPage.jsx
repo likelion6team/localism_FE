@@ -77,7 +77,11 @@ export default function EmergencyResponderPage() {
                 className="record-button recording"
                 onClick={handleRecordClick}
               >
-                ⏹
+                <img
+                  src="/icons/recordingrectangle.png"
+                  alt="정지"
+                  className="recording-icon"
+                />
               </button>
             </div>
           </>
