@@ -34,11 +34,6 @@ export default function Step1Consciousness({ onNext }) {
     }
   };
 
-  // 홈으로 이동하는 함수
-  const goHome = () => {
-    navigate("/");
-  };
-
   // 뒤로가기 함수 추가
   const goBack = () => {
     navigate(-1); // 이전 페이지로 이동
@@ -71,18 +66,6 @@ export default function Step1Consciousness({ onNext }) {
           </svg>
         </button>
         <h1>사고 리포트 작성</h1>
-      </div>
-
-      {/* 홈으로 버튼 */}
-      <div className="step1-home-link-container">
-        <button
-          className="step1-home-btn"
-          type="button"
-          onClick={goHome}
-          aria-label="홈으로"
-        >
-          ← 홈으로
-        </button>
       </div>
 
       {/* 진행 상황 표시 - 현재 단계/전체 단계 */}
