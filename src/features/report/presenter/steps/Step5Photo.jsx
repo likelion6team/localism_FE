@@ -9,6 +9,7 @@ import {
 } from "../../model/reportApi";
 import { useReport } from "../../model/ReportContext";
 import "./Step5Photo.css";
+import { toKoreaDateObject } from "../../model/date";
 
 export default function Step5Photo({ onBack }) {
   const navigate = useNavigate();
@@ -329,16 +330,16 @@ export default function Step5Photo({ onBack }) {
 
       if (result.ok) {
         // 성공 시 모달 표시
-        const created = result.data.data.created; // "2025-08-20T14:07:59.174276"
         const id = result.data.data.id; 
+        const createdRaw = result.data.data.created; // "2025-08-22T11:09:54.840447"
 
-        const [year, month, day] = created.split("T")[0].split("-");
+        const caseDate = toKoreaDateObject(createdRaw);
 
         setCaseId({
-          y: year,   
-          m: month,  
-          d: day,    
-          id: String(id) 
+          y: caseDate.y,
+          m: caseDate.m,
+          d: caseDate.d,
+          id: String(id)
         });
 
         setShowModal(true);

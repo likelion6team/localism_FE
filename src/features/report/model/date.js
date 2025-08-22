@@ -1,4 +1,3 @@
-
 export function toKoreaDateObject(createdRaw) {
   let date;
   if (createdRaw) {

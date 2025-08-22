@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./ReportListPage.css";
+import { toKoreaDateObject } from "../features/report/model/date.js";
 
 export default function ReportListPage() {
   const navigate = useNavigate();
@@ -158,13 +159,14 @@ export default function ReportListPage() {
 
         const mapped = rawList.map((item, idx) => {
           const id = item?.id ?? item?.reportId ?? idx + 1;
-          const created =
-            item?.createdAt ??
-            item?.created_at ??
-            item?.reportedAt ??
-            item?.writedAt ??
-            item?.time ??
-            item?.timestamp;
+          // const created =
+          //   item?.createdAt ??
+          //   item?.created_at ??
+          //   item?.reportedAt ??
+          //   item?.writedAt ??
+          //   item?.time ??
+          //   item?.timestamp;
+          const created = toKoreaDateObject(item.created);
           // 날짜/시간 필드가 분리된 경우 우선 사용
           const explicitDate =
             item?.date ?? item?.reportDate ?? item?.eventDate ?? item?.day;
@@ -260,6 +262,7 @@ export default function ReportListPage() {
             id,
             date,
             time,
+            created,
             type: finalType ?? "유형 정보 없음",
             address,
           };
@@ -324,13 +327,14 @@ export default function ReportListPage() {
             >
               <div className="report-content">
                 <div className="report-header">
-                  <span className="report-date">{report.date}</span>
+                  {console.log("report:", report)}
+                  <span className="report-date">{report.created.y}.{report.created.m}.{report.created.d}</span>
                   <img
                     src="/icons/clock.svg"
                     alt="시계"
                     className="time-icon"
                   />
-                  <span className="report-time">{report.time}</span>
+                  <span className="report-time">{report.created.h}.{report.created.min}.{report.created.s}</span>
                 </div>
                 <div className="report-type">{report.type}</div>
                 <div className="report-address">{report.address}</div>
