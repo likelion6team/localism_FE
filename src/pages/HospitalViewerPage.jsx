@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./HospitalViewerPage.css";
+import { toKoreaDateObject } from "../features/report/model/date.js";
 
 export default function HospitalViewerPage() {
   const navigate = useNavigate();
@@ -172,13 +173,15 @@ export default function HospitalViewerPage() {
 
         const mapped = list.map((it, idx) => {
           const id = it?.id ?? it?.reportId ?? it?.rescueReportId ?? idx + 1;
-          const date = toDate(
-            it?.date ??
-              it?.created ??
-              it?.createdAt ??
-              it?.created_at ??
-              it?.reportedAt
-          );
+          // const date = toDate(
+          //   it?.date ??
+          //     it?.created ??
+          //     it?.createdAt ??
+          //     it?.created_at ??
+          //     it?.reportedAt
+          // );
+
+          const date = toKoreaDateObject(it.created);
           // ETA(초)
           const etaSec =
             it?.eta ??
@@ -279,14 +282,16 @@ export default function HospitalViewerPage() {
         {!loading && error && <div>{error}</div>}
         {!loading &&
           !error &&
-          (cases.length ? cases : fallbackCases).map((case_) => (
+          cases.map((case_) => (
             <div
               key={case_.id}
               className={`emergency-card ${case_.priority}`}
               onClick={() => handleCaseClick(case_.id)}
             >
               <div className="card-content">
-                <div className="card-date">{case_.date}</div>
+                <div className="card-date">
+                  {case_.date.y}.{case_.date.m}.{case_.date.d}
+                </div>
                 <div className="card-details">
                   <div className="detail-item">
                     <span className="detail-label">주증상</span>

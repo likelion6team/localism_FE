@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "./PatientDetailPage.css";
 import VitalTrendGraph from "../components/VitalTrendGraph";
 import axios from "axios";
+import { toKoreaDateObject } from "../features/report/model/date.js";
 
 export default function PatientDetailPage() {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const handleComplete = async () => {
 
       const formatted = {
         id: d.reportId, // ✅ reportId를 id로 매핑
-        created: d.created,
+        created: toKoreaDateObject(d.created),
         mainSymptom: (d.majorSymptoms ?? []).join(", "),
         consciousness: d.consciousnessStatus ?? "정보 없음",
         findings: d.details ?? "정보 없음",
@@ -100,7 +101,7 @@ const handleComplete = async () => {
             <div className="patient-info-content">
               <div className="info-item">
                 <span className="info-value id-value">
-                  {`SX-${patient.created.split("T")[0].replace(/-/g, "")}-${patient.id}`}
+                  {`SX-${patient.created.y}-${patient.created.m}-${patient.created.d}-${patient.id}`}
                 </span>
               </div>
               <div className="info-item">
@@ -150,14 +151,14 @@ const handleComplete = async () => {
             <div className="label-content">
               <div className="label-item">
                 <span className="label-id">
-                  {`SX-${patient.created.split("T")[0].replace(/-/g, "")}-${patient.id}`}
+                  {`SX-${patient.created.y}-${patient.created.m}-${patient.created.d}-${patient.id}`}
                 </span>
                 <span className="label-emergency">응급환자</span>
               </div>
               <div className="label-item">
                 <span className="label-time-symptoms">시간</span>
                 <span className="label-datetime-content">
-                  {new Date(patient.created).toLocaleString("ko-KR")}
+                  {`${patient.created.y}.${patient.created.m}.${patient.created.d} ${patient.created.h < 12 ? "AM" : "PM"} ${patient.created.h}:${patient.created.min}`}
                 </span>
               </div>
               <div className="label-item">
