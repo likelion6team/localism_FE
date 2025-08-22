@@ -1,7 +1,7 @@
 .patient-info-page {
   min-height: 100vh;
   background-color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   flex-direction: column;
 }
@@ -45,6 +45,12 @@
   background-color: #f5f5f5;
 }
 
+.back-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .page-title {
   font-size: 18px;
   font-weight: 600;
@@ -59,40 +65,79 @@
 /* 메인 콘텐츠 */
 .main-content {
   flex: 1;
-  padding: 20px 16px;
+  padding: 20px 0;
   overflow-y: auto;
 }
 
 .main-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #000000;
+  font-family: Inter;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%;
   margin: 0 0 24px 0;
-  text-align: center;
+  text-align: left;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.title-blue {
+  color: #2459e0;
+}
+
+.title-black {
+  color: #000;
+}
+
+/* 섹션 컨테이너 */
+.section-container {
+  margin-bottom: 24px;
+}
+
+/* 호흡 섹션과 현장사진 섹션 사이 간격 조정 */
+.section-container:nth-child(5) {
+  margin-bottom: 36px;
 }
 
 /* 섹션 스타일 */
 .info-section {
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
 .section-label {
   display: block;
-  font-size: 16px;
-  font-weight: 600;
-  color: #000000;
+  color: #000;
+  text-align: left;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Inter;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
   margin-bottom: 12px;
+  padding-left: 16px;
+  margin-left: 0;
+}
+
+/* 의식과 호흡 섹션 라벨만 -30px 왼쪽으로 */
+.section-container:nth-child(2) .section-label,
+.section-container:nth-child(5) .section-label {
+  padding-left: 16px;
+  margin-left: 0;
 }
 
 /* 단일 버튼 컨테이너 */
 .single-button-container {
   width: 100%;
+  padding: 0 16px;
 }
 
 /* 버튼 그룹 */
 .button-group {
   display: flex;
   gap: 12px;
+  padding: 0 16px;
 }
 
 .button-group .info-button {
@@ -103,12 +148,13 @@
 .info-button {
   width: 100%;
   padding: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  background-color: #ffffff;
-  font-size: 14px;
-  font-weight: 500;
+  background-color: #deedff;
+  font-size: 18px;
+  font-weight: 600;
   color: #000000;
+  border-radius: 10px;
+  border: 1px solid #b6c9fc;
+  background: #deedff;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -119,53 +165,37 @@
 }
 
 .info-button:hover {
-  border-color: #007AFF;
+  border-color: #007aff;
   background-color: #f8f9fa;
 }
 
 .info-button.selected {
-  background-color: #007AFF;
-  border-color: #007AFF;
+  background-color: #007aff;
+  border-color: #007aff;
   color: #ffffff;
 }
 
-.info-button.yellow-border {
-  border-color: #FFD700;
-  background-color: #ffffff;
+/* 의식과 호흡 버튼 특별 스타일 */
+.info-button.consciousness-button,
+.info-button.respiration-button {
+  color: #15378e;
 }
 
-.info-button.yellow-border:hover {
-  background-color: #fffbf0;
+.info-button.consciousness-button.selected,
+.info-button.respiration-button.selected {
+  color: #ffffff;
 }
 
-/* 버튼 아이콘 */
+/* 버튼 아이콘 (이미지) */
 .button-icon {
-  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
-/* 현장사진 플레이스홀더 */
-.photo-placeholder {
-  width: 100%;
-  height: 120px;
-  background-color: #f5f5f5;
-  border: 2px dashed #cccccc;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.photo-placeholder:hover {
-  background-color: #f0f0f0;
-  border-color: #007AFF;
-}
-
-.photo-text {
-  font-size: 16px;
-  color: #666666;
-  font-weight: 500;
+/* 선택된 버튼의 아이콘 색상 조정 */
+.info-button.selected .button-icon {
+  filter: brightness(0) invert(1); /* 흰색으로 변경 */
 }
 
 /* 페이지 푸터 */
@@ -178,7 +208,7 @@
 .complete-button {
   width: 100%;
   padding: 16px;
-  background-color: #007AFF;
+  background-color: #15378e;
   border: none;
   border-radius: 12px;
   color: #ffffff;
@@ -189,11 +219,11 @@
 }
 
 .complete-button:hover {
-  background-color: #0056b3;
+  background-color: #1e40af;
 }
 
 .complete-button:active {
-  background-color: #004085;
+  background-color: #1e3a8a;
 }
 
 /* 홈 인디케이터 */
@@ -206,7 +236,7 @@
 }
 
 .home-indicator::before {
-  content: '';
+  content: "";
   width: 134px;
   height: 5px;
   background-color: #000000;
@@ -218,27 +248,29 @@
   .main-content {
     padding: 16px;
   }
-  
+
   .main-title {
-    font-size: 18px;
+    font-size: 28px;
     margin-bottom: 20px;
   }
-  
+
   .info-button {
     padding: 14px;
-    font-size: 13px;
+    font-size: 16px;
     min-height: 52px;
   }
-  
+
   .button-group {
     gap: 8px;
   }
-  
-  .photo-placeholder {
-    height: 100px;
-  }
-  
-  .photo-text {
-    font-size: 14px;
-  }
+}
+
+/* PatientInfoPage 전용: hover 시 색상 변화 제거 및 커서 기본으로 */
+.patient-info-page .info-button {
+  cursor: default;
+}
+
+.patient-info-page .info-button:hover {
+  border-color: #b6c9fc;
+  background-color: #deedff;
 }

@@ -2,6 +2,8 @@
 // 신고 리포트 관련 API 함수들
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const TMAP_APP_KEY = import.meta.env.VITE_TMAP_APP_KEY;
+
 
 // 환경 변수 확인용 로그
 console.log("API_BASE_URL:", API_BASE_URL);
@@ -112,11 +114,59 @@ export async function getCurrentLocation() {
 // 좌표를 주소로 변환하는 API (예시)
 export async function getAddressFromCoordinates(lat, lng) {
   try {
-    // 실제 구현에서는 지도 API 서비스 사용 (Google Maps, Kakao Maps 등)
-    // 현재는 기본 주소 형식으로 반환
-    return `위도: ${lat}, 경도: ${lng}`;
-  } catch {
-    console.error("주소 변환 실패");
-    return `위도: ${lat}, 경도: ${lng}`;
+
+    // ✅ 엔드포인트 경로 포함
+    const url = new URL("https://apis.openapi.sk.com/tmap/geo/reversegeocoding");
+    url.searchParams.set("version", "1");
+    url.searchParams.set("format", "json");
+    url.searchParams.set("coordType", "WGS84GEO");
+    url.searchParams.set("addressType", "A10"); // 도로명 우선(문서 옵션)
+    url.searchParams.set("lon", String(lng));
+    url.searchParams.set("lat", String(lat));
+    // (필요 시 JSONP 샘플처럼) url.searchParams.set("callback", "result");
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      headers: { appKey: TMAP_APP_KEY }, // ✅ 헤더에 appKey
+    });
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error(`Tmap 요청 실패 (${res.status}) ${txt}`);
+    }
+
+    const data = await res.json();
+    const info = data?.addressInfo;
+    if (!info) throw new Error("Tmap 응답에 addressInfo가 없습니다.");
+
+    // 새주소 조립
+    const lastLegal = info.legalDong?.slice(-1) ?? "";
+    let road = `${info.city_do ?? ""} ${info.gu_gun ?? ""} `;
+    if ((info.eup_myun ?? "") === "" && (lastLegal === "읍" || lastLegal === "면")) {
+      road += info.legalDong ?? "";
+    } else {
+      road += info.eup_myun ?? "";
+    }
+    road += ` ${info.roadName ?? ""} ${info.buildingIndex ?? ""}`.trim();
+
+    if ((info.legalDong ?? "") && !(lastLegal === "읍" || lastLegal === "면")) {
+      road += (info.buildingName ?? "")
+        ? ` (${info.legalDong}, ${info.buildingName})`
+        : ` (${info.legalDong})`;
+    } else if (info.buildingName) {
+      road += ` (${info.buildingName})`;
+    }
+
+    // 지번 주소도 필요하면 함께 반환
+    const jibun = `${info.city_do ?? ""} ${info.gu_gun ?? ""} ${info.legalDong ?? ""} ${info.ri ?? ""} ${info.bunji ?? ""}`
+      .replace(/\s+/g, " ")
+      .trim();
+
+    return road.replace(/\s+/g, " ").trim();
+  } catch (e) {
+    console.error("주소 변환 실패", e);
+    // 실패 시 위경도만이라도 돌려주기
+    return { roadAddress: null, jibunAddress: null, lat, lng };
   }
 }
+
