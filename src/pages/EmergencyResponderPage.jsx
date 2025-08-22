@@ -18,31 +18,125 @@ export default function EmergencyResponderPage() {
   const handleSend = () => setShowPopup(true);
   const handleNewCase = () => navigate("/report-list");
 
-  const handleRecordClick = () => {
-    if (recordingState === "ready") {
-      setRecordingState("recording");
-      // 3초 후 자동으로 처리 상태로 변경 (시뮬레이션)
-      setTimeout(() => {
-        setRecordingState("processing");
-        // 2초 후 결과 표시 (시뮬레이션)
-        setTimeout(() => {
-          setRecordingState("completed");
-          setVoiceText(
-            "환자는 20대 남성으로 운동 중 쓰러졌습니다. 현재 반응이 느린 상태이고, 호흡수 30회, 혈압 90에 60, 맥박 124, 산소포화도 88%입니다. 머리 외상은 없으나 구토가 있어 뇌출혈이 의심됩니다. 현재 성북구 서경대학교에서 병원으로 이송 중입니다."
-          );
-        }, 2000);
-      }, 3000);
-    } else if (recordingState === "recording") {
-      setRecordingState("processing");
-      // 2초 후 결과 표시 (시뮬레이션)
-      setTimeout(() => {
-        setRecordingState("completed");
-        setVoiceText(
-          "환자는 20대 남성으로 운동 중 쓰러졌습니다. 현재 반응이 느린 상태이고, 호흡수 30회, 혈압 90에 60, 맥박 124, 산소포화도 88%입니다. 머리 외상은 없으나 구토가 있어 뇌출혈이 의심됩니다. 현재 성북구 서경대학교에서 병원으로 이송 중입니다."
-        );
-      }, 2000);
+const [mediaStream, setMediaStream] = useState(null);
+const [audioContext, setAudioContext] = useState(null);
+const [processor, setProcessor] = useState(null);
+const [chunks, setChunks] = useState([]);
+
+// ⬇️ handleRecordClick 수정
+const handleRecordClick = async () => {
+  if (recordingState === "ready") {
+    setRecordingState("recording");
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 16000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
+      const ctx = new (window.AudioContext || window.webkitAudioContext)({
+        sampleRate: 16000,
+      });
+
+      // AudioWorklet 로드
+      await ctx.audioWorklet.addModule("/recorder-processor.js");
+      const source = ctx.createMediaStreamSource(stream);
+      const proc = new AudioWorkletNode(ctx, "recorder-processor");
+
+      const localChunks = [];
+      proc.port.onmessage = (event) => {
+        localChunks.push(new Float32Array(event.data));
+      };
+
+      source.connect(proc);
+      proc.connect(ctx.destination);
+
+      setMediaStream(stream);
+      setAudioContext(ctx);
+      setProcessor(proc);
+      setChunks(localChunks);
+    } catch (err) {
+      console.error("🚨 마이크 접근 실패:", err);
+      setVoiceText("마이크 권한이 필요합니다.");
+      setRecordingState("completed");
     }
+  } else if (recordingState === "recording") {
+    // 🔴 중지 버튼 클릭 시
+    processor.disconnect();
+    mediaStream.getTracks().forEach((track) => track.stop());
+    audioContext.close();
+
+    let totalLength = chunks.reduce((acc, cur) => acc + cur.length, 0);
+    let pcmData = new Float32Array(totalLength);
+    let offset = 0;
+    for (let chunk of chunks) {
+      pcmData.set(chunk, offset);
+      offset += chunk.length;
+    }
+
+    const wavBlob = exportWAV(pcmData, 16000);
+    const formData = new FormData();
+    formData.append("file", wavBlob, "recording.wav");
+
+    setRecordingState("processing");
+    try {
+      const res = await fetch("https://api.localism0825.store/api/voice/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("STT API 요청 실패");
+      const result = await res.json();
+
+      setVoiceText(result.data?.text || "인식된 텍스트 없음");
+    } catch (err) {
+      console.error("🚨 음성 인식 실패:", err);
+      setVoiceText("음성 인식에 실패했습니다.");
+    } finally {
+      setRecordingState("completed");
+    }
+  }
+};
+
+// 🔧 WAV 변환 함수
+function exportWAV(pcmData, sampleRate) {
+  const buffer = new ArrayBuffer(44 + pcmData.length * 2); // 16bit = 2바이트
+  const view = new DataView(buffer);
+
+  const writeString = (offset, str) => {
+    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
   };
+
+  // WAV 헤더
+  writeString(0, "RIFF");
+  view.setUint32(4, 36 + pcmData.length * 2, true);
+  writeString(8, "WAVE");
+  writeString(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); // PCM
+  view.setUint16(22, 1, true); // mono
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true); // byte rate
+  view.setUint16(32, 2, true); // block align
+  view.setUint16(34, 16, true); // bits per sample
+  writeString(36, "data");
+  view.setUint32(40, pcmData.length * 2, true);
+
+  // Float32 → Int16 변환
+  let offset = 44;
+  for (let i = 0; i < pcmData.length; i++, offset += 2) {
+    let s = Math.max(-1, Math.min(1, pcmData[i]));
+    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+  }
+
+  return new Blob([view], { type: "audio/wav" });
+}
+
 
   const renderVoiceContent = () => {
     switch (recordingState) {
