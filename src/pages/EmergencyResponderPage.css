@@ -681,21 +681,21 @@
 /* 반응형 디자인 */
 @media (max-width: 480px) {
   .main-content {
-    padding: 16px;
+    padding: 20px 16px; /* 데스크탑과 동일 유지 */
   }
 
   .info-card {
-    padding: 16px;
+    padding: 0; /* 데스크탑과 동일 유지 */
     margin-bottom: 12px;
   }
 
   .vital-signs {
-    grid-template-columns: 1fr;
-    gap: 8px;
+    grid-template-columns: 1fr 1fr; /* 데스크탑과 동일: 2열 유지 */
+    gap: 16px; /* 데스크탑과 동일 간격 */
   }
 
   .vital-item {
-    padding: 10px;
+    padding: 0; /* 데스크탑과 동일 유지 */
   }
 
   .popup-dialog {

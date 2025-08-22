@@ -473,18 +473,18 @@
 /* 반응형 디자인 */
 @media (max-width: 480px) {
   .main-content {
-    padding: 16px;
+    padding: 20px 16px; /* 데스크탑과 동일 유지 */
   }
 
   .patient-info-card,
   .label-card {
-    flex-direction: column;
+    flex-direction: row; /* 데스크탑과 동일 유지 */
   }
 
   .eta-bar,
   .barcode-bar {
-    align-self: flex-end;
-    margin-top: 12px;
+    align-self: auto; /* 데스크탑과 동일 유지 */
+    margin-top: 0;
   }
 
   .graph-placeholder {
