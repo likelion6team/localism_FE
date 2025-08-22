@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { sendRescueReport } from "../features/report/model/reportApi";
 import "./EmergencyResponderPage.css";
 
 export default function EmergencyResponderPage() {
@@ -8,12 +9,28 @@ export default function EmergencyResponderPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [recordingState, setRecordingState] = useState("ready"); // "ready", "recording", "processing", "completed"
   const [voiceText, setVoiceText] = useState("");
+  const [reportId, setReportId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const location = useLocation();
   const reportData = location.state;
 
+  // 테스트용 더미 데이터 (실제로는 location.state에서 받아와야 함)
+  const defaultReportData = {
+    respiration: 30,
+    systolic: 90,
+    diastolic: 60,
+    spo2: 88,
+    pulse: 124,
+    location: "서울특별시 성북구 종암로 25길 10 (종암동)",
+    created: new Date().toISOString(),
+    majorSymptoms: ["심정지", "의식저하"],
+  };
+
+  // reportData가 없으면 기본 데이터 사용
+  const data = reportData || defaultReportData;
+
   const goBack = () => navigate("/patient-info");
-  const handleSend = () => setShowPopup(true);
   const handleNewCase = () => navigate("/report-list");
 
   const [mediaStream, setMediaStream] = useState(null);
@@ -257,6 +274,59 @@ export default function EmergencyResponderPage() {
     }
   };
 
+  const handleSend = async () => {
+    if (!voiceText || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      // 음성 녹음 blob 생성 (WAV 형식)
+      const wavBlob = exportWAV(
+        chunks.reduce((acc, cur) => acc + cur.length, 0) > 0
+          ? (() => {
+              let totalLength = chunks.reduce(
+                (acc, cur) => acc + cur.length,
+                0
+              );
+              let pcmData = new Float32Array(totalLength);
+              let offset = 0;
+              for (let chunk of chunks) {
+                pcmData.set(chunk, offset);
+                offset += chunk.length;
+              }
+              return pcmData;
+            })()
+          : new Float32Array(0),
+        16000
+      );
+
+      // 구조 요청 리포트 전송
+      const payload = {
+        reportId: data.id || 1, // 실제 리포트 ID 사용
+        voiceText: voiceText,
+        voiceBlob: wavBlob, // 음성 녹음 blob 추가
+        patientInfo: data,
+        timestamp: new Date().toISOString(),
+        location: data.location,
+        emergencyType: data.majorSymptoms[0],
+        estimatedArrival: "7분",
+      };
+
+      const result = await sendRescueReport(payload);
+
+      if (result.ok) {
+        setReportId(result.id);
+        setShowPopup(true);
+      } else {
+        alert("리포트 전송에 실패했습니다: " + result.error);
+      }
+    } catch (error) {
+      console.error("전송 오류:", error);
+      alert("전송 중 오류가 발생했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="emergency-responder-page">
       {/* 헤더 */}
@@ -301,9 +371,7 @@ export default function EmergencyResponderPage() {
                 />
                 <div className="vital-text">
                   <span className="vital-label">호흡수</span>
-                  <span className="vital-value">
-                    {reportData.respiration}/min
-                  </span>
+                  <span className="vital-value">{data.respiration}/min</span>
                 </div>
               </div>
               <div className="vital-item">
@@ -315,7 +383,7 @@ export default function EmergencyResponderPage() {
                 <div className="vital-text">
                   <span className="vital-label">혈압</span>
                   <span className="vital-value">
-                    {reportData.systolic}/{reportData.diastolic}mmHg
+                    {data.systolic}/{data.diastolic}mmHg
                   </span>
                 </div>
               </div>
@@ -327,7 +395,7 @@ export default function EmergencyResponderPage() {
                 />
                 <div className="vital-text">
                   <span className="vital-label">산소포화도</span>
-                  <span className="vital-value">{reportData.spo2}%</span>
+                  <span className="vital-value">{data.spo2}%</span>
                 </div>
               </div>
               <div className="vital-item">
@@ -338,7 +406,7 @@ export default function EmergencyResponderPage() {
                 />
                 <div className="vital-text">
                   <span className="vital-label">맥박</span>
-                  <span className="vital-value">{reportData.pulse} bpm</span>
+                  <span className="vital-value">{data.pulse} bpm</span>
                 </div>
               </div>
             </div>
@@ -349,12 +417,12 @@ export default function EmergencyResponderPage() {
         <section className="info-card">
           <div className="info-row">
             <img src="/icons/pin.svg" alt="위치" className="info-icon" />
-            <span className="info-text">{reportData.location}</span>
+            <span className="info-text">{data.location}</span>
           </div>
           <div className="info-row">
             <img src="/icons/clock.svg" alt="시간" className="info-icon" />
             <span className="info-text">
-              {new Date(reportData.created).toLocaleTimeString("ko-KR", {
+              {new Date(data.created).toLocaleTimeString("ko-KR", {
                 hour: "numeric",
                 minute: "numeric",
                 second: "numeric",
@@ -368,17 +436,19 @@ export default function EmergencyResponderPage() {
               alt="상태"
               className="info-icon"
             />
-            <span className="info-text">
-              {reportData.majorSymptoms?.join(", ")}
-            </span>
+            <span className="info-text">{data.majorSymptoms?.join(", ")}</span>
           </div>
         </section>
       </main>
 
       {/* 전송 버튼 */}
       <footer className="page-footer">
-        <button className="send-button" onClick={handleSend}>
-          전송
+        <button
+          className="send-button"
+          onClick={handleSend}
+          disabled={isSubmitting || !voiceText}
+        >
+          {isSubmitting ? "전송 중..." : "전송"}
         </button>
       </footer>
 
@@ -402,7 +472,16 @@ export default function EmergencyResponderPage() {
                 <h3 className="popup-title">병원 수신 완료</h3>
               </div>
               <div className="popup-info">
-                <p className="case-id">SX-2025-08-11-2073</p>
+                <p className="case-id">
+                  <strong>리포트 ID:</strong>{" "}
+                  {reportId ||
+                    `SX-${new Date().getFullYear()}-${String(
+                      new Date().getMonth() + 1
+                    ).padStart(2, "0")}-${String(new Date().getDate()).padStart(
+                      2,
+                      "0"
+                    )}-${data.id || 1}`}
+                </p>
                 <p className="eta">ETA: 7분</p>
                 <p className="hospital">병원: 고려대안암병원</p>
               </div>
