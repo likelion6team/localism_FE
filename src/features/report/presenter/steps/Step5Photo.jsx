@@ -207,7 +207,10 @@ export default function Step5Photo({ onBack }) {
       width: 100%;
       height: calc(100% - 120px);
       object-fit: cover;
+<<<<<<< HEAD
       transform: scaleX(-1); /* 거울 효과로 자연스럽게 */
+=======
+>>>>>>> 88141ec2c8be13a276b08683aafed13e07143683
       background: #000;
     `;
 

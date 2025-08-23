@@ -327,7 +327,7 @@ export default function ReportListPage() {
             >
               <div className="report-content">
                 <div className="report-header">
-                  {console.log("report:", report)}
+   
                   <span className="report-date">{report.created.y}.{report.created.m}.{report.created.d}</span>
                   <img
                     src="/icons/clock.svg"
