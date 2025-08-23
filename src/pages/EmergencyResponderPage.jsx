@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { sendRescueReport } from "../features/report/model/reportApi";
 import "./EmergencyResponderPage.css";
+import { toKoreaDateObject } from "../features/report/model/date";
 
 export default function EmergencyResponderPage() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ export default function EmergencyResponderPage() {
   const [recordingState, setRecordingState] = useState("ready"); // "ready", "recording", "processing", "completed"
   const [voiceText, setVoiceText] = useState("");
   const [reportId, setReportId] = useState(null);
+  const [reportEta, setReportEta] = useState(null);
+  const [reportHospital, setReportHospital] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const location = useLocation();
@@ -315,6 +318,8 @@ export default function EmergencyResponderPage() {
 
       if (result.ok) {
         setReportId(result.id);
+        setReportEta(result.data.data.eta);
+        setReportHospital(result.data.data.hospital);
         setShowPopup(true);
       } else {
         alert("리포트 전송에 실패했습니다: " + result.error);
@@ -422,12 +427,9 @@ export default function EmergencyResponderPage() {
           <div className="info-row">
             <img src="/icons/clock.svg" alt="시간" className="info-icon" />
             <span className="info-text">
-              {new Date(data.created).toLocaleTimeString("ko-KR", {
-                hour: "numeric",
-                minute: "numeric",
-                second: "numeric",
-                hour12: true,
-              })}
+              {toKoreaDateObject(data.created).h < 12 ? "오전 " : "오후 "}
+              {toKoreaDateObject(data.created).h < 12 ? `${toKoreaDateObject(data.created).h}` : `${toKoreaDateObject(data.created).h-12}`}
+              :{`${toKoreaDateObject(data.created).min}`}:{`${toKoreaDateObject(data.created).s}`}
             </span>
           </div>
           <div className="info-row">
@@ -475,15 +477,10 @@ export default function EmergencyResponderPage() {
                 <p className="case-id">
                   <strong>리포트 ID:</strong>{" "}
                   {reportId ||
-                    `SX-${new Date().getFullYear()}-${String(
-                      new Date().getMonth() + 1
-                    ).padStart(2, "0")}-${String(new Date().getDate()).padStart(
-                      2,
-                      "0"
-                    )}-${data.id || 1}`}
+                    `SX-${toKoreaDateObject(data.created).y}-${toKoreaDateObject(data.created).m}-${toKoreaDateObject(data.created).d}-${data.id || 1}`}
                 </p>
-                <p className="eta">ETA: 7분</p>
-                <p className="hospital">병원: 고려대안암병원</p>
+                <p className="eta">ETA: {Math.floor(reportEta / 60)}분 {reportEta % 60}초</p>
+                <p className="hospital">병원: {reportHospital}</p>
               </div>
             </div>
             <div className="popup-footer">
