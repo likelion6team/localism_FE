@@ -169,7 +169,7 @@ export default function PatientDetailPage() {
               <div className="label-item">
                 <span className="label-time-symptoms">시간</span>
                 <span className="label-datetime-content">
-                  {`${patient.created.y}.${patient.created.m}.${patient.created.d} ${patient.created.h < 12 ? "AM" : "PM"} ${patient.created.h}:${patient.created.min}`}
+                  {`${patient.created.y}.${patient.created.m}.${patient.created.d} ${patient.created.h < 12 ? "AM" : "PM"} ${patient.created.h < 12 ? patient.created.h : patient.created.h-12}:${patient.created.min}`}
                 </span>
               </div>
               <div className="label-item">
