@@ -473,12 +473,7 @@ export default function EmergencyResponderPage() {
                 <p className="case-id">
                   <strong>리포트 ID:</strong>{" "}
                   {reportId ||
-                    `SX-${new Date().getFullYear()}-${String(
-                      new Date().getMonth() + 1
-                    ).padStart(2, "0")}-${String(new Date().getDate()).padStart(
-                      2,
-                      "0"
-                    )}-${data.id || 1}`}
+                    `SX-${toKoreaDateObject(data.created).y}-${toKoreaDateObject(data.created).m}-${toKoreaDateObject(data.created).d}-${data.id || 1}`}
                 </p>
                 <p className="eta">ETA: 7분</p>
                 <p className="hospital">병원: 고려대안암병원</p>
