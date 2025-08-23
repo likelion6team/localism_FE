@@ -11,6 +11,8 @@ export default function EmergencyResponderPage() {
   const [recordingState, setRecordingState] = useState("ready"); // "ready", "recording", "processing", "completed"
   const [voiceText, setVoiceText] = useState("");
   const [reportId, setReportId] = useState(null);
+  const [reportEta, setReportEta] = useState(null);
+  const [reportHospital, setReportHospital] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const location = useLocation();
@@ -316,6 +318,8 @@ export default function EmergencyResponderPage() {
 
       if (result.ok) {
         setReportId(result.id);
+        setReportEta(result.data.data.eta);
+        setReportHospital(result.data.data.hospital);
         setShowPopup(true);
       } else {
         alert("리포트 전송에 실패했습니다: " + result.error);
@@ -475,8 +479,8 @@ export default function EmergencyResponderPage() {
                   {reportId ||
                     `SX-${toKoreaDateObject(data.created).y}-${toKoreaDateObject(data.created).m}-${toKoreaDateObject(data.created).d}-${data.id || 1}`}
                 </p>
-                <p className="eta">ETA: 7분</p>
-                <p className="hospital">병원: 고려대안암병원</p>
+                <p className="eta">ETA: {Math.floor(reportEta / 60)}분 {reportEta % 60}초</p>
+                <p className="hospital">병원: {reportHospital}</p>
               </div>
             </div>
             <div className="popup-footer">
