@@ -1,51 +1,28 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getDetailReport } from "../features/report/model/rescueReportDetailApi"; // 경로는 맞게 조정
 import "./PatientInfoPage.css";
 import PhotoPlaceholder from "../components/PhotoPlaceholder";
 
 export default function PatientInfoPage() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [selectedAccidentTypes, setSelectedAccidentTypes] = useState([]);
-  const [selectedSymptoms, setSelectedSymptoms] = useState([]);
-  const [selectedConsciousness, setSelectedConsciousness] = useState("");
-  const [selectedRespiration, setSelectedRespiration] = useState("");
+  const [report, setReport] = useState(null);
 
   const goBack = () => navigate("/report-list");
   const handleComplete = () => {
-    navigate("/emergency-responder");
+    navigate("/emergency-responder", { state: report.data });
   };
 
-  const handleAccidentTypeClick = (type) => {
-    setSelectedAccidentTypes((prev) => {
-      if (prev.includes(type)) {
-        return prev.filter((t) => t !== type);
-      } else {
-        return [...prev, type];
-      }
-    });
-  };
+  useEffect(() => {
+    if (id) {
+      getDetailReport(id).then((data) => {
+        setReport(data); // result.data만 리턴하도록 해뒀으니 바로 환자 객체 들어옴
+      });
+    }
+  }, [id]);
 
-  const handleSymptomClick = (symptom) => {
-    setSelectedSymptoms((prev) => {
-      if (prev.includes(symptom)) {
-        return prev.filter((s) => s !== symptom);
-      } else {
-        return [...prev, symptom];
-      }
-    });
-  };
-
-  const handleConsciousnessClick = () => {
-    setSelectedConsciousness(
-      selectedConsciousness === "blurred" ? "" : "blurred"
-    );
-  };
-
-  const handleRespirationClick = () => {
-    setSelectedRespiration(
-      selectedRespiration === "difficulty" ? "" : "difficulty"
-    );
-  };
+  if (!report) return <div>로딩 중...</div>;
 
   return (
     <div className="patient-info-page">
@@ -63,7 +40,7 @@ export default function PatientInfoPage() {
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
           <img
-            src="/src/assets/arrow-left.png"
+            src="/icons/arrow-left.png"
             alt="뒤로가기"
             className="back-icon"
           />
@@ -76,119 +53,127 @@ export default function PatientInfoPage() {
       <main className="main-content">
         <h2 className="main-title">
           <span className="title-blue">환자 정보</span>
+          <span className="title-black">를</span>
           <br />
-          <span className="title-black">를 확인해주세요</span>
+          <span className="title-black">확인해주세요</span>
         </h2>
 
-        {/* 의식 섹션 */}
+        {/* 의식 */}
         <div className="section-container">
           <label className="section-label">의식</label>
           <section className="info-section">
             <div className="single-button-container">
-              <button
-                className={`info-button ${
-                  selectedConsciousness === "blurred" ? "selected" : ""
-                }`}
-                onClick={handleConsciousnessClick}
-              >
-                흐림 (반응이 느림)
-              </button>
+              <div className="info-button">
+                {report.data.consciousnessStatus}
+              </div>
             </div>
           </section>
         </div>
 
-        {/* 사고 유형 섹션 */}
+        {/* 사고 유형 */}
         <div className="section-container">
           <label className="section-label">사고 유형</label>
           <section className="info-section">
             <div className="button-group">
-              <button
-                className={`info-button ${
-                  selectedAccidentTypes.includes("traffic") ? "selected" : ""
-                }`}
-                onClick={() => handleAccidentTypeClick("traffic")}
-              >
-                <img
-                  src="/src/assets/car.svg"
-                  alt="교통사고"
-                  className="button-icon"
-                />
-                교통사고
-              </button>
-              <button
-                className={`info-button ${
-                  selectedAccidentTypes.includes("stab") ? "selected" : ""
-                }`}
-                onClick={() => handleAccidentTypeClick("stab")}
-              >
-                <img
-                  src="/src/assets/knife.svg"
-                  alt="자상"
-                  className="button-icon"
-                />
-                자상
-              </button>
+              {report.data.accidentType?.map((type, idx) => {
+                const isOther = /기타|모름/.test(type);
+                let icon = "";
+                if (!isOther) {
+                  if (/교통/.test(type)) icon = "/icons/traffic.svg";
+                  else if (/감전/.test(type)) icon = "/icons/electric.svg";
+                  else if (/추락|낙상/.test(type)) icon = "/icons/fall.svg";
+                  else if (/자상|출혈/.test(type)) icon = "/icons/bleeding.svg";
+                  else if (/화재|화상/.test(type)) icon = "/icons/burn.svg";
+                  else icon = "/icons/other.svg";
+                }
+                let displayText = isOther
+                  ? type
+                      .replace(/\s*기타\s*\/?\s*모름\s*:??\s*/gi, "")
+                      .trim() || type
+                  : type;
+                displayText = displayText.replace(/^\s*[:\-–—·•]\s*/u, "");
+                return (
+                  <div
+                    key={idx}
+                    className={`info-button ${isOther ? "text-only" : ""}`}
+                  >
+                    {!isOther && icon && (
+                      <img src={icon} alt="아이콘" className="button-icon" />
+                    )}
+                    {displayText}
+                  </div>
+                );
+              })}
             </div>
           </section>
         </div>
 
-        {/* 환자 증상 섹션 */}
+        {/* 환자 증상 */}
         <div className="section-container">
           <label className="section-label">환자 증상</label>
           <section className="info-section">
             <div className="button-group">
-              <button
-                className={`info-button ${
-                  selectedSymptoms.includes("bleeding") ? "selected" : ""
-                }`}
-                onClick={() => handleSymptomClick("bleeding")}
-              >
-                <img
-                  src="/src/assets/blood.svg"
-                  alt="출혈"
-                  className="button-icon"
-                />
-                출혈
-              </button>
-              <button
-                className={`info-button ${
-                  selectedSymptoms.includes("fracture") ? "selected" : ""
-                }`}
-                onClick={() => handleSymptomClick("fracture")}
-              >
-                <img
-                  src="/src/assets/bone.svg"
-                  alt="골절"
-                  className="button-icon"
-                />
-                골절
-              </button>
+              {report.data.majorSymptoms?.map((symptom, idx) => {
+                const isOther = /기타/.test(symptom);
+                let icon = "";
+                if (!isOther) {
+                  if (/호흡/.test(symptom))
+                    icon = "/icons/breathing-difficulty.svg";
+                  else if (/약물/.test(symptom))
+                    icon = "/icons/drug-reaction.svg";
+                  else if (/출혈/.test(symptom)) icon = "/icons/bleeding.svg";
+                  else if (/의식없|의식 없음|의식없음/.test(symptom))
+                    icon = "/icons/unconscious.svg";
+                  else if (/구토/.test(symptom)) icon = "/icons/vomiting.svg";
+                  else if (/경련/.test(symptom)) icon = "/icons/convulsion.svg";
+                  else if (/저체온/.test(symptom))
+                    icon = "/icons/hypothermia.svg";
+                  else if (/골절/.test(symptom)) icon = "/icons/fracture.svg";
+                  else if (/화상/.test(symptom)) icon = "/icons/burn.svg";
+                  else icon = "/icons/other.svg";
+                }
+                let displayText = isOther
+                  ? symptom
+                      .replace(/\s*기타\s*\/?\s*모름\s*:??\s*/gi, "")
+                      .trim() || symptom
+                  : symptom;
+                displayText = displayText.replace(/^\s*[:\-–—·•]\s*/u, "");
+                return (
+                  <div
+                    key={idx}
+                    className={`info-button ${isOther ? "text-only" : ""}`}
+                  >
+                    {!isOther && icon && (
+                      <img src={icon} alt="아이콘" className="button-icon" />
+                    )}
+                    {displayText}
+                  </div>
+                );
+              })}
             </div>
           </section>
         </div>
 
-        {/* 호흡 섹션 */}
+        {/* 호흡 */}
         <div className="section-container">
           <label className="section-label">호흡</label>
           <section className="info-section">
             <div className="single-button-container">
-              <button
-                className={`info-button ${
-                  selectedRespiration === "difficulty" ? "selected" : ""
-                }`}
-                onClick={handleRespirationClick}
-              >
-                어려움 (가쁘거나 불규칙)
-              </button>
+              <div className="info-button">{report.data.breathingStatus}</div>
             </div>
           </section>
         </div>
 
-        {/* 현장사진 섹션 */}
+        {/* 현장사진 */}
+        {report?.data?.isPhotoPath ? (
         <section className="info-section">
           <label className="section-label"></label>
-          <PhotoPlaceholder />
+          <PhotoPlaceholder
+            reportId={report?.data?.reportId || report?.data?.id}
+          />
         </section>
+        ) : null
+        }
       </main>
 
       {/* 확인 완료 버튼 */}
@@ -198,7 +183,6 @@ export default function PatientInfoPage() {
         </button>
       </footer>
 
-      {/* 홈 인디케이터 */}
       <div className="home-indicator" />
     </div>
   );

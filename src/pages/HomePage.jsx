@@ -49,7 +49,7 @@ export default function HomePage() {
     } else if (authType === "emergency" && authNumber === "1111") {
       // 구급대원 인증 성공
       setTimeout(() => {
-        navigate("/emergency-responder");
+        navigate("/report-list");
       }, 200);
     } else if (authType === "hospital" && authNumber === "0000") {
       // 병원 인증 성공

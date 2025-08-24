@@ -2,6 +2,7 @@
 // 신고 리포트 관련 API 함수들
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const TMAP_APP_KEY = import.meta.env.VITE_TMAP_APP_KEY;
 
 // 환경 변수 확인용 로그
 console.log("API_BASE_URL:", API_BASE_URL);
@@ -69,7 +70,7 @@ export async function sendReport(payload) {
 
     console.log("API 응답 상태:", response.status);
     console.log("API 응답 헤더:", response.headers);
-
+    console.log("response:", response);
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API 오류 응답:", errorText);
@@ -117,42 +118,129 @@ const TMAP_API_KEY =
 // 좌표를 주소로 변환하는 API (TMAP API 사용)
 export async function getAddressFromCoordinates(lat, lng) {
   try {
-    if (!TMAP_API_KEY || TMAP_API_KEY === "your-tmap-api-key-here") {
-      console.warn(
-        "TMAP API 키가 설정되지 않았습니다. 기본 주소 형식으로 반환합니다."
-      );
-      return `위도: ${lat}, 경도: ${lng}`;
+    const TMAP_APP_KEY = "dVnE4kwFT15MzSsJpkdHj5XPEjklK0rm6Nc20AvP";
+
+    // ✅ 엔드포인트 경로 포함
+    const url = new URL(
+      "https://apis.openapi.sk.com/tmap/geo/reversegeocoding"
+    );
+    url.searchParams.set("version", "1");
+    url.searchParams.set("format", "json");
+    url.searchParams.set("coordType", "WGS84GEO");
+    url.searchParams.set("addressType", "A10"); // 도로명 우선(문서 옵션)
+    url.searchParams.set("lon", String(lng));
+    url.searchParams.set("lat", String(lat));
+    // (필요 시 JSONP 샘플처럼) url.searchParams.set("callback", "result");
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      headers: { appKey: TMAP_APP_KEY }, // ✅ 헤더에 appKey
+    });
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error(`Tmap 요청 실패 (${res.status}) ${txt}`);
     }
 
-    const response = await fetch(
-      `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&format=json&callback=result&appKey=${TMAP_API_KEY}&lat=${lat}&lon=${lng}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+    const data = await res.json();
+    const info = data?.addressInfo;
+    if (!info) throw new Error("Tmap 응답에 addressInfo가 없습니다.");
+
+    // 새주소 조립
+    const lastLegal = info.legalDong?.slice(-1) ?? "";
+    let road = `${info.city_do ?? ""} ${info.gu_gun ?? ""} `;
+    if (
+      (info.eup_myun ?? "") === "" &&
+      (lastLegal === "읍" || lastLegal === "면")
+    ) {
+      road += info.legalDong ?? "";
+    } else {
+      road += info.eup_myun ?? "";
+    }
+    road += ` ${info.roadName ?? ""} ${info.buildingIndex ?? ""}`.trim();
+
+    if ((info.legalDong ?? "") && !(lastLegal === "읍" || lastLegal === "면")) {
+      road +=
+        info.buildingName ?? ""
+          ? ` (${info.legalDong}, ${info.buildingName})`
+          : ` (${info.legalDong})`;
+    } else if (info.buildingName) {
+      road += ` (${info.buildingName})`;
+    }
+
+    // 지번 주소도 필요하면 함께 반환
+    const jibun = `${info.city_do ?? ""} ${info.gu_gun ?? ""} ${
+      info.legalDong ?? ""
+    } ${info.ri ?? ""} ${info.bunji ?? ""}`
+      .replace(/\s+/g, " ")
+      .trim();
+
+    return road.replace(/\s+/g, " ").trim();
+  } catch (e) {
+    console.error("주소 변환 실패", e);
+    // 실패 시 위경도만이라도 돌려주기
+    return { roadAddress: null, jibunAddress: null, lat, lng };
+  }
+}
+
+// 음성 녹음 기반 구조 요청 리포트 API
+export async function sendRescueReport(payload) {
+  try {
+    console.log("=== sendRescueReport 시작 ===");
+    console.log("전체 payload:", payload);
+
+    // 1단계: 음성 전사 API 호출하여 voiceId 받기
+    const voiceFormData = new FormData();
+    voiceFormData.append("file", payload.voiceBlob, "recording.wav");
+
+    console.log("음성 전사 API 호출 중...");
+    const voiceResponse = await fetch(`${API_BASE_URL}/api/voice/transcribe`, {
+      method: "POST",
+      body: voiceFormData,
+    });
+
+    if (!voiceResponse.ok) {
+      throw new Error(`음성 전사 실패: ${voiceResponse.status}`);
+    }
+
+    const voiceResult = await voiceResponse.json();
+    const voiceId = voiceResult.data?.id || voiceResult.id;
+
+    if (!voiceId) {
+      throw new Error("음성 전사 ID를 받을 수 없습니다.");
+    }
+
+    console.log("음성 전사 성공, voiceId:", voiceId);
+
+    // 2단계: 구조 요청 리포트 전송
+    const apiPayload = {
+      reportId: payload.reportId || 1, // 실제 리포트 ID
+      voiceId: voiceId, // 음성 전사에서 받은 ID
+    };
+
+    console.log("API로 전송할 payload:", apiPayload);
+
+    const response = await fetch(`${API_BASE_URL}/api/rescueReports`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(apiPayload),
+    });
+
+    console.log("API 응답 상태:", response.status);
 
     if (!response.ok) {
-      throw new Error(`TMAP API 호출 실패: ${response.status}`);
+      const errorText = await response.text();
+      console.error("API 오류 응답:", errorText);
+      throw new Error(`API 호출 실패: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json();
-
-    if (data.status === "OK" && data.result && data.result.length > 0) {
-      const addressInfo = data.result[0];
-      return `${
-        addressInfo.newAddressList.newAddressName[0].fullAddress ||
-        addressInfo.newAddressList.newAddressName[0].sidoName +
-          " " +
-          addressInfo.newAddressList.newAddressName[0].sggName
-      }`;
-    } else {
-      return `위도: ${lat}, 경도: ${lng}`;
-    }
+    const result = await response.json();
+    console.log("구조 요청 리포트 전송 성공:", result);
+    return { ok: true, data: result, id: result.id || result.reportId };
   } catch (error) {
-    console.error("TMAP API 주소 변환 실패:", error);
-    return `위도: ${lat}, 경도: ${lng}`;
+    console.error("구조 요청 리포트 전송 실패:", error);
+    return { ok: false, error: error.message };
   }
 }

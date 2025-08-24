@@ -1,3 +1,5 @@
+
+
 /* 활력징후 트렌드 섹션 */
 .trend-graph-container {
   width: 100%;
@@ -160,8 +162,5 @@
     font-size: 8px;
   }
 }
-
-/*아이콘이 보이지 않는 문제 해결을 위한 CSS */
+/*아이콘이 보이지 않는 문제 해결을 위한 CSS
 .icon {
-  display: block;
-}

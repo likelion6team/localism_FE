@@ -15,15 +15,13 @@ export default function App() {
     // 현재 경로 확인
     const currentPath = window.location.pathname;
 
-    // /report 경로에서 새로고침한 경우 강제로 홈으로 리다이렉트
-    if (currentPath.includes("/report") || currentPath !== "/") {
-      // 즉시 홈으로 이동
-      window.location.href = "/";
-      return;
+    // 홈 경로에서만 스플래시 화면 실행
+    if (currentPath === "/") {
+      setShowSplash(true);
+    } else {
+      // 다른 경로에서는 스플래시 없이 바로 메인 앱 표시
+      setShowSplash(false);
     }
-
-    // 스플래시 화면 실행 (홈 경로에서만)
-    setShowSplash(true);
   }, []);
 
   // 스플래시 화면이 완료되었을 때 호출되는 함수

@@ -1,40 +1,243 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./HospitalViewerPage.css";
+import { toKoreaDateObject } from "../features/report/model/date.js";
 
 export default function HospitalViewerPage() {
   const navigate = useNavigate();
+  const [cases, setCases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const goBack = () => navigate("/");
-  const handleCaseClick = () => navigate("/patient-detail");
+  const handleCaseClick = (id) => navigate(`/patient-detail/${id}`);
 
-  // 샘플 응급 상황 데이터 (이미지와 동일한 형식)
-  const emergencyCases = [
-    {
-      id: 1,
-      date: "2025.08.14",
-      mainSymptom: "호흡 어려움, 뇌출혈",
-      consciousness: "흐림",
-      eta: "01:01",
-      priority: "high", // red
-    },
-    {
-      id: 2,
-      date: "2025.08.14",
-      mainSymptom: "골절",
-      consciousness: "있음",
-      eta: "05:15",
-      priority: "medium", // yellow
-    },
-    {
-      id: 3,
-      date: "2025.08.14",
-      mainSymptom: "화상, 출혈",
-      consciousness: "없음",
-      eta: "08:18",
-      priority: "low", // grey
-    },
-  ];
+  // 공통 유틸: mm:ss 포맷, 우선순위 분류
+  const formatMmSs = (sec) => {
+    if (sec == null || Number.isNaN(sec)) return "-";
+    const s = Math.max(0, Math.floor(sec));
+    const mm = String(Math.floor(s / 60)).padStart(2, "0");
+    const ss = String(s % 60).padStart(2, "0");
+    return `${mm}:${ss}`;
+  };
+
+  const classifyPrioritySec = (etaSec) => {
+    if (etaSec == null) return "low";
+    if (etaSec < 5 * 60) return "high";
+    if (etaSec < 10 * 60) return "medium";
+    return "low";
+  };
+
+  // 최초 진입 시 캐시된 카드 즉시 표시
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("hospital_cases_cache");
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (Array.isArray(cached) && cached.length > 0) {
+          setCases(cached);
+        }
+      }
+    } catch (e) {
+      console.debug("hospital_cases_cache read failed", e);
+    }
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    // toDate 제거됨 (미사용)
+
+    const formatMmSs = (sec) => {
+      if (sec == null || Number.isNaN(sec)) return "-";
+      const s = Math.max(0, Math.floor(sec));
+      const mm = String(Math.floor(s / 60)).padStart(2, "0");
+      const ss = String(s % 60).padStart(2, "0");
+      return `${mm}:${ss}`;
+    };
+
+    const classifyPrioritySec = (etaSec) => {
+      if (etaSec == null) return "low";
+      if (etaSec < 5 * 60) return "high";
+      if (etaSec < 10 * 60) return "medium";
+      return "low";
+    };
+
+    const extractList = (payload) => {
+      if (!payload) return [];
+      const pickArray = (arr) =>
+        Array.isArray(arr) && arr.length && typeof arr[0] === "object"
+          ? arr
+          : null;
+
+      if (Array.isArray(payload)) {
+        const picked = pickArray(payload);
+        if (picked) return picked;
+      }
+
+      const top = [
+        payload?.rescueReports,
+        payload?.reports,
+        payload?.content,
+        payload?.items,
+        payload?.list,
+        payload?.results,
+        payload?.rows,
+      ];
+      for (const x of top) {
+        const picked = pickArray(x);
+        if (picked) return picked;
+      }
+
+      const dataObj = payload?.data;
+      const underData = [
+        dataObj?.rescueReports,
+        dataObj?.reports,
+        dataObj?.content,
+        dataObj?.items,
+        dataObj?.list,
+        dataObj?.results,
+        dataObj?.rows,
+      ];
+      for (const x of underData) {
+        const picked = pickArray(x);
+        if (picked) return picked;
+      }
+      return [];
+    };
+
+    async function fetchCases() {
+      try {
+        setLoading(true);
+        setError("");
+        // 캐시 방지 파라미터 추가로 새 데이터 즉시 반영
+        const res = await fetch(
+          `https://api.localism0825.store/api/rescueReports/wait?t=${Date.now()}`,
+          {
+            method: "GET",
+            headers: { accept: "*/*" },
+            signal: controller.signal,
+          }
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const list = extractList(json);
+
+        const mapped = list.map((it, idx) => {
+          const id = it?.id ?? it?.reportId ?? it?.rescueReportId ?? idx + 1;
+          // const date = toDate(
+          //   it?.date ??
+          //     it?.created ??
+          //     it?.createdAt ??
+          //     it?.created_at ??
+          //     it?.reportedAt
+          // );
+
+          const date = toKoreaDateObject(it.created);
+          // ETA(초)
+          const etaSec =
+            it?.eta ??
+            it?.etaSeconds ??
+            it?.eta_sec ??
+            it?.etaSec ??
+            it?.remainEtaSeconds ??
+            it?.remainSeconds ??
+            it?.seconds;
+          const etaSecNum = etaSec == null ? null : Number(etaSec);
+          const etaText =
+            etaSecNum == null || Number.isNaN(etaSecNum)
+              ? "-"
+              : formatMmSs(etaSecNum);
+          const priority = classifyPrioritySec(etaSecNum);
+
+          // '기타/모름' 제거 유틸
+          const removeEtcUnknown = (value) => {
+            if (Array.isArray(value)) {
+              const filtered = value
+                .map((v) => (typeof v === "string" ? v.trim() : String(v)))
+                .filter((s) => s && !/^기타\/모름(?::|$)/.test(s));
+              return filtered.join(", ");
+            }
+            if (typeof value === "string") {
+              return value
+                .split(/[,，]/)
+                .map((v) => v.trim())
+                .filter((v) => v && !/^기타\/모름(?::|$)/.test(v))
+                .join(", ");
+            }
+            return "";
+          };
+
+          const mainSymptomRaw =
+            it?.mainSymptom ??
+            (Array.isArray(it?.majorSymptoms)
+              ? it.majorSymptoms
+              : Array.isArray(it?.symptoms)
+              ? it.symptoms
+              : it?.type ?? "");
+          const mainSymptom = removeEtcUnknown(mainSymptomRaw);
+          const consciousness = it?.consciousness ?? it?.awareness ?? "-";
+
+          return {
+            id,
+            date,
+            mainSymptom,
+            consciousness,
+            eta: etaText,
+            etaSec: etaSecNum,
+            priority,
+          };
+        });
+
+        setCases(mapped);
+        try {
+          localStorage.setItem("hospital_cases_cache", JSON.stringify(mapped));
+        } catch (e) {
+          console.debug("hospital_cases_cache write failed", e);
+        }
+      } catch {
+        setError("데이터를 불러오지 못했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCases();
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        fetchCases();
+      }
+    };
+    window.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+
+    return () => {
+      controller.abort();
+      window.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
+  }, []);
+
+  // 초 단위 카운트다운
+  useEffect(() => {
+    const t = setInterval(() => {
+      setCases((prev) =>
+        prev.map((c) => {
+          if (c.etaSec == null || Number.isNaN(c.etaSec) || c.etaSec <= 0)
+            return c;
+          const next = c.etaSec - 1;
+          return {
+            ...c,
+            etaSec: next,
+            eta: formatMmSs(next),
+            priority: classifyPrioritySec(next),
+          };
+        })
+      );
+    }, 1000);
+    return () => clearInterval(t);
+  }, []);
 
   return (
     <div className="hospital-viewer-page">
@@ -42,7 +245,7 @@ export default function HospitalViewerPage() {
       <header className="page-header">
         <button className="back-button" onClick={goBack}>
           <img
-            src="/src/assets/arrow-left.png"
+            src="/icons/arrow-left.png"
             alt="뒤로가기"
             className="back-icon"
           />
@@ -50,11 +253,10 @@ export default function HospitalViewerPage() {
         <h1 className="page-title">응급 환자 현황</h1>
         <div className="header-spacer"></div>
       </header>
-
-      {/* 섹션 제목 */}
+      {/* 제목은 항상 표시 */}
       <div className="section-title">
         <img
-          src="/src/assets/Rectangle 34625276.png"
+          src="/icons/Rectangle 34625276.png"
           alt="section icon"
           className="section-icon"
         />
@@ -62,33 +264,70 @@ export default function HospitalViewerPage() {
         <span className="section-subtitle">(ETA 순 정렬)</span>
       </div>
 
-      {/* 응급 상황 목록 */}
+      {/* 카드 영역 */}
       <main className="emergency-list">
-        {emergencyCases.map((case_) => (
-          <div
-            key={case_.id}
-            className={`emergency-card ${case_.priority}`}
-            onClick={handleCaseClick}
-          >
-            <div className="card-content">
-              <div className="card-date">{case_.date}</div>
-              <div className="card-details">
-                <div className="detail-item">
-                  <span className="detail-label">주증상</span>
-                  <span className="detail-value">{case_.mainSymptom}</span>
+        {error && !cases.length && <div className="error-text">{error}</div>}
+
+        {cases.length > 0 &&
+          cases.map((case_) => (
+            <div
+              key={case_.id}
+              className={`emergency-card ${case_.priority}`}
+              onClick={() => handleCaseClick(case_.id)}
+            >
+              <div className="card-content">
+                <div className="card-date">
+                  {case_.date.y}.{case_.date.m}.{case_.date.d}
                 </div>
-                <div className="detail-item">
-                  <span className="detail-label">의식</span>
-                  <span className="detail-value">{case_.consciousness}</span>
+                <div className="card-details">
+                  {case_.mainSymptom && (
+                    <div className="detail-item">
+                      <span className="detail-label">주증상</span>
+                      <span className="detail-value">{case_.mainSymptom}</span>
+                    </div>
+                  )}
+                  <div className="detail-item">
+                    <span className="detail-label">의식</span>
+                    <span className="detail-value">{case_.consciousness}</span>
+                  </div>
                 </div>
               </div>
+              <div className="eta-section">
+                <span className="eta-label">ETA</span>
+                <span className="eta-time">{case_.eta}</span>
+              </div>
             </div>
-            <div className="eta-section">
-              <span className="eta-label">ETA</span>
-              <span className="eta-time">{case_.eta}</span>
-            </div>
-          </div>
-        ))}
+          ))}
+
+        {cases.length === 0 && loading && (
+          <>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="emergency-card loading">
+                <div className="card-content">
+                  <div className="card-date">&nbsp;</div>
+                  <div className="card-details">
+                    <div className="detail-item">
+                      <span className="detail-label">주증상</span>
+                      <span className="detail-value">불러오는 중...</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">의식</span>
+                      <span className="detail-value">불러오는 중...</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="eta-section">
+                  <span className="eta-label">ETA</span>
+                  <span className="eta-time">--:--</span>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+
+        {cases.length === 0 && !loading && !error && (
+          <div className="empty-text">대기 중인 환자가 없습니다.</div>
+        )}
       </main>
 
       {/* 홈 인디케이터 */}

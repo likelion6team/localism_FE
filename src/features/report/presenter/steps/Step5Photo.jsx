@@ -9,6 +9,7 @@ import {
 } from "../../model/reportApi";
 import { useReport } from "../../model/ReportContext";
 import "./Step5Photo.css";
+import { toKoreaDateObject } from "../../model/date";
 
 export default function Step5Photo({ onBack }) {
   const navigate = useNavigate();
@@ -30,13 +31,20 @@ export default function Step5Photo({ onBack }) {
   const [currentAddress, setCurrentAddress] = useState(null);
 
   // 간단한 케이스 ID 생성 (디자인 데모용)
-  const caseId = useMemo(() => {
-    const d = new Date();
-    const pad = (n) => String(n).padStart(2, "0");
-    return `SX-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
-      d.getDate()
-    )}-${Math.floor(1000 + Math.random() * 9000)}`;
-  }, []);
+  // const caseId = useMemo(() => {
+  //   const d = new Date();
+  //   const pad = (n) => String(n).padStart(2, "0");
+  //   return `SX-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
+  //     d.getDate()
+  //   )}-${Math.floor(1000 + Math.random() * 9000)}`;
+  // }, []);
+
+  const [caseId, setCaseId] = useState({
+    y: "2025",
+    m: "08",
+    d: "26",
+    id: "100",
+  });
 
   // 파일 선택 다이얼로그를 여는 함수
   const pickFile = () => fileRef.current?.click();
@@ -72,9 +80,6 @@ export default function Step5Photo({ onBack }) {
 
   // 모바일 카메라로 사진 찍기 (모바일 최적화)
   const takePhoto = async () => {
-    // 카메라 접근 시도 중임을 한 번만 알림
-    alert("카메라에 접근 중입니다...");
-
     try {
       // 먼저 카메라 권한 확인
       if (navigator.permissions) {
@@ -96,6 +101,8 @@ export default function Step5Photo({ onBack }) {
           facingMode: "environment", // 후면 카메라
           width: { ideal: 1280 },
           height: { ideal: 720 },
+          // 모바일에서 더 안정적인 설정 추가
+          frameRate: { ideal: 30, max: 30 },
         },
       };
 
@@ -104,6 +111,9 @@ export default function Step5Photo({ onBack }) {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         const video = document.createElement("video");
         video.srcObject = stream;
+        // 모바일에서 더 자연스러운 카메라 경험을 위해 muted 속성 추가
+        video.muted = true;
+        video.playsInline = true; // iOS에서 전체화면 방지
         video.play();
         showCameraPreview(video, stream);
       }
@@ -122,6 +132,8 @@ export default function Step5Photo({ onBack }) {
             (stream) => {
               const video = document.createElement("video");
               video.srcObject = stream;
+              video.muted = true;
+              video.playsInline = true;
               video.play();
               showCameraPreview(video, stream);
             },
@@ -190,11 +202,12 @@ export default function Step5Photo({ onBack }) {
       flex-direction: column;
     `;
 
-    // 비디오 요소 스타일링
+    // 비디오 요소 스타일링 (모바일 최적화)
     video.style.cssText = `
       width: 100%;
       height: calc(100% - 120px);
       object-fit: cover;
+      background: #000;
     `;
 
     // 컨트롤 버튼들
@@ -321,6 +334,18 @@ export default function Step5Photo({ onBack }) {
 
       if (result.ok) {
         // 성공 시 모달 표시
+        const id = result.data.data.id;
+        const createdRaw = result.data.data.created; // "2025-08-22T11:09:54.840447"
+
+        const caseDate = toKoreaDateObject(createdRaw);
+
+        setCaseId({
+          y: caseDate.y,
+          m: caseDate.m,
+          d: caseDate.d,
+          id: String(id),
+        });
+
         setShowModal(true);
       } else {
         // 실패 시 에러 처리
@@ -482,7 +507,9 @@ export default function Step5Photo({ onBack }) {
               </div>
 
               {/* 케이스 ID 표시 */}
-              <div className="step5-case-id">케이스 ID: {caseId}</div>
+              <div className="step5-case-id">
+                케이스 ID: SX-{caseId.y}-{caseId.m}-{caseId.d}-{caseId.id}{" "}
+              </div>
 
               {/* 안내 메시지 */}
               <div className="step5-modal-text">

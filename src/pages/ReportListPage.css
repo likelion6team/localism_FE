@@ -141,6 +141,11 @@
   line-height: 1.2;
 }
 
+/* '기타/모름'만 남는 경우 숨김 */
+.report-type:empty,
+.report-type:has(.hide-etc) {
+  display: none;
+}
 .report-address {
   font-size: 14px;
   color: #666666;
