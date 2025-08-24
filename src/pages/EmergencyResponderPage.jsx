@@ -428,11 +428,10 @@ export default function EmergencyResponderPage() {
             <img src="/icons/clockkk.svg" alt="시간" className="info-icon" />
             <span className="info-text">
               {toKoreaDateObject(data.created).h < 12 ? "오전 " : "오후 "}
-              {toKoreaDateObject(data.created).h < 12
-                ? `${toKoreaDateObject(data.created).h}`
-                : `${toKoreaDateObject(data.created).h - 12}`}
-              :{`${toKoreaDateObject(data.created).min}`}:
-              {`${toKoreaDateObject(data.created).s}`}
+
+              {toKoreaDateObject(data.created).h < 13 ? `${toKoreaDateObject(data.created).h}` : `${toKoreaDateObject(data.created).h-12}`}
+              :{`${toKoreaDateObject(data.created).min}`}:{`${toKoreaDateObject(data.created).s}`}
+
             </span>
           </div>
           <div className="info-row">
