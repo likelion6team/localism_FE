@@ -46,26 +46,7 @@ export default function HospitalViewerPage() {
   useEffect(() => {
     const controller = new AbortController();
 
-    const toDate = (value) => {
-      if (!value) return "-";
-      if (typeof value === "number") {
-        const d = new Date(value < 10 ** 12 ? value * 1000 : value);
-        if (!isNaN(d)) {
-          const yyyy = d.getFullYear();
-          const mm = String(d.getMonth() + 1).padStart(2, "0");
-          const dd = String(d.getDate()).padStart(2, "0");
-          return `${yyyy}.${mm}.${dd}`;
-        }
-      }
-      const d1 = new Date(value);
-      if (!isNaN(d1)) {
-        const yyyy = d1.getFullYear();
-        const mm = String(d1.getMonth() + 1).padStart(2, "0");
-        const dd = String(d1.getDate()).padStart(2, "0");
-        return `${yyyy}.${mm}.${dd}`;
-      }
-      return String(value);
-    };
+    // toDate 제거됨 (미사용)
 
     const formatMmSs = (sec) => {
       if (sec == null || Number.isNaN(sec)) return "-";
@@ -169,13 +150,32 @@ export default function HospitalViewerPage() {
               : formatMmSs(etaSecNum);
           const priority = classifyPrioritySec(etaSecNum);
 
-          const mainSymptom =
+          // '기타/모름' 제거 유틸
+          const removeEtcUnknown = (value) => {
+            if (Array.isArray(value)) {
+              const filtered = value
+                .map((v) => (typeof v === "string" ? v.trim() : String(v)))
+                .filter((s) => s && !/^기타\/모름(?::|$)/.test(s));
+              return filtered.join(", ");
+            }
+            if (typeof value === "string") {
+              return value
+                .split(/[,，]/)
+                .map((v) => v.trim())
+                .filter((v) => v && !/^기타\/모름(?::|$)/.test(v))
+                .join(", ");
+            }
+            return "";
+          };
+
+          const mainSymptomRaw =
             it?.mainSymptom ??
             (Array.isArray(it?.majorSymptoms)
-              ? it.majorSymptoms.join(", ")
+              ? it.majorSymptoms
               : Array.isArray(it?.symptoms)
-              ? it.symptoms.join(", ")
-              : it?.type ?? "-");
+              ? it.symptoms
+              : it?.type ?? "");
+          const mainSymptom = removeEtcUnknown(mainSymptomRaw);
           const consciousness = it?.consciousness ?? it?.awareness ?? "-";
 
           return {
@@ -281,10 +281,12 @@ export default function HospitalViewerPage() {
                   {case_.date.y}.{case_.date.m}.{case_.date.d}
                 </div>
                 <div className="card-details">
-                  <div className="detail-item">
-                    <span className="detail-label">주증상</span>
-                    <span className="detail-value">{case_.mainSymptom}</span>
-                  </div>
+                  {case_.mainSymptom && (
+                    <div className="detail-item">
+                      <span className="detail-label">주증상</span>
+                      <span className="detail-value">{case_.mainSymptom}</span>
+                    </div>
+                  )}
                   <div className="detail-item">
                     <span className="detail-label">의식</span>
                     <span className="detail-value">{case_.consciousness}</span>

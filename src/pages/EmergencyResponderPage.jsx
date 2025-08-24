@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { sendRescueReport } from "../features/report/model/reportApi";
 import "./EmergencyResponderPage.css";
-import { toKoreaDateObject } from "../features/report/model/date";
+import { toKoreaDateObject } from "../features/report/model/date.js";
 
 export default function EmergencyResponderPage() {
   const navigate = useNavigate();
@@ -425,11 +425,13 @@ export default function EmergencyResponderPage() {
             <span className="info-text">{data.location}</span>
           </div>
           <div className="info-row">
-            <img src="/icons/clock.svg" alt="시간" className="info-icon" />
+            <img src="/icons/clockkk.svg" alt="시간" className="info-icon" />
             <span className="info-text">
               {toKoreaDateObject(data.created).h < 12 ? "오전 " : "오후 "}
+
               {toKoreaDateObject(data.created).h < 13 ? `${toKoreaDateObject(data.created).h}` : `${toKoreaDateObject(data.created).h-12}`}
               :{`${toKoreaDateObject(data.created).min}`}:{`${toKoreaDateObject(data.created).s}`}
+
             </span>
           </div>
           <div className="info-row">
@@ -477,9 +479,13 @@ export default function EmergencyResponderPage() {
                 <p className="case-id">
                   <strong>리포트 ID:</strong>{" "}
                   {reportId ||
-                    `SX-${toKoreaDateObject(data.created).y}-${toKoreaDateObject(data.created).m}-${toKoreaDateObject(data.created).d}-${data.id || 1}`}
+                    `SX-${toKoreaDateObject(data.created).y}-${
+                      toKoreaDateObject(data.created).m
+                    }-${toKoreaDateObject(data.created).d}-${data.id || 1}`}
                 </p>
-                <p className="eta">ETA: {Math.floor(reportEta / 60)}분 {reportEta % 60}초</p>
+                <p className="eta">
+                  ETA: {Math.floor(reportEta / 60)}분 {reportEta % 60}초
+                </p>
                 <p className="hospital">병원: {reportHospital}</p>
               </div>
             </div>
