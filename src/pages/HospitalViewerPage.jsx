@@ -253,7 +253,6 @@ export default function HospitalViewerPage() {
         <h1 className="page-title">응급 환자 현황</h1>
         <div className="header-spacer"></div>
       </header>
-
       {/* 제목은 항상 표시 */}
       <div className="section-title">
         <img

@@ -146,7 +146,6 @@
 .report-type:has(.hide-etc) {
   display: none;
 }
-
 .report-address {
   font-size: 14px;
   color: #666666;

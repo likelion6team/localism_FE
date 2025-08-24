@@ -70,6 +70,7 @@ export default function VitalTrendGraph({
       const v = Math.max(minValue, Math.min(maxValue, value));
       const x = (index / (data.length - 1)) * 280; // 그래프 영역 조정
       const y = height - ((v - minValue) / safeRange) * height;
+
       return `${x},${y}`;
     });
     return points.join(" ");
@@ -94,7 +95,7 @@ export default function VitalTrendGraph({
               <span>123</span>
             </div>
           </div>
-
+          
           <div className="graph-content">
             <div className="graph-lines">
               {/* 심박수 라인 (빨간색) */}
