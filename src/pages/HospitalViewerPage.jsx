@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import "./HospitalViewerPage.css";
 import { toKoreaDateObject } from "../features/report/model/date.js";
@@ -112,7 +113,7 @@ export default function HospitalViewerPage() {
         setError("");
         // 캐시 방지 파라미터 추가로 새 데이터 즉시 반영
         const res = await fetch(
-          `https://api.localism0825.store/api/rescueReports/wait?t=${Date.now()}`,
+          `${API_BASE_URL}/api/rescueReports/wait?t=${Date.now()}`,
           {
             method: "GET",
             headers: { accept: "*/*" },

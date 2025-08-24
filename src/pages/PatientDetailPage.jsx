@@ -1,9 +1,9 @@
-
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./PatientDetailPage.css";
 import VitalTrendGraph from "../components/VitalTrendGraph";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { toKoreaDateObject } from "../features/report/model/date.js";
 
 export default function PatientDetailPage() {
@@ -18,7 +18,7 @@ export default function PatientDetailPage() {
     try {
       // ✅ PATCH 요청으로 변경
       const res = await axios.patch(
-        `https://api.localism0825.store/api/rescueReports/${id}/complete`
+        `${API_BASE_URL}/api/rescueReports/${id}/complete`
       );
       console.log("📌 완료 API 응답:", res);
 
@@ -41,9 +41,7 @@ export default function PatientDetailPage() {
   // ✅ 환자 상세 API 호출
   const fetchPatient = async (id) => {
     try {
-      const res = await axios.get(
-        `https://api.localism0825.store/api/rescueReports/${id}`
-      );
+      const res = await axios.get(`${API_BASE_URL}/api/rescueReports/${id}`);
       console.log("📌 API 응답:", res);
 
       const d = res.data.data; // ✅ API 구조에 맞게 꺼냄
@@ -170,7 +168,13 @@ export default function PatientDetailPage() {
               <div className="label-item">
                 <span className="label-time-symptoms">시간</span>
                 <span className="label-datetime-content">
-                  {`${patient.created.y}.${patient.created.m}.${patient.created.d} ${patient.created.h < 12 ? "AM" : "PM"} ${patient.created.h < 12 ? patient.created.h : patient.created.h-12}:${patient.created.min}`}
+                  {`${patient.created.y}.${patient.created.m}.${
+                    patient.created.d
+                  } ${patient.created.h < 12 ? "AM" : "PM"} ${
+                    patient.created.h < 12
+                      ? patient.created.h
+                      : patient.created.h - 12
+                  }:${patient.created.min}`}
                 </span>
               </div>
               <div className="label-item">

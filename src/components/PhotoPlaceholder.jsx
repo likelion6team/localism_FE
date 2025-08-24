@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import "./PhotoPlaceholder.css";
 
 export default function PhotoPlaceholder({ reportId }) {
@@ -14,7 +15,7 @@ export default function PhotoPlaceholder({ reportId }) {
           return;
         }
         const res = await fetch(
-          `https://api.localism0825.store/api/reports/${reportId}/image`,
+          `${API_BASE_URL}/api/reports/${reportId}/image`,
           { headers: { accept: "*/*" } }
         );
         if (!res.ok) {

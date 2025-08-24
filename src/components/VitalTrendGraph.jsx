@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import "./VitalTrendGraph.css";
 
 export default function VitalTrendGraph({
@@ -31,7 +32,7 @@ export default function VitalTrendGraph({
       if (!reportId) return;
       try {
         const res = await fetch(
-          `https://api.localism0825.store/api/rescueReports/${reportId}?t=${Date.now()}`,
+          `${API_BASE_URL}/api/rescueReports/${reportId}?t=${Date.now()}`,
           { headers: { accept: "*/*" }, signal: controller.signal }
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -95,7 +96,7 @@ export default function VitalTrendGraph({
               <span>123</span>
             </div>
           </div>
-          
+
           <div className="graph-content">
             <div className="graph-lines">
               {/* 심박수 라인 (빨간색) */}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { sendRescueReport } from "../features/report/model/reportApi";
@@ -117,13 +118,10 @@ export default function EmergencyResponderPage() {
 
     setRecordingState("processing");
     try {
-      const res = await fetch(
-        "https://api.localism0825.store/api/voice/transcribe",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/voice/transcribe`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!res.ok) throw new Error("STT API 요청 실패");
       const result = await res.json();
@@ -428,10 +426,11 @@ export default function EmergencyResponderPage() {
             <img src="/icons/clockkk.svg" alt="시간" className="info-icon" />
             <span className="info-text">
               {toKoreaDateObject(data.created).h < 12 ? "오전 " : "오후 "}
-
-              {toKoreaDateObject(data.created).h < 13 ? `${toKoreaDateObject(data.created).h}` : `${toKoreaDateObject(data.created).h-12}`}
-              :{`${toKoreaDateObject(data.created).min}`}:{`${toKoreaDateObject(data.created).s}`}
-
+              {toKoreaDateObject(data.created).h < 13
+                ? `${toKoreaDateObject(data.created).h}`
+                : `${toKoreaDateObject(data.created).h - 12}`}
+              :{`${toKoreaDateObject(data.created).min}`}:
+              {`${toKoreaDateObject(data.created).s}`}
             </span>
           </div>
           <div className="info-row">
