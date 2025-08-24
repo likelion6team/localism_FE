@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import "./ReportListPage.css";
 import { toKoreaDateObject } from "../features/report/model/date.js";
 
@@ -67,17 +68,17 @@ export default function ReportListPage() {
           const deep = bfsFindArray(payload);
           if (deep.length) return deep;
 
-          // 4) 마지막 수단: 단일 객체를 카드 1개로 표시
-          return typeof payload === "object" ? [payload] : [];
+          // 4) 리스트가 아니면 표시하지 않음 (빈 배열 반환)
+          return [];
         };
 
         // 1) 기본 엔드포인트
         const endpoints = [
-          "https://api.localism0825.store/api/reports/wait",
-          "https://api.localism0825.store/api/reports?status=WAIT",
-          "https://api.localism0825.store/api/reports",
-          "https://api.localism0825.store/api/reports/list",
-          "https://api.localism0825.store/api/reports/waits",
+          `${API_BASE_URL}/api/reports/wait`,
+          //`${API_BASE_URL}/api/reports?status=WAIT`,
+          //`${API_BASE_URL}/api/reports`,
+          //`${API_BASE_URL}/api/reports/list`,
+          //`${API_BASE_URL}/api/reports/waits`,
         ];
 
         let aggregated = [];
