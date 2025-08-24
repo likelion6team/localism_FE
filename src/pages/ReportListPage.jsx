@@ -258,12 +258,39 @@ export default function ReportListPage() {
             finalType = tryInferType(item);
           }
 
+          // '기타/모름' 제거
+          const removeEtcUnknown = (value) => {
+            if (Array.isArray(value)) {
+              const filtered = value.filter(
+                (s) => typeof s === "string" && !/^기타\/모름(?::|$)/.test(s)
+              );
+              return filtered.join(", ");
+            }
+            if (typeof value === "string") {
+              const cleaned = value
+                .split(/[,，]/)
+                .map((v) => v.trim())
+                .filter((v) => v && !/^기타\/모름(?::|$)/.test(v))
+                .join(", ");
+              return cleaned;
+            }
+            return "";
+          };
+
+          const typeDisplay = removeEtcUnknown(
+            Array.isArray(item?.symptoms)
+              ? item.symptoms
+              : Array.isArray(item?.majorSymptoms)
+              ? item.majorSymptoms
+              : finalType
+          );
+
           return {
             id,
             date,
             time,
             created,
-            type: finalType ?? "유형 정보 없음",
+            type: typeDisplay,
             address,
           };
         });
@@ -327,14 +354,17 @@ export default function ReportListPage() {
             >
               <div className="report-content">
                 <div className="report-header">
-                  {console.log("report:", report)}
-                  <span className="report-date">{report.created.y}.{report.created.m}.{report.created.d}</span>
+                  <span className="report-date">
+                    {report.created.y}.{report.created.m}.{report.created.d}
+                  </span>
                   <img
                     src="/icons/clock.svg"
                     alt="시계"
                     className="time-icon"
                   />
-                  <span className="report-time">{report.created.h}.{report.created.min}.{report.created.s}</span>
+                  <span className="report-time">
+                    {report.created.h}.{report.created.min}.{report.created.s}
+                  </span>
                 </div>
                 <div className="report-type">{report.type}</div>
                 <div className="report-address">{report.address}</div>

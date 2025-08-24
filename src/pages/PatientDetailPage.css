@@ -144,6 +144,12 @@
   white-space: normal;
 }
 
+/* '기타/모름' 텍스트 숨김 */
+.info-value:has(> span.hide-etc),
+.info-value.hide-etc {
+  display: none;
+}
+
 .id-value {
   color: #000;
   text-align: center;
@@ -304,6 +310,7 @@
 .label-content {
   flex: 1;
   padding-left: 24px;
+  padding-right: 140px; /* 바코드 영역(125px) + 여유 */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -313,7 +320,7 @@
   margin-bottom: 6px;
   display: flex;
   gap: 12px;
-  align-items: center;
+  align-items: flex-start; /* 여러 줄일 때 위쪽 정렬 */
   padding: 0 20px 0 0;
 }
 
@@ -355,6 +362,8 @@
   font-style: normal;
   font-weight: 500;
   line-height: 130%; /* 16.9px */
+  white-space: nowrap; /* 라벨 줄바꿈 방지 */
+  flex: 0 0 auto; /* 플렉스 축소 방지 */
 }
 
 /* 날짜, 시간, 증상 내용 텍스트 */
@@ -367,6 +376,13 @@
   font-style: normal;
   font-weight: 700;
   line-height: 130%; /* 18.2px */
+  /* 증상 내용 길이 제한: 2줄 표시 후 말줄임 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: keep-all; /* 한글 단어 단위 줄바꿈 유지 */
 }
 
 /* 기본 라벨 텍스트 (기존 호환성용) */
@@ -384,15 +400,15 @@
 /* 바코드 바 */
 .barcode-bar {
   display: inline-flex;
-  padding: 12px 0 21px 24px;
+  padding: 12px 0 12px 24px;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   background: #e32727;
   position: absolute;
   right: 0;
   top: 0;
   height: 102px;
-  width: 125px;
+  width: 95px;
 }
 
 .barcode-pattern {

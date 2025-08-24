@@ -19,8 +19,6 @@ export default function PatientInfoPage() {
       getDetailReport(id).then((data) => {
         setReport(data); // result.data만 리턴하도록 해뒀으니 바로 환자 객체 들어옴
       });
-
-      console.log("신고 리포트 상세 조회:", report);
     }
   }, [id]);
 
@@ -167,12 +165,15 @@ export default function PatientInfoPage() {
         </div>
 
         {/* 현장사진 */}
+        {report?.data?.isPhotoPath ? (
         <section className="info-section">
           <label className="section-label"></label>
           <PhotoPlaceholder
             reportId={report?.data?.reportId || report?.data?.id}
           />
         </section>
+        ) : null
+        }
       </main>
 
       {/* 확인 완료 버튼 */}
