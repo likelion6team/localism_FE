@@ -259,22 +259,27 @@ export default function ReportListPage() {
             finalType = tryInferType(item);
           }
 
-          // '기타/모름' 제거
+          // '기타/모름' 라벨만 숨기고 뒤 내용은 노출
           const removeEtcUnknown = (value) => {
+            const stripLabel = (text) =>
+              text.replace(/^\s*기타\/모름\s*:?\s*/i, "").trim();
+
             if (Array.isArray(value)) {
-              const filtered = value.filter(
-                (s) => typeof s === "string" && !/^기타\/모름(?::|$)/.test(s)
-              );
-              return filtered.join(", ");
+              const parts = value
+                .map((s) => (typeof s === "string" ? s : ""))
+                .map((s) => stripLabel(s))
+                .filter((s) => s && s !== "기타/모름");
+              return parts.join(", ");
             }
+
             if (typeof value === "string") {
-              const cleaned = value
+              const parts = value
                 .split(/[,，]/)
-                .map((v) => v.trim())
-                .filter((v) => v && !/^기타\/모름(?::|$)/.test(v))
-                .join(", ");
-              return cleaned;
+                .map((v) => stripLabel(v))
+                .filter((v) => v && v !== "기타/모름");
+              return parts.join(", ");
             }
+
             return "";
           };
 

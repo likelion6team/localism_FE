@@ -15,6 +15,7 @@ export default function HomePage() {
   const handleReporterClick = () => {
     setSelectedRole("reporter");
     setAuthType("reporter");
+    setAuthNumber("2222")
     setAuthPopupOpen(true);
   };
 
@@ -22,6 +23,7 @@ export default function HomePage() {
   const handleEMTClick = () => {
     setSelectedRole("emt");
     setAuthType("emergency");
+    setAuthNumber("1111")
     setAuthPopupOpen(true);
   };
 
@@ -29,6 +31,7 @@ export default function HomePage() {
   const handleHospitalClick = () => {
     setSelectedRole("hospital");
     setAuthType("hospital");
+    setAuthNumber("0000")
     setAuthPopupOpen(true);
   };
 
@@ -36,6 +39,7 @@ export default function HomePage() {
   const closeAuthPopup = () => {
     setAuthPopupOpen(false);
     setAuthNumber("");
+    
     setAuthType("");
   };
 
